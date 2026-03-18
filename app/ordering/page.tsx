@@ -1,22 +1,34 @@
+"use client";
+
+import { useState } from "react";
 import PageHeader from "@/components/layout/PageHeader";
+import PendingOrderRequests from "@/components/ordering/PendingOrderRequests";
+import OrderFilters from "@/components/ordering/OrderFilters";
+import OrdersTable from "@/components/ordering/OrdersTable";
+import TabBar from "@/components/ui/TabBar";
+import Button from "@/components/ui/Button";
+
+const TABS = ["All", "Active", "Scheduled", "Completed", "Cancelled"];
 
 export default function OrderingPage() {
+  const [activeTab, setActiveTab] = useState("Scheduled");
+
   return (
     <div>
       <PageHeader
         title="Ordering"
-        actionButton={
-          <button
-            type="button"
-            className="px-4 py-2 bg-navy text-white text-sm font-medium rounded-xl hover:opacity-90 transition-opacity"
-          >
-            Create Order
-          </button>
-        }
+        actionButton={<Button variant="primary">Create Order</Button>}
       />
-      <div className="px-6 py-6">
-        <p className="text-warm-gray text-sm">Ordering content coming soon.</p>
+
+      <PendingOrderRequests />
+
+      <div className="px-6 pt-4">
+        <TabBar tabs={TABS} activeTab={activeTab} onTabChange={setActiveTab} />
       </div>
+
+      <OrderFilters />
+
+      <OrdersTable />
     </div>
   );
 }
