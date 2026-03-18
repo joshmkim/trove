@@ -1,71 +1,65 @@
-const mockItems = [
-  { productName: "All-Purpose Flour", qtyIn: 999, skuId: "SKU-ID-1245" },
-  { productName: "Unsalted Butter",   qtyIn: 999, skuId: "SKU-ID-1246" },
-  { productName: "Granulated Sugar",  qtyIn: 999, skuId: "SKU-ID-1247" },
-  { productName: "Heavy Cream",       qtyIn: 999, skuId: "SKU-ID-1248" },
-];
+"use client";
 
-function EditIcon() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="w-3.5 h-3.5 text-warm-gray"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      strokeWidth={2}
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125"
-      />
-    </svg>
-  );
+import { useState } from "react";
+
+interface ItemRow {
+  id: number;
+  productName: string;
+  qtyIn: string;
+  skuId: string;
 }
 
+const defaultRows: ItemRow[] = [
+  { id: 1, productName: "Item Name", qtyIn: "999", skuId: "SKU-ID-1245" },
+  { id: 2, productName: "Item Name", qtyIn: "999", skuId: "SKU-ID-1245" },
+  { id: 3, productName: "Item Name", qtyIn: "999", skuId: "SKU-ID-1245" },
+  { id: 4, productName: "Item Name", qtyIn: "999", skuId: "SKU-ID-1245" },
+];
+
 export default function InvoiceItemDetails() {
+  const [rows, setRows] = useState<ItemRow[]>(defaultRows);
+
+  function updateRow(id: number, field: keyof Omit<ItemRow, "id">, value: string) {
+    setRows((prev) =>
+      prev.map((row) => (row.id === id ? { ...row, [field]: value } : row))
+    );
+  }
+
   return (
     <div>
-      <h3 className="text-sm font-semibold text-charcoal mb-2">Item Details</h3>
-      <div className="border border-light-gray rounded-sm overflow-hidden">
-        <table className="w-full border-collapse">
-          <thead>
-            <tr className="border-b border-light-gray bg-cream/50">
-              <th className="py-2 px-3 text-left text-[12px] font-medium text-warm-gray">
-                Product Name
-              </th>
-              <th className="py-2 px-3 text-left text-[12px] font-medium text-warm-gray w-20">
-                Qty In
-              </th>
-              <th className="py-2 px-3 text-left text-[12px] font-medium text-warm-gray">
-                SKU ID
-              </th>
-              <th className="w-8" />
-            </tr>
-          </thead>
-          <tbody>
-            {mockItems.map((item, i) => (
-              <tr
-                key={i}
-                className="border-b border-light-gray last:border-0 hover:bg-cream/30 transition-colors"
-              >
-                <td className="py-2 px-3 text-sm text-charcoal">{item.productName}</td>
-                <td className="py-2 px-3 text-sm text-charcoal tabular-nums">{item.qtyIn}</td>
-                <td className="py-2 px-3 text-sm font-mono text-warm-gray">{item.skuId}</td>
-                <td className="py-2 px-3">
-                  <button
-                    type="button"
-                    aria-label="Edit row"
-                    className="hover:text-charcoal transition-colors"
-                  >
-                    <EditIcon />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <h3 className="text-2xl font-bold text-charcoal mb-4">Item Details</h3>
+
+      {/* Column headers */}
+      <div className="grid grid-cols-[1fr_80px_120px] gap-x-3 mb-1.5 px-0.5">
+        <span className="text-xs text-warm-gray font-medium">Product Name</span>
+        <span className="text-xs text-warm-gray font-medium">Qty In</span>
+        <span className="text-xs text-warm-gray font-medium">SKU ID</span>
+      </div>
+
+      {/* Editable rows */}
+      <div className="flex flex-col gap-2">
+        {rows.map((row) => (
+          <div key={row.id} className="grid grid-cols-[1fr_80px_120px] gap-x-3">
+            <input
+              type="text"
+              value={row.productName}
+              onChange={(e) => updateRow(row.id, "productName", e.target.value)}
+              className="px-2.5 py-1.5 text-sm text-charcoal border border-light-gray rounded-sm outline-none focus:border-warm-gray transition-colors"
+            />
+            <input
+              type="text"
+              value={row.qtyIn}
+              onChange={(e) => updateRow(row.id, "qtyIn", e.target.value)}
+              className="px-2.5 py-1.5 text-sm text-charcoal border border-light-gray rounded-sm outline-none focus:border-warm-gray transition-colors tabular-nums"
+            />
+            <input
+              type="text"
+              value={row.skuId}
+              onChange={(e) => updateRow(row.id, "skuId", e.target.value)}
+              className="px-2.5 py-1.5 text-sm text-charcoal font-mono border border-light-gray rounded-sm outline-none focus:border-warm-gray transition-colors"
+            />
+          </div>
+        ))}
       </div>
     </div>
   );
