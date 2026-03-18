@@ -1,18 +1,12 @@
-export interface InventoryItem {
-  id: string;
-  productName: string;
-  quantityRemaining: number;
-  stockLevel: "Low" | "High";
-  qtyIn: number;
-  qtyOut: number;
-  qtyBalance: number;
-  skuId: string;
-  stockPercent: number; // 0–100, used for the progress bar
-}
+// Re-export types so existing component imports keep working.
+export type { InventoryItem } from "./types";
 
+import type { InventoryItem } from "./types";
+
+/** Development fallback — shown when Supabase returns no rows. */
 export const mockInventory: InventoryItem[] = [
   {
-    id: "1",
+    id: "mock-1",
     productName: "All-Purpose Flour",
     quantityRemaining: 12,
     stockLevel: "Low",
@@ -23,7 +17,7 @@ export const mockInventory: InventoryItem[] = [
     stockPercent: 24,
   },
   {
-    id: "2",
+    id: "mock-2",
     productName: "Unsalted Butter",
     quantityRemaining: 48,
     stockLevel: "High",
@@ -34,7 +28,7 @@ export const mockInventory: InventoryItem[] = [
     stockPercent: 80,
   },
   {
-    id: "3",
+    id: "mock-3",
     productName: "Granulated Sugar",
     quantityRemaining: 8,
     stockLevel: "Low",
@@ -45,7 +39,7 @@ export const mockInventory: InventoryItem[] = [
     stockPercent: 20,
   },
   {
-    id: "4",
+    id: "mock-4",
     productName: "Heavy Cream",
     quantityRemaining: 30,
     stockLevel: "High",
@@ -56,7 +50,7 @@ export const mockInventory: InventoryItem[] = [
     stockPercent: 83,
   },
   {
-    id: "5",
+    id: "mock-5",
     productName: "Free-Range Eggs",
     quantityRemaining: 6,
     stockLevel: "Low",
@@ -67,7 +61,7 @@ export const mockInventory: InventoryItem[] = [
     stockPercent: 20,
   },
   {
-    id: "6",
+    id: "mock-6",
     productName: "Vanilla Extract",
     quantityRemaining: 22,
     stockLevel: "High",
@@ -78,7 +72,7 @@ export const mockInventory: InventoryItem[] = [
     stockPercent: 92,
   },
   {
-    id: "7",
+    id: "mock-7",
     productName: "Baking Powder",
     quantityRemaining: 15,
     stockLevel: "High",
@@ -89,7 +83,7 @@ export const mockInventory: InventoryItem[] = [
     stockPercent: 75,
   },
   {
-    id: "8",
+    id: "mock-8",
     productName: "Cocoa Powder",
     quantityRemaining: 4,
     stockLevel: "Low",

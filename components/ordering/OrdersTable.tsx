@@ -1,41 +1,9 @@
 import Badge from "@/components/ui/Badge";
+import type { Order } from "@/lib/types";
 
-interface Order {
-  id: string;
-  customer: string;
-  orderSource: string;
-  type: string;
-  items: string;
-  channel: string;
-  location: string;
-  orderDate: string;
-  status: "active" | "scheduled" | "completed" | "cancelled";
+interface OrdersTableProps {
+  orders: Order[];
 }
-
-const mockOrders: Order[] = [
-  {
-    id: "1",
-    customer: "Alex Smith",
-    orderSource: "Direct",
-    type: "Standard",
-    items: "Cu",
-    channel: "Online",
-    location: "Jakarta Selatan",
-    orderDate: "Jan 2, 2025",
-    status: "scheduled",
-  },
-  {
-    id: "2",
-    customer: "ORDER#01",
-    orderSource: "Marketplace",
-    type: "Bulk",
-    items: "Cu",
-    channel: "In-store",
-    location: "Jakarta Pusat",
-    orderDate: "Jan 1, 2025",
-    status: "active",
-  },
-];
 
 const headers = [
   { label: "Customer" },
@@ -62,7 +30,7 @@ function SortIcon() {
   );
 }
 
-export default function OrdersTable() {
+export default function OrdersTable({ orders }: OrdersTableProps) {
   return (
     <div>
       {/* Table meta row */}
@@ -95,24 +63,32 @@ export default function OrdersTable() {
             </tr>
           </thead>
           <tbody>
-            {mockOrders.map((order) => (
-              <tr
-                key={order.id}
-                className="border-b border-light-gray last:border-0 hover:bg-cream/40 transition-colors"
-              >
-                <td className="py-3 px-4 text-sm font-medium text-charcoal">
-                  {order.customer}
+            {orders.length === 0 ? (
+              <tr>
+                <td colSpan={7} className="py-12 text-center text-sm text-warm-gray">
+                  No orders found.
                 </td>
-                <td className="py-3 px-4 text-sm text-charcoal">{order.orderSource}</td>
-                <td className="py-3 px-4 text-sm text-charcoal">{order.type}</td>
-                <td className="py-3 px-4">
-                  <Badge label={order.items} color="lavender" />
-                </td>
-                <td className="py-3 px-4 text-sm text-charcoal">{order.channel}</td>
-                <td className="py-3 px-4 text-sm text-charcoal">{order.location}</td>
-                <td className="py-3 px-4 text-sm text-warm-gray">{order.orderDate}</td>
               </tr>
-            ))}
+            ) : (
+              orders.map((order) => (
+                <tr
+                  key={order.id}
+                  className="border-b border-light-gray last:border-0 hover:bg-cream/40 transition-colors"
+                >
+                  <td className="py-3 px-4 text-sm font-medium text-charcoal">
+                    {order.customer}
+                  </td>
+                  <td className="py-3 px-4 text-sm text-charcoal">{order.orderSource}</td>
+                  <td className="py-3 px-4 text-sm text-charcoal">{order.type}</td>
+                  <td className="py-3 px-4">
+                    <Badge label={order.items} color="lavender" />
+                  </td>
+                  <td className="py-3 px-4 text-sm text-charcoal">{order.channel}</td>
+                  <td className="py-3 px-4 text-sm text-charcoal">{order.location}</td>
+                  <td className="py-3 px-4 text-sm text-warm-gray">{order.orderDate}</td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
