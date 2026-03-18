@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Trove — Harucake Inventory",
+  title: "Trove",
   description: "Inventory management for Harucake",
 };
 
