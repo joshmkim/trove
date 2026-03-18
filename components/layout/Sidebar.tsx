@@ -8,7 +8,11 @@ const navLinks = [
   { href: "/ordering", label: "Ordering" },
 ];
 
-export default function Sidebar() {
+interface SidebarProps {
+  onUploadClick: () => void;
+}
+
+export default function Sidebar({ onUploadClick }: SidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -47,6 +51,7 @@ export default function Sidebar() {
       <div className="px-4 pb-4">
         <button
           type="button"
+          onClick={onUploadClick}
           className="w-full border-2 border-dashed border-light-gray rounded-sm py-5 px-3 flex flex-col items-center gap-1.5 hover:border-warm-gray transition-colors"
         >
           <svg
