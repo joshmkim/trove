@@ -1,17 +1,32 @@
 "use client";
 
-import { useEffect } from "react";
-import Modal from "@/components/ui/Modal";
+import { useEffect, useState } from "react";
 import Button from "@/components/ui/Button";
 import FileUploadStatus from "./FileUploadStatus";
 import InvoiceItemDetails from "./InvoiceItemDetails";
 
+interface ParsedItem {
+  productName: string;
+  qtyIn: number;
+  skuId: string;
+}
+
+interface UploadedFile {
+  file: File;
+  status: "uploading" | "completed" | "error";
+}
+
 interface InvoicePopupProps {
   open: boolean;
   onClose: () => void;
+  file?: File | null;
 }
 
-export default function InvoicePopup({ open, onClose }: InvoicePopupProps) {
+export default function InvoicePopup({ open, onClose, file }: InvoicePopupProps) {
+  const [uploadedFile, setUploadedFile] = useState<UploadedFile | null>(null);
+  const [parsedItems, setParsedItems] = useState<ParsedItem[]>([]);
+  const [parseError, setParseError] = useState<string | null>(null);
+
   // Close on Escape
   useEffect(() => {
     if (!open) return;
@@ -22,6 +37,41 @@ export default function InvoicePopup({ open, onClose }: InvoicePopupProps) {
     return () => window.removeEventListener("keydown", handler);
   }, [open, onClose]);
 
+  // When a new file is passed in, parse it
+  useEffect(() => {
+    if (!file) return;
+    setParsedItems([]);
+    setParseError(null);
+    setUploadedFile({ file, status: "uploading" });
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    fetch("/api/parse-invoice", { method: "POST", body: formData })
+      .then(async (res) => {
+        if (!res.ok) throw new Error("Parse failed");
+        const data = await res.json();
+        setParsedItems(data.items ?? []);
+        setUploadedFile({ file, status: "completed" });
+      })
+      .catch(() => {
+        setParseError("Failed to parse invoice. Please enter items manually.");
+        setUploadedFile({ file, status: "error" });
+      });
+  }, [file]);
+
+  function handleClose() {
+    setUploadedFile(null);
+    setParsedItems([]);
+    setParseError(null);
+    onClose();
+  }
+
+  const formatSize = (bytes: number) => {
+    const mb = bytes / (1024 * 1024);
+    return `${mb.toFixed(1)} MB`;
+  };
+
   return (
     <>
       {/* Backdrop */}
@@ -29,7 +79,7 @@ export default function InvoicePopup({ open, onClose }: InvoicePopupProps) {
         className={`fixed inset-0 z-40 bg-black/30 transition-opacity duration-300 ${
           open ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
-        onClick={onClose}
+        onClick={handleClose}
       />
 
       {/* Right-side panel */}
@@ -41,7 +91,7 @@ export default function InvoicePopup({ open, onClose }: InvoicePopupProps) {
         {/* Close button */}
         <button
           type="button"
-          onClick={onClose}
+          onClick={handleClose}
           aria-label="Close"
           className="absolute top-4 right-4 p-1.5 text-warm-gray hover:text-charcoal transition-colors"
         >
@@ -59,39 +109,44 @@ export default function InvoicePopup({ open, onClose }: InvoicePopupProps) {
 
         {/* Scrollable body */}
         <div className="flex-1 overflow-y-auto px-8 pt-10 pb-6">
-          {/* Title */}
           <h2 className="text-[32px] font-bold text-charcoal leading-tight">
             Invoice Upload
           </h2>
           <p className="mt-1.5 mb-6 text-sm text-warm-gray">
-            Insert description to guide user: upload and preview changes
+            Upload a PDF invoice to automatically extract items into your inventory.
           </p>
 
-          {/* File upload entries */}
-          <div className="flex flex-col gap-2 mb-6">
-            <FileUploadStatus
-              filename="Invoice_691.pdf"
-              size="20 MB / 20 MB"
-              status="completed"
-            />
-            <FileUploadStatus
-              filename="Invoice_237.pdf"
-              size="20 MB / 20 MB"
-              status="uploading"
-              progress={75}
-            />
-          </div>
+          {/* File status */}
+          {uploadedFile && (
+            <div className="flex flex-col gap-2 mb-6">
+              <FileUploadStatus
+                filename={uploadedFile.file.name}
+                size={formatSize(uploadedFile.file.size)}
+                status={uploadedFile.status === "uploading" ? "uploading" : "completed"}
+                onRemove={handleClose}
+              />
+            </div>
+          )}
 
-          {/* Item Details */}
-          <InvoiceItemDetails />
+          {/* Parse error */}
+          {parseError && (
+            <p className="mb-4 text-sm text-red-500">{parseError}</p>
+          )}
+
+          {/* Parsed item details */}
+          <InvoiceItemDetails items={parsedItems} />
         </div>
 
-        {/* Sticky footer actions */}
+        {/* Sticky footer */}
         <div className="shrink-0 flex items-center justify-end gap-2 px-8 py-4 border-t border-light-gray">
-          <Button variant="outline" onClick={onClose}>
+          <Button variant="outline" onClick={handleClose}>
             Cancel
           </Button>
-          <Button variant="primary" onClick={onClose}>
+          <Button
+            variant="primary"
+            onClick={handleClose}
+            disabled={parsedItems.length === 0}
+          >
             Add to Inventory
           </Button>
         </div>

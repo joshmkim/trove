@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Fragment } from "react";
 
 interface ItemRow {
   id: number;
@@ -9,37 +9,57 @@ interface ItemRow {
   skuId: string;
 }
 
-const defaultRows: ItemRow[] = [
-  { id: 1, productName: "Item Name", qtyIn: "999", skuId: "SKU-ID-1245" },
-  { id: 2, productName: "Item Name", qtyIn: "999", skuId: "SKU-ID-1245" },
-  { id: 3, productName: "Item Name", qtyIn: "999", skuId: "SKU-ID-1245" },
-  { id: 4, productName: "Item Name", qtyIn: "999", skuId: "SKU-ID-1245" },
-];
+interface ParsedItem {
+  productName: string;
+  qtyIn: number;
+  skuId: string;
+}
 
-export default function InvoiceItemDetails() {
-  const [rows, setRows] = useState<ItemRow[]>(defaultRows);
+interface InvoiceItemDetailsProps {
+  items?: ParsedItem[];
+  onChange?: (rows: ItemRow[]) => void;
+}
+
+export default function InvoiceItemDetails({ items, onChange }: InvoiceItemDetailsProps) {
+  const [rows, setRows] = useState<ItemRow[]>([]);
+
+  useEffect(() => {
+    if (items && items.length > 0) {
+      const mapped = items.map((item, i) => ({
+        id: i + 1,
+        productName: item.productName,
+        qtyIn: String(item.qtyIn),
+        skuId: item.skuId,
+      }));
+      setRows(mapped);
+      onChange?.(mapped);
+    }
+  }, [items]);
 
   function updateRow(id: number, field: keyof Omit<ItemRow, "id">, value: string) {
-    setRows((prev) =>
-      prev.map((row) => (row.id === id ? { ...row, [field]: value } : row))
-    );
+    setRows((prev) => {
+      const updated = prev.map((row) => (row.id === id ? { ...row, [field]: value } : row));
+      onChange?.(updated);
+      return updated;
+    });
   }
+
+  if (rows.length === 0) return null;
 
   return (
     <div>
       <h3 className="text-2xl font-bold text-charcoal mb-4">Item Details</h3>
 
-      {/* Column headers */}
-      <div className="grid grid-cols-[1fr_80px_120px] gap-x-3 mb-1.5 px-0.5">
-        <span className="text-xs text-warm-gray font-medium">Product Name</span>
-        <span className="text-xs text-warm-gray font-medium">Qty In</span>
-        <span className="text-xs text-warm-gray font-medium">SKU ID</span>
-      </div>
+      {/* Unified grid — headers + rows share the same columns */}
+      <div className="grid grid-cols-[1fr_80px_120px] gap-x-3 gap-y-2">
+        {/* Column headers */}
+        <span className="text-xs text-warm-gray font-medium px-2.5">Product Name</span>
+        <span className="text-xs text-warm-gray font-medium px-2.5">Qty In</span>
+        <span className="text-xs text-warm-gray font-medium px-2.5">SKU ID</span>
 
-      {/* Editable rows */}
-      <div className="flex flex-col gap-2">
+        {/* Editable rows */}
         {rows.map((row) => (
-          <div key={row.id} className="grid grid-cols-[1fr_80px_120px] gap-x-3">
+          <Fragment key={row.id}>
             <input
               type="text"
               value={row.productName}
@@ -58,7 +78,7 @@ export default function InvoiceItemDetails() {
               onChange={(e) => updateRow(row.id, "skuId", e.target.value)}
               className="px-2.5 py-1.5 text-sm text-charcoal font-mono border border-light-gray rounded-sm outline-none focus:border-warm-gray transition-colors"
             />
-          </div>
+          </Fragment>
         ))}
       </div>
     </div>
