@@ -1,7 +1,7 @@
 interface FileUploadStatusProps {
   filename: string;
   size: string;
-  status: "completed" | "uploading";
+  status: "completed" | "uploading" | "error";
   progress?: number; // 0–100, used when status === "uploading"
   onRemove?: () => void;
 }
@@ -65,6 +65,26 @@ function Spinner() {
   );
 }
 
+function ErrorIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-4 h-4 text-red-500"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m0 3h.008v.008H12v-.008Z" />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M10.29 3.86 1.82 18a2.25 2.25 0 0 0 1.93 3.38h16.5A2.25 2.25 0 0 0 22.18 18l-8.47-14.14a2.25 2.25 0 0 0-3.42 0Z"
+      />
+    </svg>
+  );
+}
+
 export default function FileUploadStatus({
   filename,
   size,
@@ -73,6 +93,7 @@ export default function FileUploadStatus({
   onRemove,
 }: FileUploadStatusProps) {
   const isCompleted = status === "completed";
+  const isError = status === "error";
 
   return (
     <div className="flex items-start gap-3 p-3 border border-light-gray rounded-sm">
@@ -107,6 +128,11 @@ export default function FileUploadStatus({
               <CheckIcon />
               Completed
             </span>
+          ) : isError ? (
+            <span className="flex items-center gap-1 text-xs text-red-600 font-medium">
+              <ErrorIcon />
+              Failed
+            </span>
           ) : (
             <span className="flex items-center gap-1 text-xs text-navy font-medium">
               <Spinner />
@@ -115,7 +141,7 @@ export default function FileUploadStatus({
           )}
         </div>
 
-        {!isCompleted && (
+        {!isCompleted && !isError && (
           <div className="mt-2 h-1 w-full bg-light-gray rounded-full overflow-hidden">
             <div
               className="h-full bg-navy rounded-full transition-all"

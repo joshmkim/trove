@@ -1,0 +1,182 @@
+import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
+import type { ItemRow } from "@/lib/types";
+
+interface InvoiceApplyItem {
+  productName: string;
+  qtyIn: number;
+  skuId: string;
+}
+
+const LOW_STOCK_THRESHOLD = 10;
+
+function normalizeProductName(value: string) {
+  return value.trim().replace(/\s+/g, " ").toLowerCase();
+}
+
+function toStockLevel(quantityRemaining: number): "low" | "high" {
+  return quantityRemaining < LOW_STOCK_THRESHOLD ? "low" : "high";
+}
+
+function sanitizeItems(input: unknown): InvoiceApplyItem[] {
+  if (!Array.isArray(input)) return [];
+
+  return input
+    .map((item) => {
+      if (!item || typeof item !== "object") return null;
+
+      const candidate = item as Partial<InvoiceApplyItem>;
+      const productName = candidate.productName?.trim() ?? "";
+      const qtyIn = Number(candidate.qtyIn);
+      const skuId = candidate.skuId?.trim() ?? "";
+
+      if (!productName || !Number.isFinite(qtyIn) || qtyIn <= 0) {
+        return null;
+      }
+
+      return {
+        productName,
+        qtyIn,
+        skuId,
+      };
+    })
+    .filter((item): item is InvoiceApplyItem => item !== null);
+}
+
+function consolidateItems(items: InvoiceApplyItem[]) {
+  const grouped = new Map<string, InvoiceApplyItem>();
+
+  for (const item of items) {
+    const key = item.skuId || normalizeProductName(item.productName);
+    const existing = grouped.get(key);
+
+    if (existing) {
+      existing.qtyIn += item.qtyIn;
+      if (!existing.skuId && item.skuId) {
+        existing.skuId = item.skuId;
+      }
+      continue;
+    }
+
+    grouped.set(key, { ...item });
+  }
+
+  return Array.from(grouped.values());
+}
+
+export async function POST(req: NextRequest) {
+  let payload: unknown;
+
+  try {
+    payload = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
+  }
+
+  const items = consolidateItems(sanitizeItems((payload as { items?: unknown })?.items));
+
+  if (items.length === 0) {
+    return NextResponse.json({ error: "No valid invoice items were provided." }, { status: 400 });
+  }
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return NextResponse.json({ error: "Supabase environment variables are missing." }, { status: 500 });
+  }
+
+  const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+  const { data: existingItems, error: fetchError } = await supabase
+    .from("items")
+    .select("*");
+
+  if (fetchError) {
+    return NextResponse.json({ error: fetchError.message }, { status: 500 });
+  }
+
+  const skuMatches = new Map<string, ItemRow>();
+  const nameMatches = new Map<string, ItemRow>();
+
+  for (const item of (existingItems as ItemRow[]) ?? []) {
+    if (item.sku_id) {
+      skuMatches.set(item.sku_id, item);
+    }
+    nameMatches.set(normalizeProductName(item.product_name), item);
+  }
+
+  const updates = new Map<string, Partial<ItemRow> & Pick<ItemRow, "id">>();
+  const inserts: Array<{
+    product_name: string;
+    quantity_remaining: number;
+    stock_level: "low" | "high";
+    qty_in: number;
+    qty_out: number;
+    qty_balance: number;
+    sku_id: string | null;
+  }> = [];
+
+  for (const item of items) {
+    const existingMatch =
+      (item.skuId ? skuMatches.get(item.skuId) : undefined) ??
+      nameMatches.get(normalizeProductName(item.productName));
+
+    if (existingMatch) {
+      const current = updates.get(existingMatch.id);
+      const qtyIn = (current?.qty_in ?? existingMatch.qty_in) + item.qtyIn;
+      const qtyBalance = (current?.qty_balance ?? existingMatch.qty_balance) + item.qtyIn;
+      const quantityRemaining =
+        (current?.quantity_remaining ?? existingMatch.quantity_remaining) + item.qtyIn;
+      const skuId = existingMatch.sku_id ?? item.skuId ?? null;
+
+      updates.set(existingMatch.id, {
+        id: existingMatch.id,
+        qty_in: qtyIn,
+        qty_balance: qtyBalance,
+        quantity_remaining: quantityRemaining,
+        stock_level: toStockLevel(quantityRemaining),
+        sku_id: skuId,
+      });
+      continue;
+    }
+
+    inserts.push({
+      product_name: item.productName,
+      quantity_remaining: item.qtyIn,
+      stock_level: toStockLevel(item.qtyIn),
+      qty_in: item.qtyIn,
+      qty_out: 0,
+      qty_balance: item.qtyIn,
+      sku_id: item.skuId || null,
+    });
+  }
+
+  const updateRows = Array.from(updates.values());
+
+  for (const row of updateRows) {
+    const { id, ...changes } = row;
+    const { error: updateError } = await supabase
+      .from("items")
+      .update(changes)
+      .eq("id", id);
+
+    if (updateError) {
+      return NextResponse.json({ error: updateError.message }, { status: 500 });
+    }
+  }
+
+  if (inserts.length > 0) {
+    const { error: insertError } = await supabase.from("items").insert(inserts);
+
+    if (insertError) {
+      return NextResponse.json({ error: insertError.message }, { status: 500 });
+    }
+  }
+
+  return NextResponse.json({
+    addedCount: inserts.length,
+    updatedCount: updateRows.length,
+    totalProcessed: items.length,
+  });
+}

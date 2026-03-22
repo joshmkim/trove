@@ -4,12 +4,8 @@ import { useEffect, useState } from "react";
 import Button from "@/components/ui/Button";
 import FileUploadStatus from "./FileUploadStatus";
 import InvoiceItemDetails from "./InvoiceItemDetails";
-
-interface ParsedItem {
-  productName: string;
-  qtyIn: number;
-  skuId: string;
-}
+import type { EditableInvoiceItem, ParsedInvoiceItem } from "@/lib/types";
+import { dispatchInventoryRefresh } from "@/lib/inventoryEvents";
 
 interface UploadedFile {
   file: File;
@@ -24,8 +20,19 @@ interface InvoicePopupProps {
 
 export default function InvoicePopup({ open, onClose, file }: InvoicePopupProps) {
   const [uploadedFile, setUploadedFile] = useState<UploadedFile | null>(null);
-  const [parsedItems, setParsedItems] = useState<ParsedItem[]>([]);
+  const [draftItems, setDraftItems] = useState<EditableInvoiceItem[]>([]);
   const [parseError, setParseError] = useState<string | null>(null);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+
+  function toEditableItems(items: ParsedInvoiceItem[]) {
+    return items.map((item, index) => ({
+      id: index + 1,
+      productName: item.productName,
+      qtyIn: String(item.qtyIn),
+      skuId: item.skuId,
+    }));
+  }
 
   // Close on Escape
   useEffect(() => {
@@ -40,8 +47,9 @@ export default function InvoicePopup({ open, onClose, file }: InvoicePopupProps)
   // When a new file is passed in, parse it
   useEffect(() => {
     if (!file) return;
-    setParsedItems([]);
+    setDraftItems([]);
     setParseError(null);
+    setSaveError(null);
     setUploadedFile({ file, status: "uploading" });
 
     const formData = new FormData();
@@ -51,7 +59,7 @@ export default function InvoicePopup({ open, onClose, file }: InvoicePopupProps)
       .then(async (res) => {
         if (!res.ok) throw new Error("Parse failed");
         const data = await res.json();
-        setParsedItems(data.items ?? []);
+        setDraftItems(toEditableItems(data.items ?? []));
         setUploadedFile({ file, status: "completed" });
       })
       .catch(() => {
@@ -62,9 +70,53 @@ export default function InvoicePopup({ open, onClose, file }: InvoicePopupProps)
 
   function handleClose() {
     setUploadedFile(null);
-    setParsedItems([]);
+    setDraftItems([]);
     setParseError(null);
+    setSaveError(null);
+    setIsSaving(false);
     onClose();
+  }
+
+  async function handleAddToInventory() {
+    setSaveError(null);
+
+    const items = draftItems
+      .map((item) => ({
+        productName: item.productName.trim(),
+        qtyIn: Number(item.qtyIn),
+        skuId: item.skuId.trim(),
+      }))
+      .filter((item) => item.productName.length > 0 && Number.isFinite(item.qtyIn) && item.qtyIn > 0);
+
+    if (items.length === 0) {
+      setSaveError("Please verify the item rows before adding them to inventory.");
+      return;
+    }
+
+    setIsSaving(true);
+
+    try {
+      const response = await fetch("/api/inventory/apply-invoice", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ items }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => null);
+        throw new Error(data?.error ?? "Failed to add invoice items to inventory.");
+      }
+
+      dispatchInventoryRefresh();
+      handleClose();
+    } catch (error) {
+      setSaveError(
+        error instanceof Error ? error.message : "Failed to add invoice items to inventory."
+      );
+      setIsSaving(false);
+    }
   }
 
   const formatSize = (bytes: number) => {
@@ -122,7 +174,7 @@ export default function InvoicePopup({ open, onClose, file }: InvoicePopupProps)
               <FileUploadStatus
                 filename={uploadedFile.file.name}
                 size={formatSize(uploadedFile.file.size)}
-                status={uploadedFile.status === "uploading" ? "uploading" : "completed"}
+                status={uploadedFile.status}
                 onRemove={handleClose}
               />
             </div>
@@ -133,21 +185,25 @@ export default function InvoicePopup({ open, onClose, file }: InvoicePopupProps)
             <p className="mb-4 text-sm text-red-500">{parseError}</p>
           )}
 
+          {saveError && (
+            <p className="mb-4 text-sm text-red-500">{saveError}</p>
+          )}
+
           {/* Parsed item details */}
-          <InvoiceItemDetails items={parsedItems} />
+          <InvoiceItemDetails items={draftItems} onChange={setDraftItems} />
         </div>
 
         {/* Sticky footer */}
         <div className="shrink-0 flex items-center justify-end gap-2 px-8 py-4 border-t border-light-gray">
-          <Button variant="outline" onClick={handleClose}>
+          <Button variant="outline" onClick={handleClose} disabled={isSaving}>
             Cancel
           </Button>
           <Button
             variant="primary"
-            onClick={handleClose}
-            disabled={parsedItems.length === 0}
+            onClick={handleAddToInventory}
+            disabled={draftItems.length === 0 || isSaving}
           >
-            Add to Inventory
+            {isSaving ? "Adding..." : "Add to Inventory"}
           </Button>
         </div>
       </div>

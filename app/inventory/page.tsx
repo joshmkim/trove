@@ -8,6 +8,7 @@ import InventoryGrid from "@/components/inventory/InventoryGrid";
 import Button from "@/components/ui/Button";
 import { supabase } from "@/lib/supabase";
 import { itemRowToInventoryItem, type InventoryItem, type ItemRow } from "@/lib/types";
+import { INVENTORY_REFRESH_EVENT } from "@/lib/inventoryEvents";
 import { mockInventory } from "@/lib/mockData";
 
 export default function InventoryPage() {
@@ -18,11 +19,15 @@ export default function InventoryPage() {
   const [filter, setFilter] = useState("all");
 
   useEffect(() => {
+    let isActive = true;
+
     async function fetchItems() {
       const { data, error } = await supabase
         .from("items")
         .select("*")
         .order("created_at", { ascending: true });
+
+      if (!isActive) return;
 
       if (error || !data || data.length === 0) {
         setItems(mockInventory);
@@ -31,7 +36,35 @@ export default function InventoryPage() {
       }
       setLoading(false);
     }
-    fetchItems();
+
+    void fetchItems();
+
+    const handleInventoryRefresh = () => {
+      void fetchItems();
+    };
+
+    window.addEventListener(INVENTORY_REFRESH_EVENT, handleInventoryRefresh);
+
+    const channel = supabase
+      .channel("inventory-items")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "items",
+        },
+        () => {
+          void fetchItems();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      isActive = false;
+      window.removeEventListener(INVENTORY_REFRESH_EVENT, handleInventoryRefresh);
+      void supabase.removeChannel(channel);
+    };
   }, []);
 
   const filteredItems = useMemo(() => {

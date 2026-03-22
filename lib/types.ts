@@ -24,7 +24,7 @@ export interface ItemRow {
   qty_in: number;
   qty_out: number;
   qty_balance: number;
-  sku_id: string;
+  sku_id: string | null;
   image_url: string | null;
   created_at: string;
   updated_at: string;
@@ -41,10 +41,25 @@ export function itemRowToInventoryItem(row: ItemRow): InventoryItem {
     qtyIn: row.qty_in,
     qtyOut: row.qty_out,
     qtyBalance: row.qty_balance,
-    skuId: row.sku_id,
+    skuId: row.sku_id ?? "",
     imageUrl: row.image_url,
     stockPercent: Math.min(100, Math.max(0, stockPercent)),
   };
+}
+
+// ─── Invoice Parsing ─────────────────────────────────────────────────────────
+
+export interface ParsedInvoiceItem {
+  productName: string;
+  qtyIn: number;
+  skuId: string;
+}
+
+export interface EditableInvoiceItem {
+  id: number;
+  productName: string;
+  qtyIn: string;
+  skuId: string;
 }
 
 // ─── Orders ──────────────────────────────────────────────────────────────────
