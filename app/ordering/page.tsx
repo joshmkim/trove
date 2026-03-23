@@ -7,6 +7,7 @@ import OrderFilters from "@/components/ordering/OrderFilters";
 import OrdersTable from "@/components/ordering/OrdersTable";
 import TabBar from "@/components/ui/TabBar";
 import Button from "@/components/ui/Button";
+import RecommendedOrders from "@/components/ordering/RecommendedOrders";
 import { supabase } from "@/lib/supabase";
 import { orderRowToOrder, type Order, type OrderRow } from "@/lib/types";
 
@@ -84,6 +85,8 @@ export default function OrderingPage() {
       ) : (
         <OrdersTable orders={filteredOrders} />
       )}
+
+      <RecommendedOrders />
     </div>
   );
 }

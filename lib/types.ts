@@ -91,6 +91,58 @@ export interface OrderRow {
   created_at: string;
 }
 
+// ─── Demand Forecasts ────────────────────────────────────────────────────────
+
+export interface DemandForecast {
+  id: string;
+  ingredientName: string;
+  forecastDate: string;
+  predictedDemand: number;
+  currentStock: number;
+  safetyStock: number;
+  recommendedOrder: number;
+  unit: string;
+  confidenceScore: number | null;
+}
+
+export interface DemandForecastRow {
+  id: string;
+  ingredient_name: string;
+  forecast_date: string;
+  predicted_demand: number;
+  current_stock: number | null;
+  safety_stock: number | null;
+  recommended_order: number | null;
+  unit: string;
+  confidence_score: number | null;
+  created_at: string;
+}
+
+export function forecastRowToForecast(row: DemandForecastRow): DemandForecast {
+  return {
+    id: row.id,
+    ingredientName: row.ingredient_name,
+    forecastDate: row.forecast_date,
+    predictedDemand: row.predicted_demand,
+    currentStock: row.current_stock ?? 0,
+    safetyStock: row.safety_stock ?? 0,
+    recommendedOrder: row.recommended_order ?? 0,
+    unit: row.unit,
+    confidenceScore: row.confidence_score,
+  };
+}
+
+export function forecastStatus(
+  forecast: DemandForecast
+): "critical" | "tight" | "ok" {
+  const remaining = forecast.currentStock - forecast.predictedDemand;
+  if (remaining < 0) return "critical";
+  if (remaining < forecast.safetyStock) return "tight";
+  return "ok";
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 export function orderRowToOrder(row: OrderRow): Order {
   const itemCount = Array.isArray(row.items) ? row.items.length : 0;
   const badge = itemCount > 0 ? String(itemCount) : "—";
