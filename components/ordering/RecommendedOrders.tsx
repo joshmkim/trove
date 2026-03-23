@@ -27,22 +27,6 @@ function StatusBadge({ forecast }: { forecast: DemandForecast }) {
   );
 }
 
-// ── Confidence bar ────────────────────────────────────────────────────────────
-function ConfidenceBar({ score }: { score: number | null }) {
-  if (score === null) return <span className="text-xs text-warm-gray">—</span>;
-  const pct = Math.round(score * 100);
-  return (
-    <div className="flex items-center gap-2">
-      <div className="w-16 h-1.5 bg-light-gray rounded-full overflow-hidden">
-        <div
-          className="h-full bg-lavender rounded-full"
-          style={{ width: `${pct}%` }}
-        />
-      </div>
-      <span className="text-xs text-warm-gray">{pct}%</span>
-    </div>
-  );
-}
 
 // ── Main component ────────────────────────────────────────────────────────────
 export default function RecommendedOrders() {
@@ -105,8 +89,6 @@ export default function RecommendedOrders() {
     }
   };
 
-  const confidenceScore = forecasts[0]?.confidenceScore ?? null;
-
   return (
     <section className="mx-6 my-6 border border-light-gray rounded-sm">
       {/* Header */}
@@ -115,12 +97,6 @@ export default function RecommendedOrders() {
           <h2 className="text-base font-semibold text-charcoal">
             Recommended Orders
           </h2>
-          {confidenceScore !== null && (
-            <div className="flex items-center gap-1.5">
-              <span className="text-xs text-warm-gray">Model accuracy</span>
-              <ConfidenceBar score={confidenceScore} />
-            </div>
-          )}
         </div>
         <div className="flex items-center gap-3">
           {lastUpdated && (

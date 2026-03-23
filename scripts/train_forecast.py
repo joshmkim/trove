@@ -16,7 +16,7 @@ Requirements:
 import sys
 import os
 from pathlib import Path
-from datetime import timedelta
+from datetime import timedelta, datetime, timezone
 
 import numpy as np
 import pandas as pd
@@ -28,6 +28,7 @@ from supabase import create_client
 FORECAST_HORIZON = 7    # days to predict forward
 SAFETY_FACTOR    = 1.5  # multiplier on demand std-dev for safety stock
 TRAIN_CUTOFF     = "2023-06-01"  # time-based split: train < cutoff, test >= cutoff
+STORE_LOCATION   = "Hell's Kitchen"  # options: "Astoria", "Hell's Kitchen", "Lower Manhattan"
 
 # ── Load env ──────────────────────────────────────────────────────────────────
 ROOT = Path(__file__).parent.parent
@@ -60,12 +61,15 @@ def fetch_all(table: str, select: str = "*") -> list[dict]:
 # ─────────────────────────────────────────────────────────────────────────────
 # Step A — Load & aggregate to daily sales per product
 # ─────────────────────────────────────────────────────────────────────────────
-print("Loading sales_history …", flush=True)
-raw = fetch_all("sales_history", "transaction_date,product_type,transaction_qty")
+print(f"Loading sales_history for store: {STORE_LOCATION} …", flush=True)
+raw = fetch_all("sales_history", "transaction_date,product_type,transaction_qty,store_location")
 if not raw:
     sys.exit("ERROR: sales_history is empty — run seed_sales_history.py first.")
 
 sales = pd.DataFrame(raw)
+sales = sales[sales["store_location"] == STORE_LOCATION]
+if sales.empty:
+    sys.exit(f"ERROR: no sales found for store_location='{STORE_LOCATION}'")
 sales["transaction_date"] = pd.to_datetime(sales["transaction_date"])
 
 daily = (
@@ -151,7 +155,7 @@ naive_mae  = float(np.mean(np.abs(
 )))
 skill_score      = max(0.0, 1 - mae / naive_mae) if naive_mae > 0 else 0.5
 confidence_score = round(skill_score, 4)
-print(f"  MAE={mae:.2f}  skill_score={confidence_score:.4f}", flush=True)
+print(f"  MAE={mae:.2f}  RMSE={np.sqrt(np.mean((test_pred - test['qty'].values)**2)):.2f}  skill_score={confidence_score:.4f}", flush=True)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -297,6 +301,7 @@ ingr_demand["recommended_order_pu"] = (
 # ─────────────────────────────────────────────────────────────────────────────
 print("Writing to demand_forecasts …", flush=True)
 forecast_date = (last_date + timedelta(days=1)).date().isoformat()
+retrained_at  = datetime.now(timezone.utc).isoformat()
 
 upsert_rows = [
     {
@@ -306,8 +311,9 @@ upsert_rows = [
         "current_stock":     float(row["current_stock_pu"]),
         "safety_stock":      float(row["safety_stock_pu"]),
         "recommended_order": float(row["recommended_order_pu"]),
-        "unit":              row["purchase_unit"],   # e.g. "carton", "bag", "tray"
+        "unit":              row["purchase_unit"],
         "confidence_score":  confidence_score,
+        "created_at":        retrained_at,   # overwrite on every upsert so UI timestamp refreshes
     }
     for _, row in ingr_demand.iterrows()
 ]
