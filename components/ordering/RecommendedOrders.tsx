@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Button from "@/components/ui/Button";
 import { supabase } from "@/lib/supabase";
 import {
@@ -33,8 +33,10 @@ export default function RecommendedOrders() {
   const [forecasts, setForecasts] = useState<DemandForecast[]>([]);
   const [loading,   setLoading]   = useState(true);
   const [retraining, setRetraining] = useState(false);
+  const [seeding,   setSeeding]   = useState(false);
   const [error,     setError]     = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const fetchForecasts = useCallback(async () => {
     setLoading(true);
@@ -74,6 +76,27 @@ export default function RecommendedOrders() {
     fetchForecasts();
   }, [fetchForecasts]);
 
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    // Reset so the same file can be re-uploaded if needed
+    e.target.value = "";
+
+    setSeeding(true);
+    setError(null);
+    try {
+      const form = new FormData();
+      form.append("file", file);
+      const res = await fetch("/api/seed", { method: "POST", body: form });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.message ?? "Upload failed");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Unknown error");
+    } finally {
+      setSeeding(false);
+    }
+  };
+
   const handleRetrain = async () => {
     setRetraining(true);
     setError(null);
@@ -104,10 +127,25 @@ export default function RecommendedOrders() {
               Updated {lastUpdated}
             </span>
           )}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".csv"
+            className="hidden"
+            onChange={handleUpload}
+          />
+          <Button
+            variant="outline"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={seeding || retraining}
+            className="text-xs"
+          >
+            {seeding ? "Uploading…" : "Upload CSV"}
+          </Button>
           <Button
             variant="outline"
             onClick={handleRetrain}
-            disabled={retraining}
+            disabled={retraining || seeding}
             className="text-xs"
           >
             {retraining ? "Retraining…" : "Retrain Model"}

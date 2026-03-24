@@ -73,7 +73,7 @@ export interface Order {
   channel: string;
   location: string;
   orderDate: string; // formatted for display
-  status: "active" | "scheduled" | "completed" | "cancelled";
+  status: "pending" | "accepted" | "completed" | "cancelled";
 }
 
 /** Raw row returned by Supabase for the `orders` table. */
@@ -86,7 +86,7 @@ export interface OrderRow {
   channel: string;
   location: string;
   order_date: string;
-  status: "active" | "scheduled" | "completed" | "cancelled";
+  status: "pending" | "accepted" | "completed" | "cancelled";
   payment_status: string;
   created_at: string;
 }

@@ -2,16 +2,23 @@
 
 import { useState, useEffect } from "react";
 import PageHeader from "@/components/layout/PageHeader";
-import PendingOrderRequests from "@/components/ordering/PendingOrderRequests";
 import OrderFilters from "@/components/ordering/OrderFilters";
 import OrdersTable from "@/components/ordering/OrdersTable";
 import TabBar from "@/components/ui/TabBar";
 import Button from "@/components/ui/Button";
 import RecommendedOrders from "@/components/ordering/RecommendedOrders";
+import CreateOrderModal from "@/components/ordering/CreateOrderModal";
 import { supabase } from "@/lib/supabase";
-import { orderRowToOrder, type Order, type OrderRow } from "@/lib/types";
+import {
+  orderRowToOrder,
+  forecastRowToForecast,
+  type Order,
+  type OrderRow,
+  type DemandForecast,
+  type DemandForecastRow,
+} from "@/lib/types";
 
-const TABS = ["All", "Active", "Scheduled", "Completed", "Cancelled"];
+const TABS = ["All", "Pending", "Accepted", "Completed", "Cancelled"];
 
 const mockOrders: Order[] = [
   {
@@ -23,7 +30,7 @@ const mockOrders: Order[] = [
     channel: "Online",
     location: "Jakarta Selatan",
     orderDate: "Jan 2, 2025",
-    status: "scheduled",
+    status: "pending",
   },
   {
     id: "mock-2",
@@ -34,14 +41,16 @@ const mockOrders: Order[] = [
     channel: "In-store",
     location: "Jakarta Pusat",
     orderDate: "Jan 1, 2025",
-    status: "active",
+    status: "accepted",
   },
 ];
 
 export default function OrderingPage() {
-  const [activeTab, setActiveTab] = useState("Scheduled");
+  const [activeTab, setActiveTab] = useState("All");
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const [forecasts, setForecasts] = useState<DemandForecast[]>([]);
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     async function fetchOrders() {
@@ -60,6 +69,20 @@ export default function OrderingPage() {
     fetchOrders();
   }, []);
 
+  useEffect(() => {
+    async function fetchForecasts() {
+      const { data, error } = await supabase
+        .from("demand_forecasts")
+        .select("*")
+        .order("recommended_order", { ascending: false });
+
+      if (!error && data && data.length > 0) {
+        setForecasts((data as DemandForecastRow[]).map(forecastRowToForecast));
+      }
+    }
+    fetchForecasts();
+  }, []);
+
   const filteredOrders =
     activeTab === "All"
       ? orders
@@ -69,12 +92,19 @@ export default function OrderingPage() {
     <div>
       <PageHeader
         title="Ordering"
-        actionButton={<Button variant="primary">Create Order</Button>}
+        actionButton={
+          <Button variant="primary" onClick={() => setModalOpen(true)}>
+            Create Order
+          </Button>
+        }
       />
 
-      <PendingOrderRequests />
+      <RecommendedOrders />
 
-      <div className="px-6 pt-4">
+      <hr className="border-light-gray mx-6" />
+
+      <div className="px-6 pt-6">
+        <h2 className="text-[20px] font-semibold text-charcoal mb-4">Order History</h2>
         <TabBar tabs={TABS} activeTab={activeTab} onTabChange={setActiveTab} />
       </div>
 
@@ -86,7 +116,11 @@ export default function OrderingPage() {
         <OrdersTable orders={filteredOrders} />
       )}
 
-      <RecommendedOrders />
+      <CreateOrderModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        forecasts={forecasts}
+      />
     </div>
   );
 }
