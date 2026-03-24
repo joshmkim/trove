@@ -95,6 +95,83 @@ export interface OrderRow {
   created_at: string;
 }
 
+// ─── Purchase Orders (orders + order_items join) ─────────────────────────────
+
+export interface PurchaseOrderItem {
+  id: string;
+  itemName: string;
+  quantity: number;
+  unit: string;
+  vendorId: string | null;
+  vendorName: string | null;
+  vendorPhone: string | null;
+  smsSent: boolean;
+  smsSentAt: string | null;
+}
+
+export interface PurchaseOrder {
+  id: string;
+  status: "pending" | "accepted" | "completed" | "cancelled";
+  deliveryBy: string | null;
+  totalVendors: number;
+  notes: string | null;
+  orderDate: string;
+  createdAt: string;
+  items: PurchaseOrderItem[];
+}
+
+/** Raw order_items row as returned by Supabase. */
+export interface PurchaseOrderItemRow {
+  id: string;
+  order_id: string;
+  item_name: string;
+  quantity: number;
+  unit: string;
+  vendor_id: string | null;
+  vendor_name: string | null;
+  vendor_phone: string | null;
+  sms_sent: boolean;
+  sms_sent_at: string | null;
+  created_at: string;
+}
+
+/** Raw orders row with nested order_items (select "*, order_items(*)"). */
+export interface PurchaseOrderRow {
+  id: string;
+  status: "pending" | "accepted" | "completed" | "cancelled";
+  delivery_by: string | null;
+  total_vendors: number;
+  notes: string | null;
+  payment_status: string | null;
+  order_date: string;
+  created_at: string;
+  updated_at: string;
+  order_items: PurchaseOrderItemRow[];
+}
+
+export function orderRowToPurchaseOrder(row: PurchaseOrderRow): PurchaseOrder {
+  return {
+    id: row.id,
+    status: row.status,
+    deliveryBy: row.delivery_by,
+    totalVendors: row.total_vendors,
+    notes: row.notes,
+    orderDate: row.order_date,
+    createdAt: row.created_at,
+    items: (row.order_items ?? []).map((i) => ({
+      id: i.id,
+      itemName: i.item_name,
+      quantity: i.quantity,
+      unit: i.unit,
+      vendorId: i.vendor_id,
+      vendorName: i.vendor_name,
+      vendorPhone: i.vendor_phone,
+      smsSent: i.sms_sent,
+      smsSentAt: i.sms_sent_at,
+    })),
+  };
+}
+
 // ─── Demand Forecasts ────────────────────────────────────────────────────────
 
 export interface DemandForecast {

@@ -1,51 +1,42 @@
-import Badge from "@/components/ui/Badge";
-import type { Order } from "@/lib/types";
+"use client";
+
+import type { PurchaseOrder } from "@/lib/types";
 
 interface OrdersTableProps {
-  orders: Order[];
+  orders: PurchaseOrder[];
+  onViewOrder: (orderId: string) => void;
+}
+
+const STATUS_CONFIG = {
+  pending:   { label: "Pending",   className: "bg-amber-100 text-amber-700" },
+  accepted:  { label: "Accepted",  className: "bg-blue-100 text-blue-700" },
+  completed: { label: "Completed", className: "bg-green-100 text-green-700" },
+  cancelled: { label: "Cancelled", className: "bg-red-100 text-red-600" },
+};
+
+function fmtDate(iso: string | null): string {
+  if (!iso) return "—";
+  return new Date(iso).toLocaleDateString("en-US", {
+    month: "short", day: "numeric", year: "numeric",
+  });
+}
+
+function shortId(id: string): string {
+  return "ORD-" + id.slice(0, 8).toUpperCase();
 }
 
 const headers = [
-  { label: "Customer" },
-  { label: "Order source" },
-  { label: "Type" },
-  { label: "Items" },
-  { label: "Channel" },
-  { label: "Location" },
-  { label: "Order date", sortable: true },
+  "Order #",
+  "Vendors",
+  "Delivery By",
+  "Status",
+  "Created",
+  "",
 ];
 
-function SortIcon() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="inline-block ml-1 w-3 h-3 text-warm-gray"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      strokeWidth={2.5}
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-    </svg>
-  );
-}
-
-export default function OrdersTable({ orders }: OrdersTableProps) {
+export default function OrdersTable({ orders, onViewOrder }: OrdersTableProps) {
   return (
     <div>
-      {/* Table meta row */}
-      <div className="flex items-center justify-between px-6 py-2.5 border-b border-light-gray">
-        <span className="text-xs text-warm-gray">
-          Last updated: Jan 2, 2025 7:09 am WIB
-        </span>
-        <button
-          type="button"
-          className="text-xs text-navy underline underline-offset-2 hover:opacity-75 transition-opacity"
-        >
-          Edit orders
-        </button>
-      </div>
-
       {/* Table */}
       <div className="overflow-x-auto">
         <table className="w-full border-collapse">
@@ -53,11 +44,10 @@ export default function OrdersTable({ orders }: OrdersTableProps) {
             <tr className="border-b border-light-gray">
               {headers.map((h) => (
                 <th
-                  key={h.label}
+                  key={h}
                   className="py-2.5 px-4 text-left text-[13px] font-medium text-warm-gray whitespace-nowrap"
                 >
-                  {h.label}
-                  {h.sortable && <SortIcon />}
+                  {h}
                 </th>
               ))}
             </tr>
@@ -65,29 +55,62 @@ export default function OrdersTable({ orders }: OrdersTableProps) {
           <tbody>
             {orders.length === 0 ? (
               <tr>
-                <td colSpan={7} className="py-12 text-center text-sm text-warm-gray">
-                  No orders found.
+                <td colSpan={6} className="py-12 text-center text-sm text-warm-gray">
+                  No orders yet — click &ldquo;Create Order&rdquo; to place one.
                 </td>
               </tr>
             ) : (
-              orders.map((order) => (
-                <tr
-                  key={order.id}
-                  className="border-b border-light-gray last:border-0 hover:bg-cream/40 transition-colors"
-                >
-                  <td className="py-3 px-4 text-sm font-medium text-charcoal">
-                    {order.customer}
-                  </td>
-                  <td className="py-3 px-4 text-sm text-charcoal">{order.orderSource}</td>
-                  <td className="py-3 px-4 text-sm text-charcoal">{order.type}</td>
-                  <td className="py-3 px-4">
-                    <Badge label={order.items} color="lavender" />
-                  </td>
-                  <td className="py-3 px-4 text-sm text-charcoal">{order.channel}</td>
-                  <td className="py-3 px-4 text-sm text-charcoal">{order.location}</td>
-                  <td className="py-3 px-4 text-sm text-warm-gray">{order.orderDate}</td>
-                </tr>
-              ))
+              orders.map((order) => {
+                const vendorNames = [
+                  ...new Set(
+                    order.items
+                      .map((i) => i.vendorName)
+                      .filter((n): n is string => !!n)
+                  ),
+                ];
+                const vendorsDisplay =
+                  vendorNames.length > 0
+                    ? vendorNames.join(", ")
+                    : order.totalVendors > 0
+                    ? `${order.totalVendors} vendor${order.totalVendors !== 1 ? "s" : ""}`
+                    : "—";
+
+                const cfg = STATUS_CONFIG[order.status];
+
+                return (
+                  <tr
+                    key={order.id}
+                    className="border-b border-light-gray last:border-0 hover:bg-cream/40 transition-colors"
+                  >
+                    <td className="py-3 px-4 text-sm font-medium text-charcoal whitespace-nowrap">
+                      {shortId(order.id)}
+                    </td>
+                    <td className="py-3 px-4 text-sm text-charcoal max-w-[200px] truncate">
+                      {vendorsDisplay}
+                    </td>
+                    <td className="py-3 px-4 text-sm text-charcoal whitespace-nowrap">
+                      {fmtDate(order.deliveryBy)}
+                    </td>
+                    <td className="py-3 px-4">
+                      <span className={`inline-flex px-2 py-0.5 rounded text-xs font-medium ${cfg.className}`}>
+                        {cfg.label}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4 text-sm text-warm-gray whitespace-nowrap">
+                      {fmtDate(order.createdAt)}
+                    </td>
+                    <td className="py-3 px-4">
+                      <button
+                        type="button"
+                        onClick={() => onViewOrder(order.id)}
+                        className="px-3 py-1.5 text-xs font-medium border border-light-gray rounded-lg text-charcoal hover:bg-cream transition-colors whitespace-nowrap"
+                      >
+                        View details
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })
             )}
           </tbody>
         </table>

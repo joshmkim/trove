@@ -1,78 +1,56 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import PageHeader from "@/components/layout/PageHeader";
 import OrderFilters from "@/components/ordering/OrderFilters";
 import OrdersTable from "@/components/ordering/OrdersTable";
+import OrderDetailModal from "@/components/ordering/OrderDetailModal";
 import TabBar from "@/components/ui/TabBar";
 import Button from "@/components/ui/Button";
 import RecommendedOrders from "@/components/ordering/RecommendedOrders";
 import CreateOrderModal from "@/components/ordering/CreateOrderModal";
 import { supabase } from "@/lib/supabase";
 import {
-  orderRowToOrder,
+  orderRowToPurchaseOrder,
   forecastRowToForecast,
-  type Order,
-  type OrderRow,
+  type PurchaseOrder,
+  type PurchaseOrderRow,
   type DemandForecast,
   type DemandForecastRow,
 } from "@/lib/types";
 
 const TABS = ["All", "Pending", "Accepted", "Completed", "Cancelled"];
 
-const mockOrders: Order[] = [
-  {
-    id: "mock-1",
-    customer: "Alex Smith",
-    orderSource: "Direct",
-    type: "Standard",
-    items: "—",
-    channel: "Online",
-    location: "Jakarta Selatan",
-    orderDate: "Jan 2, 2025",
-    deliveryBy: null,
-    totalVendors: 1,
-    status: "pending",
-  },
-  {
-    id: "mock-2",
-    customer: "ORDER#01",
-    orderSource: "Marketplace",
-    type: "Bulk",
-    items: "—",
-    channel: "In-store",
-    location: "Jakarta Pusat",
-    orderDate: "Jan 1, 2025",
-    deliveryBy: null,
-    totalVendors: 2,
-    status: "accepted",
-  },
-];
-
 export default function OrderingPage() {
-  const [activeTab, setActiveTab] = useState("All");
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [forecasts, setForecasts] = useState<DemandForecast[]>([]);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [activeTab, setActiveTab]             = useState("All");
+  const [orders, setOrders]                   = useState<PurchaseOrder[]>([]);
+  const [loading, setLoading]                 = useState(true);
+  const [forecasts, setForecasts]             = useState<DemandForecast[]>([]);
+  const [createOpen, setCreateOpen]           = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+  const [vendorQuery, setVendorQuery]         = useState("");
+  const [fromDate, setFromDate]               = useState("");
 
-  useEffect(() => {
-    async function fetchOrders() {
-      const { data, error } = await supabase
-        .from("orders")
-        .select("*")
-        .order("order_date", { ascending: false });
+  const selectedOrder = orders.find((o) => o.id === selectedOrderId) ?? null;
 
-      if (error || !data || data.length === 0) {
-        setOrders(mockOrders);
-      } else {
-        setOrders((data as OrderRow[]).map(orderRowToOrder));
-      }
-      setLoading(false);
+  // ── Fetch orders (with items join) ──────────────────────────────────────────
+  const fetchOrders = useCallback(async () => {
+    const { data, error } = await supabase
+      .from("orders")
+      .select("*, order_items(*)")
+      .order("order_date", { ascending: false });
+
+    if (!error && data) {
+      setOrders((data as PurchaseOrderRow[]).map(orderRowToPurchaseOrder));
+    } else {
+      setOrders([]);
     }
-    fetchOrders();
+    setLoading(false);
   }, []);
 
+  useEffect(() => { fetchOrders(); }, [fetchOrders]);
+
+  // ── Fetch forecasts for Create Order modal ──────────────────────────────────
   useEffect(() => {
     async function fetchForecasts() {
       const { data, error } = await supabase
@@ -87,17 +65,55 @@ export default function OrderingPage() {
     fetchForecasts();
   }, []);
 
-  const filteredOrders =
-    activeTab === "All"
-      ? orders
-      : orders.filter((o) => o.status === activeTab.toLowerCase());
+  // ── Status change + stock update ─────────────────────────────────────────────
+  async function handleStatusChange(orderId: string, newStatus: string) {
+    // Update order status
+    await supabase.from("orders").update({ status: newStatus }).eq("id", orderId);
+
+    // On accepted: increment current_stock for each matched ingredient
+    if (newStatus === "accepted") {
+      const order = orders.find((o) => o.id === orderId);
+      if (order) {
+        for (const item of order.items) {
+          const { data: ing } = await supabase
+            .from("ingredients")
+            .select("current_stock")
+            .eq("name", item.itemName)
+            .single();
+
+          if (ing) {
+            await supabase
+              .from("ingredients")
+              .update({ current_stock: Number(ing.current_stock) + item.quantity })
+              .eq("name", item.itemName);
+          }
+        }
+      }
+    }
+
+    await fetchOrders();
+    setSelectedOrderId(null);
+  }
+
+  // ── Filter logic ─────────────────────────────────────────────────────────────
+  const filteredOrders = orders
+    .filter((o) => activeTab === "All" || o.status === activeTab.toLowerCase())
+    .filter((o) => {
+      if (!vendorQuery.trim()) return true;
+      const q = vendorQuery.toLowerCase();
+      return o.items.some((i) => i.vendorName?.toLowerCase().includes(q));
+    })
+    .filter((o) => {
+      if (!fromDate) return true;
+      return new Date(o.createdAt) >= new Date(fromDate);
+    });
 
   return (
     <div>
       <PageHeader
         title="Ordering"
         actionButton={
-          <Button variant="primary" onClick={() => setModalOpen(true)}>
+          <Button variant="primary" onClick={() => setCreateOpen(true)}>
             Create Order
           </Button>
         }
@@ -105,25 +121,41 @@ export default function OrderingPage() {
 
       <RecommendedOrders />
 
-      <hr className="border-light-gray mx-6" />
+      <div className="mx-6 my-6 border border-light-gray rounded-sm">
+        <div className="px-5 pt-5 pb-4">
+          <h2 className="text-base font-semibold text-charcoal mb-4">Order History</h2>
+          <TabBar tabs={TABS} activeTab={activeTab} onTabChange={setActiveTab} />
+        </div>
 
-      <div className="px-6 pt-6">
-        <h2 className="text-[20px] font-semibold text-charcoal mb-4">Order History</h2>
-        <TabBar tabs={TABS} activeTab={activeTab} onTabChange={setActiveTab} />
+        <OrderFilters
+          vendorQuery={vendorQuery}
+          onVendorChange={setVendorQuery}
+          fromDate={fromDate}
+          onFromDateChange={setFromDate}
+          count={filteredOrders.length}
+        />
+
+        {loading ? (
+          <div className="py-12 text-center text-sm text-warm-gray">Loading…</div>
+        ) : (
+          <OrdersTable
+            orders={filteredOrders}
+            onViewOrder={(id) => setSelectedOrderId(id)}
+          />
+        )}
       </div>
 
-      <OrderFilters />
-
-      {loading ? (
-        <div className="py-12 text-center text-sm text-warm-gray">Loading…</div>
-      ) : (
-        <OrdersTable orders={filteredOrders} />
-      )}
-
       <CreateOrderModal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
+        open={createOpen}
+        onClose={() => { setCreateOpen(false); fetchOrders(); }}
         forecasts={forecasts}
+      />
+
+      <OrderDetailModal
+        open={selectedOrderId !== null}
+        onClose={() => setSelectedOrderId(null)}
+        order={selectedOrder}
+        onStatusChange={handleStatusChange}
       />
     </div>
   );
