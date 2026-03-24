@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 const navLinks = [
   { href: "/inventory", label: "Inventory" },
   { href: "/ordering", label: "Ordering" },
+  { href: "/network-intelligence", label: "Network Intelligence" },
 ];
 
 interface SidebarProps {
