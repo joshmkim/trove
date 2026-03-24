@@ -33,6 +33,8 @@ export default function CreateOrderModal({ open, onClose, forecasts }: CreateOrd
   const [customItems, setCustomItems] = useState<CustomItem[]>([]);
   const [vendorAssignments, setVendorAssignments] = useState<Record<string, string>>({});
   const [deliveryDate, setDeliveryDate] = useState("");
+  const [placing, setPlacing] = useState(false);
+  const [placeError, setPlaceError] = useState<string | null>(null);
 
   // Close on Escape
   useEffect(() => {
@@ -51,7 +53,46 @@ export default function CreateOrderModal({ open, onClose, forecasts }: CreateOrd
     setCustomItems([]);
     setVendorAssignments({});
     setDeliveryDate("");
+    setPlacing(false);
+    setPlaceError(null);
     onClose();
+  }
+
+  async function handlePlaceOrder() {
+    setPlacing(true);
+    setPlaceError(null);
+    try {
+      const payload = {
+        deliveryBy: deliveryDate,
+        items: orderItems.map((item) => {
+          const vendorId = vendorAssignments[item.key] ?? "";
+          const vendor = vendors.find((v) => v.id === vendorId);
+          return {
+            itemName: item.name,
+            quantity: Number(item.quantity) || 1,
+            unit: item.unit,
+            vendorId,
+            vendorName: vendor?.name ?? "",
+            vendorPhone: vendor?.phone ?? "",
+          };
+        }),
+      };
+
+      const res = await fetch("/api/orders/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error ?? "Failed to place order");
+
+      setStep(3);
+    } catch (e) {
+      setPlaceError(e instanceof Error ? e.message : "Unknown error");
+    } finally {
+      setPlacing(false);
+    }
   }
 
   function toggleForecast(id: string) {
@@ -128,17 +169,24 @@ export default function CreateOrderModal({ open, onClose, forecasts }: CreateOrd
         )}
 
         {step === 2 && (
-          <AssignVendorsStep
-            items={orderItems}
-            vendorAssignments={vendorAssignments}
-            onVendorChange={(key, vendorId) =>
-              setVendorAssignments((prev) => ({ ...prev, [key]: vendorId }))
-            }
-            deliveryDate={deliveryDate}
-            onDeliveryDateChange={setDeliveryDate}
-            onBack={() => setStep(1)}
-            onPlaceOrder={() => setStep(3)}
-          />
+          <>
+            {placeError && (
+              <div className="px-8 pt-6 pb-0">
+                <p className="text-sm text-red-500">{placeError}</p>
+              </div>
+            )}
+            <AssignVendorsStep
+              items={orderItems}
+              vendorAssignments={vendorAssignments}
+              onVendorChange={(key, vendorId) =>
+                setVendorAssignments((prev) => ({ ...prev, [key]: vendorId }))
+              }
+              deliveryDate={deliveryDate}
+              onDeliveryDateChange={setDeliveryDate}
+              onBack={() => setStep(1)}
+              onPlaceOrder={placing ? () => {} : handlePlaceOrder}
+            />
+          </>
         )}
 
         {step === 3 && (

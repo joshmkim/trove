@@ -69,10 +69,12 @@ export interface Order {
   customer: string;
   orderSource: string;
   type: string;
-  items: string; // badge label derived from items JSONB
+  items: string; // badge label — "—" when loaded from DB (requires separate join)
   channel: string;
   location: string;
   orderDate: string; // formatted for display
+  deliveryBy: string | null;
+  totalVendors: number;
   status: "pending" | "accepted" | "completed" | "cancelled";
 }
 
@@ -82,12 +84,14 @@ export interface OrderRow {
   customer: string;
   order_source: string;
   type: string;
-  items: { name: string; qty: number }[] | null;
   channel: string;
   location: string;
   order_date: string;
+  delivery_by: string | null;
+  total_vendors: number;
+  notes: string | null;
   status: "pending" | "accepted" | "completed" | "cancelled";
-  payment_status: string;
+  payment_status: string | null;
   created_at: string;
 }
 
@@ -144,8 +148,6 @@ export function forecastStatus(
 // ─────────────────────────────────────────────────────────────────────────────
 
 export function orderRowToOrder(row: OrderRow): Order {
-  const itemCount = Array.isArray(row.items) ? row.items.length : 0;
-  const badge = itemCount > 0 ? String(itemCount) : "—";
   const date = row.order_date
     ? new Date(row.order_date).toLocaleDateString("en-US", {
         month: "short",
@@ -158,10 +160,12 @@ export function orderRowToOrder(row: OrderRow): Order {
     customer: row.customer,
     orderSource: row.order_source,
     type: row.type,
-    items: badge,
+    items: "—",
     channel: row.channel,
     location: row.location,
     orderDate: date,
+    deliveryBy: row.delivery_by,
+    totalVendors: row.total_vendors,
     status: row.status,
   };
 }
