@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   LineChart,
   Line,
@@ -15,6 +15,11 @@ import {
 interface TrendSeries {
   keyword: string;
   data: { date: string; interest: number }[];
+}
+
+interface TrendsViewProps {
+  refreshTrigger: number;
+  onLastUpdated: (ts: string | null) => void;
 }
 
 // One color per keyword (cycles if more than 6)
@@ -52,7 +57,6 @@ function currentInterest(data: { interest: number }[]): number {
   return data.at(-1)?.interest ?? 0;
 }
 
-// Merge all series into a single array keyed by date for Recharts
 function mergeSeriesForChart(series: TrendSeries[]): Record<string, unknown>[] {
   const dateMap = new Map<string, Record<string, unknown>>();
   for (const s of series) {
@@ -66,26 +70,36 @@ function mergeSeriesForChart(series: TrendSeries[]): Record<string, unknown>[] {
   );
 }
 
-export default function TrendsView() {
-  const [series, setSeries]   = useState<TrendSeries[]>([]);
+export default function TrendsView({ refreshTrigger, onLastUpdated }: TrendsViewProps) {
+  const [series, setSeries] = useState<TrendSeries[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState<string | null>(null);
+  const [error, setError]   = useState<string | null>(null);
 
-  useEffect(() => {
-    async function fetchTrends() {
-      try {
-        const res = await fetch("/api/trends");
-        if (!res.ok) throw new Error("Failed to fetch trends");
-        const json = await res.json();
-        setSeries(json.trends ?? []);
-      } catch (e) {
-        setError(e instanceof Error ? e.message : "Unknown error");
-      } finally {
-        setLoading(false);
-      }
+  const fetchTrends = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/trends");
+      if (!res.ok) throw new Error("Failed to fetch trends");
+      const json = await res.json();
+      const trends: TrendSeries[] = json.trends ?? [];
+      setSeries(trends);
+      onLastUpdated(
+        trends.length > 0
+          ? new Date().toLocaleString("en-US", {
+              month: "short", day: "numeric", year: "numeric",
+              hour: "numeric", minute: "2-digit",
+            })
+          : null
+      );
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Unknown error");
+    } finally {
+      setLoading(false);
     }
-    fetchTrends();
-  }, []);
+  }, [onLastUpdated]);
+
+  useEffect(() => { fetchTrends(); }, [fetchTrends, refreshTrigger]);
 
   if (loading) {
     return (
@@ -98,117 +112,96 @@ export default function TrendsView() {
     );
   }
 
-  if (error) {
-    return (
-      <div className="px-5 py-8 text-sm text-red-600">{error}</div>
-    );
-  }
-
-  if (series.length === 0) {
-    return (
-      <div className="px-5 py-12 text-center text-sm text-warm-gray">
-        No trends data yet. Run{" "}
-        <code className="font-mono text-xs bg-cream px-1.5 py-0.5 rounded">
-          python scripts/fetch_trends.py
-        </code>{" "}
-        to populate.
-      </div>
-    );
-  }
-
-  const chartData = mergeSeriesForChart(series);
-
   return (
-    <div className="px-5 py-4 space-y-5">
-      {/* Line chart */}
-      <ResponsiveContainer width="100%" height={220}>
-        <LineChart data={chartData} margin={{ top: 4, right: 16, left: -16, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#C4C0BA" strokeOpacity={0.5} />
-          <XAxis
-            dataKey="date"
-            tickFormatter={fmtDate}
-            tick={{ fontSize: 11, fill: "#9E9589" }}
-            tickLine={false}
-            axisLine={false}
-            interval="preserveStartEnd"
-          />
-          <YAxis
-            domain={[0, 100]}
-            tick={{ fontSize: 11, fill: "#9E9589" }}
-            tickLine={false}
-            axisLine={false}
-          />
-          <Tooltip
-            formatter={(value) => [value, ""]}
-            labelFormatter={(label) => typeof label === "string" ? fmtDate(label) : label}
-            contentStyle={{
-              fontSize: 12,
-              borderColor: "#C4C0BA",
-              borderRadius: 4,
-              color: "#333333",
-            }}
-          />
-          <Legend
-            wrapperStyle={{ fontSize: 12, color: "#9E9589", paddingTop: 8 }}
-          />
-          {series.map((s, i) => (
-            <Line
-              key={s.keyword}
-              type="monotone"
-              dataKey={s.keyword}
-              stroke={LINE_COLORS[i % LINE_COLORS.length]}
-              strokeWidth={2}
-              dot={false}
-              activeDot={{ r: 4 }}
-            />
-          ))}
-        </LineChart>
-      </ResponsiveContainer>
+    <>
+      {error && (
+        <div className="px-5 py-3 bg-red-50 border-b border-red-200 text-sm text-red-700">
+          {error}
+        </div>
+      )}
 
-      {/* Summary table */}
-      <div className="overflow-x-auto rounded border border-light-gray">
-        <table className="w-full border-collapse text-sm">
-          <thead>
-            <tr className="border-b border-light-gray bg-cream/50">
-              {["Keyword", "Current Interest", "90-day Avg", "Trend"].map((h) => (
-                <th
-                  key={h}
-                  className="py-2 px-3 text-left text-[12px] font-medium text-warm-gray whitespace-nowrap"
-                >
-                  {h}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {series.map((s) => {
-              const dir = trendDirection(s.data);
-              const dirColor =
-                dir === "↑" ? "text-green-600" :
-                dir === "↓" ? "text-red-500"   : "text-warm-gray";
-              return (
-                <tr
+      {series.length === 0 ? (
+        <div className="px-5 py-12 text-center text-sm text-warm-gray">
+          No trends data yet — click &ldquo;Refresh Trends&rdquo; to fetch from Google.
+        </div>
+      ) : (
+        <div className="px-5 py-4 space-y-5">
+          <ResponsiveContainer width="100%" height={220}>
+            <LineChart data={mergeSeriesForChart(series)} margin={{ top: 4, right: 16, left: -16, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#C4C0BA" strokeOpacity={0.5} />
+              <XAxis
+                dataKey="date"
+                tickFormatter={fmtDate}
+                tick={{ fontSize: 11, fill: "#9E9589" }}
+                tickLine={false}
+                axisLine={false}
+                interval="preserveStartEnd"
+              />
+              <YAxis
+                domain={[0, 100]}
+                tick={{ fontSize: 11, fill: "#9E9589" }}
+                tickLine={false}
+                axisLine={false}
+              />
+              <Tooltip
+                formatter={(value) => [value, ""]}
+                labelFormatter={(label) => typeof label === "string" ? fmtDate(label) : label}
+                contentStyle={{
+                  fontSize: 12,
+                  borderColor: "#C4C0BA",
+                  borderRadius: 4,
+                  color: "#333333",
+                }}
+              />
+              <Legend wrapperStyle={{ fontSize: 12, color: "#9E9589", paddingTop: 8 }} />
+              {series.map((s, i) => (
+                <Line
                   key={s.keyword}
-                  className="border-b border-light-gray last:border-0"
-                >
-                  <td className="py-2.5 px-3 font-medium text-charcoal capitalize">
-                    {s.keyword}
-                  </td>
-                  <td className="py-2.5 px-3 text-charcoal">
-                    {currentInterest(s.data)}
-                  </td>
-                  <td className="py-2.5 px-3 text-charcoal">
-                    {avg(s.data)}
-                  </td>
-                  <td className={`py-2.5 px-3 font-semibold text-base ${dirColor}`}>
-                    {dir}
-                  </td>
+                  type="monotone"
+                  dataKey={s.keyword}
+                  stroke={LINE_COLORS[i % LINE_COLORS.length]}
+                  strokeWidth={2}
+                  dot={false}
+                  activeDot={{ r: 4 }}
+                />
+              ))}
+            </LineChart>
+          </ResponsiveContainer>
+
+          <div className="overflow-x-auto rounded border border-light-gray">
+            <table className="w-full border-collapse text-sm">
+              <thead>
+                <tr className="border-b border-light-gray bg-cream/50">
+                  {["Keyword", "Current Interest", "90-day Avg", "Trend"].map((h) => (
+                    <th
+                      key={h}
+                      className="py-2 px-3 text-left text-[12px] font-medium text-warm-gray whitespace-nowrap"
+                    >
+                      {h}
+                    </th>
+                  ))}
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-    </div>
+              </thead>
+              <tbody>
+                {series.map((s) => {
+                  const dir = trendDirection(s.data);
+                  const dirColor =
+                    dir === "↑" ? "text-green-600" :
+                    dir === "↓" ? "text-red-500"   : "text-warm-gray";
+                  return (
+                    <tr key={s.keyword} className="border-b border-light-gray last:border-0">
+                      <td className="py-2.5 px-3 font-medium text-charcoal capitalize">{s.keyword}</td>
+                      <td className="py-2.5 px-3 text-charcoal">{currentInterest(s.data)}</td>
+                      <td className="py-2.5 px-3 text-charcoal">{avg(s.data)}</td>
+                      <td className={`py-2.5 px-3 font-semibold text-base ${dirColor}`}>{dir}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

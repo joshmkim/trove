@@ -40,7 +40,24 @@ export default function RecommendedOrders() {
   const [seeding,   setSeeding]   = useState(false);
   const [error,     setError]     = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
+  const [refreshingTrends, setRefreshingTrends] = useState(false);
+  const [trendsLastUpdated, setTrendsLastUpdated] = useState<string | null>(null);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  async function handleRefreshTrends() {
+    setRefreshingTrends(true);
+    try {
+      const res = await fetch("/api/trends/refresh", { method: "POST" });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.message ?? "Refresh failed");
+      setRefreshTrigger((n) => n + 1);
+    } catch {
+      // error will surface inside TrendsView
+    } finally {
+      setRefreshingTrends(false);
+    }
+  }
 
   const fetchForecasts = useCallback(async () => {
     setLoading(true);
@@ -121,8 +138,8 @@ export default function RecommendedOrders() {
       {/* Title row */}
       <div className="flex items-center justify-between px-5 pt-4 pb-3">
         <h2 className="text-base font-semibold text-charcoal">Recommended Orders</h2>
-        {/* Actions — only shown on Forecasts tab */}
-        {activeTab === "Forecasts" && (
+        {/* Actions — swap based on active tab */}
+        {activeTab === "Forecasts" ? (
           <div className="flex items-center gap-3">
             {lastUpdated && (
               <span className="text-xs text-warm-gray">Updated {lastUpdated}</span>
@@ -151,6 +168,20 @@ export default function RecommendedOrders() {
               {retraining ? "Retraining…" : "Retrain Model"}
             </Button>
           </div>
+        ) : (
+          <div className="flex items-center gap-3">
+            {trendsLastUpdated && (
+              <span className="text-xs text-warm-gray">Updated {trendsLastUpdated}</span>
+            )}
+            <Button
+              variant="outline"
+              onClick={handleRefreshTrends}
+              disabled={refreshingTrends}
+              className="text-xs"
+            >
+              {refreshingTrends ? "Refreshing…" : "Refresh Trends"}
+            </Button>
+          </div>
         )}
       </div>
 
@@ -176,7 +207,12 @@ export default function RecommendedOrders() {
       </div>
 
       {/* Trends tab content */}
-      {activeTab === "Trends" && <TrendsView />}
+      {activeTab === "Trends" && (
+        <TrendsView
+          refreshTrigger={refreshTrigger}
+          onLastUpdated={setTrendsLastUpdated}
+        />
+      )}
 
       {/* Forecasts tab content */}
       {activeTab === "Forecasts" && (
