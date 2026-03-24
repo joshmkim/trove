@@ -22,9 +22,9 @@ export default function InventoryTable({ items }: InventoryTableProps) {
       <table className="w-full border-collapse">
         <thead>
           <tr className="border-b border-light-gray">
-            {headers.map((h) => (
+            {headers.map((h, i) => (
               <th
-                key={h.label}
+                key={`${h.label}-${i}`}
                 className={`py-2.5 px-4 text-left text-[13px] font-medium text-warm-gray ${h.className}`}
               >
                 {h.label}
