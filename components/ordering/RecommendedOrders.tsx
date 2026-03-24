@@ -51,6 +51,12 @@ export default function RecommendedOrders() {
       const res = await fetch("/api/trends/refresh", { method: "POST" });
       const json = await res.json();
       if (!res.ok) throw new Error(json.message ?? "Refresh failed");
+      setTrendsLastUpdated(
+        new Date().toLocaleString("en-US", {
+          month: "short", day: "numeric", year: "numeric",
+          hour: "numeric", minute: "2-digit",
+        })
+      );
       setRefreshTrigger((n) => n + 1);
     } catch {
       // error will surface inside TrendsView
@@ -208,10 +214,7 @@ export default function RecommendedOrders() {
 
       {/* Trends tab content */}
       {activeTab === "Trends" && (
-        <TrendsView
-          refreshTrigger={refreshTrigger}
-          onLastUpdated={setTrendsLastUpdated}
-        />
+        <TrendsView refreshTrigger={refreshTrigger} />
       )}
 
       {/* Forecasts tab content */}

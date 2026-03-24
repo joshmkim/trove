@@ -19,7 +19,6 @@ interface TrendSeries {
 
 interface TrendsViewProps {
   refreshTrigger: number;
-  onLastUpdated: (ts: string | null) => void;
 }
 
 // One color per keyword (cycles if more than 6)
@@ -70,7 +69,7 @@ function mergeSeriesForChart(series: TrendSeries[]): Record<string, unknown>[] {
   );
 }
 
-export default function TrendsView({ refreshTrigger, onLastUpdated }: TrendsViewProps) {
+export default function TrendsView({ refreshTrigger }: TrendsViewProps) {
   const [series, setSeries] = useState<TrendSeries[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError]   = useState<string | null>(null);
@@ -82,22 +81,13 @@ export default function TrendsView({ refreshTrigger, onLastUpdated }: TrendsView
       const res = await fetch("/api/trends");
       if (!res.ok) throw new Error("Failed to fetch trends");
       const json = await res.json();
-      const trends: TrendSeries[] = json.trends ?? [];
-      setSeries(trends);
-      onLastUpdated(
-        trends.length > 0
-          ? new Date().toLocaleString("en-US", {
-              month: "short", day: "numeric", year: "numeric",
-              hour: "numeric", minute: "2-digit",
-            })
-          : null
-      );
+      setSeries(json.trends ?? []);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Unknown error");
     } finally {
       setLoading(false);
     }
-  }, [onLastUpdated]);
+  }, []);
 
   useEffect(() => { fetchTrends(); }, [fetchTrends, refreshTrigger]);
 
