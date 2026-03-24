@@ -22,12 +22,11 @@
   --color-cream: var(--color-cream);
   --color-lavender: var(--color-lavender);
   --color-navy: var(--color-navy);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-instrument-sans);
 }
 
 body {
   background: var(--background);
   color: var(--color-charcoal);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-instrument-sans), Arial, Helvetica, sans-serif;
 }

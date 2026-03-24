@@ -16,7 +16,7 @@ export default function EditableSkuField({
   if (!isEditing) {
     return (
       <span
-        className="text-[16px] font-medium leading-[24px] text-[#958F84]"
+        className="text-[13px] font-medium leading-[20px] text-[#958F84]"
         style={{ fontFamily: "Instrument Sans", overflowWrap: "break-word" }}
       >
         {value}
@@ -30,7 +30,7 @@ export default function EditableSkuField({
         type="text"
         value={value}
         onChange={(e) => onChange?.(e.target.value)}
-        className="min-w-[110px] bg-transparent text-[16px] font-medium leading-[24px] text-[#958F84] focus:outline-none"
+        className="min-w-[110px] bg-transparent text-[13px] font-medium leading-[20px] text-[#958F84] focus:outline-none"
         style={{ fontFamily: "Instrument Sans", overflowWrap: "break-word" }}
         aria-label={ariaLabel}
       />
