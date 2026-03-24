@@ -6,12 +6,14 @@ interface InventoryTableProps {
 }
 
 const headers = [
+  { label: "", className: "w-[4%]" },
   { label: "Product Name", className: "w-[40%]" },
   { label: "Stock Level", className: "w-[14%]" },
   { label: "Qty In", className: "w-[10%]" },
   { label: "Qty Out", className: "w-[10%]" },
   { label: "Qty Balance", className: "w-[12%]" },
   { label: "SKU ID", className: "w-[14%]" },
+  { label: "", className: "w-[4%]" },
 ];
 
 export default function InventoryTable({ items }: InventoryTableProps) {
@@ -33,7 +35,7 @@ export default function InventoryTable({ items }: InventoryTableProps) {
         <tbody>
           {items.length === 0 ? (
             <tr>
-              <td colSpan={6} className="py-12 text-center text-sm text-warm-gray">
+              <td colSpan={8} className="py-12 text-center text-sm text-warm-gray">
                 No items found.
               </td>
             </tr>
