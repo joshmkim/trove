@@ -32,7 +32,7 @@ function StatusBadge({ forecast }: { forecast: DemandForecast }) {
 
 
 // ── Main component ────────────────────────────────────────────────────────────
-export default function RecommendedOrders() {
+export default function RecommendedOrders({ refreshTrigger = 0 }: { refreshTrigger?: number }) {
   const [activeTab, setActiveTab] = useState<ActiveTab>("Forecasts");
   const [forecasts, setForecasts] = useState<DemandForecast[]>([]);
   const [loading,   setLoading]   = useState(true);
@@ -42,7 +42,7 @@ export default function RecommendedOrders() {
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
   const [refreshingTrends, setRefreshingTrends] = useState(false);
   const [trendsLastUpdated, setTrendsLastUpdated] = useState<string | null>(null);
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [trendsRefreshTrigger, setTrendsRefreshTrigger] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   async function handleRefreshTrends() {
@@ -57,7 +57,7 @@ export default function RecommendedOrders() {
           hour: "numeric", minute: "2-digit",
         })
       );
-      setRefreshTrigger((n) => n + 1);
+      setTrendsRefreshTrigger((n) => n + 1);
     } catch {
       // error will surface inside TrendsView
     } finally {
@@ -101,7 +101,7 @@ export default function RecommendedOrders() {
 
   useEffect(() => {
     fetchForecasts();
-  }, [fetchForecasts]);
+  }, [fetchForecasts, refreshTrigger]);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -214,7 +214,7 @@ export default function RecommendedOrders() {
 
       {/* Trends tab content */}
       {activeTab === "Trends" && (
-        <TrendsView refreshTrigger={refreshTrigger} />
+        <TrendsView refreshTrigger={trendsRefreshTrigger} />
       )}
 
       {/* Forecasts tab content */}

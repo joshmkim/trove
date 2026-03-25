@@ -22,14 +22,15 @@ import {
 const TABS = ["All", "Pending", "Accepted", "Completed", "Cancelled"];
 
 export default function OrderingPage() {
-  const [activeTab, setActiveTab]             = useState("All");
-  const [orders, setOrders]                   = useState<PurchaseOrder[]>([]);
-  const [loading, setLoading]                 = useState(true);
-  const [forecasts, setForecasts]             = useState<DemandForecast[]>([]);
-  const [createOpen, setCreateOpen]           = useState(false);
-  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
-  const [vendorQuery, setVendorQuery]         = useState("");
-  const [fromDate, setFromDate]               = useState("");
+  const [activeTab, setActiveTab]                     = useState("All");
+  const [orders, setOrders]                           = useState<PurchaseOrder[]>([]);
+  const [loading, setLoading]                         = useState(true);
+  const [forecasts, setForecasts]                     = useState<DemandForecast[]>([]);
+  const [createOpen, setCreateOpen]                   = useState(false);
+  const [selectedOrderId, setSelectedOrderId]         = useState<string | null>(null);
+  const [vendorQuery, setVendorQuery]                 = useState("");
+  const [fromDate, setFromDate]                       = useState("");
+  const [forecastRefreshTrigger, setForecastRefreshTrigger] = useState(0);
 
   const selectedOrder = orders.find((o) => o.id === selectedOrderId) ?? null;
 
@@ -70,7 +71,7 @@ export default function OrderingPage() {
     // Update order status
     await supabase.from("orders").update({ status: newStatus }).eq("id", orderId);
 
-    // On accepted: increment current_stock for each matched ingredient
+    // On accepted: increment current_stock in ingredients + demand_forecasts
     if (newStatus === "accepted") {
       const order = orders.find((o) => o.id === orderId);
       if (order) {
@@ -82,13 +83,22 @@ export default function OrderingPage() {
             .single();
 
           if (ing) {
+            const newStock = Number(ing.current_stock) + item.quantity;
+
             await supabase
               .from("ingredients")
-              .update({ current_stock: Number(ing.current_stock) + item.quantity })
+              .update({ current_stock: newStock })
               .eq("name", item.itemName);
+
+            // Keep demand_forecasts in sync so Recommended Orders reflects reality
+            await supabase
+              .from("demand_forecasts")
+              .update({ current_stock: newStock })
+              .eq("ingredient_name", item.itemName);
           }
         }
       }
+      setForecastRefreshTrigger((n) => n + 1);
     }
 
     await fetchOrders();
@@ -119,7 +129,7 @@ export default function OrderingPage() {
         }
       />
 
-      <RecommendedOrders />
+      <RecommendedOrders refreshTrigger={forecastRefreshTrigger} />
 
       <div className="mx-6 my-6 border border-light-gray rounded-sm">
         <div className="px-5 pt-5 pb-4">
