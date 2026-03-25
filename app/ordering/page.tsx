@@ -64,7 +64,7 @@ export default function OrderingPage() {
       }
     }
     fetchForecasts();
-  }, []);
+  }, [forecastRefreshTrigger]);
 
   // ── Status change + stock update ─────────────────────────────────────────────
   async function handleStatusChange(orderId: string, newStatus: string) {
@@ -76,25 +76,18 @@ export default function OrderingPage() {
       const order = orders.find((o) => o.id === orderId);
       if (order) {
         for (const item of order.items) {
-          const { data: ing } = await supabase
-            .from("ingredients")
-            .select("current_stock")
-            .eq("name", item.itemName)
+          const { data: inv } = await supabase
+            .from("items")
+            .select("quantity_remaining")
+            .eq("product_name", item.itemName)
             .single();
 
-          if (ing) {
-            const newStock = Number(ing.current_stock) + item.quantity;
-
+          if (inv) {
+            const newStock = Number(inv.quantity_remaining) + item.quantity;
             await supabase
-              .from("ingredients")
-              .update({ current_stock: newStock })
-              .eq("name", item.itemName);
-
-            // Keep demand_forecasts in sync so Recommended Orders reflects reality
-            await supabase
-              .from("demand_forecasts")
-              .update({ current_stock: newStock })
-              .eq("ingredient_name", item.itemName);
+              .from("items")
+              .update({ quantity_remaining: newStock, qty_balance: newStock })
+              .eq("product_name", item.itemName);
           }
         }
       }

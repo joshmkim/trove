@@ -69,10 +69,10 @@ export default function RecommendedOrders({ refreshTrigger = 0 }: { refreshTrigg
     setLoading(true);
     setError(null);
 
-    const { data, error: fetchErr } = await supabase
-      .from("demand_forecasts")
-      .select("*")
-      .order("recommended_order", { ascending: false });
+    const [{ data, error: fetchErr }, { data: ingData }] = await Promise.all([
+      supabase.from("demand_forecasts").select("*").order("recommended_order", { ascending: false }),
+      supabase.from("items").select("product_name, quantity_remaining, purchase_unit_size"),
+    ]);
 
     if (fetchErr) {
       setError(fetchErr.message);
@@ -81,12 +81,26 @@ export default function RecommendedOrders({ refreshTrigger = 0 }: { refreshTrigg
     }
 
     if (data && data.length > 0) {
-      const rows = data as DemandForecastRow[];
-      setForecasts(rows.map(forecastRowToForecast));
-      // Use created_at from the most-recent row
-      const latest = rows.reduce((a, b) =>
-        a.created_at > b.created_at ? a : b
+      // Build a live stock map: ingredient name → current stock in purchase units
+      // items.quantity_remaining is already in purchase units — no conversion needed
+      const stockMap = new Map(
+        (ingData ?? []).map((i) => [i.product_name, Math.round(Number(i.quantity_remaining))])
       );
+
+      const rows = data as DemandForecastRow[];
+      setForecasts(
+        rows.map((row) =>
+          forecastRowToForecast({
+            ...row,
+            // Always use live stock from ingredients, fall back to forecast snapshot
+            current_stock: stockMap.has(row.ingredient_name)
+              ? stockMap.get(row.ingredient_name)!
+              : row.current_stock,
+          })
+        )
+      );
+
+      const latest = rows.reduce((a, b) => (a.created_at > b.created_at ? a : b));
       setLastUpdated(
         new Date(latest.created_at).toLocaleString("en-US", {
           month: "short", day: "numeric", year: "numeric",
@@ -267,21 +281,21 @@ export default function RecommendedOrders({ refreshTrigger = 0 }: { refreshTrigg
                         {f.ingredientName}
                       </td>
                       <td className="py-3 px-4 text-sm text-charcoal">
-                        {f.predictedDemand.toLocaleString()}
+                        {Math.round(f.predictedDemand).toLocaleString()}
                         <span className="ml-1 text-warm-gray">{f.unit}s</span>
                       </td>
                       <td className="py-3 px-4 text-sm text-charcoal">
-                        {f.currentStock.toLocaleString()}
+                        {Math.round(f.currentStock).toLocaleString()}
                         <span className="ml-1 text-warm-gray">{f.unit}s</span>
                       </td>
                       <td className="py-3 px-4 text-sm text-charcoal">
-                        {f.safetyStock.toLocaleString()}
+                        {Math.round(f.safetyStock).toLocaleString()}
                         <span className="ml-1 text-warm-gray">{f.unit}s</span>
                       </td>
                       <td className="py-3 px-4 text-sm font-semibold text-charcoal">
                         {f.recommendedOrder > 0 ? (
                           <>
-                            {f.recommendedOrder.toLocaleString()}
+                            {Math.round(f.recommendedOrder).toLocaleString()}
                             <span className="ml-1 font-normal text-warm-gray">{f.unit}s</span>
                           </>
                         ) : "—"}

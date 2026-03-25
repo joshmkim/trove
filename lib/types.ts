@@ -26,6 +26,11 @@ export interface ItemRow {
   qty_balance: number;
   sku_id: string | null;
   image_url: string | null;
+  // ML / ordering columns (added in migration 006)
+  unit: string | null;
+  purchase_unit: string | null;
+  purchase_unit_size: number | null;
+  reorder_threshold: number | null;
   created_at: string;
   updated_at: string;
 }

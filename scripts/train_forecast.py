@@ -209,15 +209,17 @@ forecast = pd.concat(forecast_rows, ignore_index=True)
 # ─────────────────────────────────────────────────────────────────────────────
 print("Expanding via recipe mapping …", flush=True)
 recipes_raw = fetch_all("recipes")
-ingrs_raw   = fetch_all("ingredients", "name,current_stock,unit,purchase_unit,purchase_unit_size")
+ingrs_raw   = fetch_all("items", "product_name,quantity_remaining,unit,purchase_unit,purchase_unit_size")
 
 if not recipes_raw:
     sys.exit("ERROR: recipes table is empty — apply migration 003 first.")
 if not ingrs_raw:
-    sys.exit("ERROR: ingredients table is empty — apply migration 003 first.")
+    sys.exit("ERROR: items table is empty — apply migration 001 first.")
 
 recipes = pd.DataFrame(recipes_raw)
 ingrs   = pd.DataFrame(ingrs_raw)
+# Normalise column names to match the rest of the pipeline
+ingrs = ingrs.rename(columns={"product_name": "name", "quantity_remaining": "current_stock_pu"})
 recipes["quantity_per_unit"] = recipes["quantity_per_unit"].astype(float)
 
 # Total predicted qty per product over the forecast window
@@ -265,16 +267,16 @@ ingr_demand = ingr_demand.merge(std_by_ingr, on="ingredient_name", how="left")
 ingr_demand["safety_stock"] = (ingr_demand["demand_std"] * SAFETY_FACTOR).fillna(0)
 
 ingr_demand = ingr_demand.merge(
-    ingrs[["name", "current_stock", "purchase_unit", "purchase_unit_size"]].rename(
+    ingrs[["name", "current_stock_pu", "purchase_unit", "purchase_unit_size"]].rename(
         columns={"name": "ingredient_name"}
     ),
     on="ingredient_name",
     how="left",
 )
-ingr_demand["current_stock"]     = ingr_demand["current_stock"].astype(float).fillna(0)
+ingr_demand["current_stock_pu"]   = ingr_demand["current_stock_pu"].astype(float).fillna(0)
 ingr_demand["purchase_unit_size"] = ingr_demand["purchase_unit_size"].astype(float).fillna(1)
 
-# Convert all quantities to purchase units (ceiling so we never under-order)
+# Convert predicted demand and safety stock to purchase units (ceiling so we never under-order)
 import math
 
 def to_purchase_units(val, size):
@@ -283,9 +285,8 @@ def to_purchase_units(val, size):
 ingr_demand["predicted_demand_pu"] = ingr_demand.apply(
     lambda r: to_purchase_units(r["predicted_demand"], r["purchase_unit_size"]), axis=1
 )
-ingr_demand["current_stock_pu"] = ingr_demand.apply(
-    lambda r: to_purchase_units(r["current_stock"], r["purchase_unit_size"]), axis=1
-)
+# current_stock_pu already in purchase units — just round up
+ingr_demand["current_stock_pu"] = ingr_demand["current_stock_pu"].apply(math.ceil)
 ingr_demand["safety_stock_pu"] = ingr_demand.apply(
     lambda r: to_purchase_units(r["safety_stock"], r["purchase_unit_size"]), axis=1
 )
