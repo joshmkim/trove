@@ -51,6 +51,9 @@ export default function OrderingPage() {
 
   useEffect(() => { fetchOrders(); }, [fetchOrders]);
 
+  // Re-fetch live stock in RecommendedOrders every time the page mounts
+  useEffect(() => { setForecastRefreshTrigger((n) => n + 1); }, []);
+
   // ── Fetch forecasts for Create Order modal ──────────────────────────────────
   useEffect(() => {
     async function fetchForecasts() {

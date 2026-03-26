@@ -304,16 +304,24 @@ print("Writing to demand_forecasts …", flush=True)
 forecast_date = (last_date + timedelta(days=1)).date().isoformat()
 retrained_at  = datetime.now(timezone.utc).isoformat()
 
+def _safe_float(val, default=0.0):
+    """Convert val to float, replacing NaN/inf with default."""
+    try:
+        f = float(val)
+        return default if (math.isnan(f) or math.isinf(f)) else f
+    except (TypeError, ValueError):
+        return default
+
 upsert_rows = [
     {
-        "ingredient_name":   row["ingredient_name"],
+        "ingredient_name":   str(row["ingredient_name"]) if row["ingredient_name"] == row["ingredient_name"] else "",
         "forecast_date":     forecast_date,
-        "predicted_demand":  float(row["predicted_demand_pu"]),
-        "current_stock":     float(row["current_stock_pu"]),
-        "safety_stock":      float(row["safety_stock_pu"]),
-        "recommended_order": float(row["recommended_order_pu"]),
-        "unit":              row["purchase_unit"],
-        "confidence_score":  confidence_score,
+        "predicted_demand":  _safe_float(row["predicted_demand_pu"]),
+        "current_stock":     _safe_float(row["current_stock_pu"]),
+        "safety_stock":      _safe_float(row["safety_stock_pu"]),
+        "recommended_order": _safe_float(row["recommended_order_pu"]),
+        "unit":              str(row["purchase_unit"]) if row["purchase_unit"] == row["purchase_unit"] else "",
+        "confidence_score":  _safe_float(confidence_score),
         "created_at":        retrained_at,   # overwrite on every upsert so UI timestamp refreshes
     }
     for _, row in ingr_demand.iterrows()

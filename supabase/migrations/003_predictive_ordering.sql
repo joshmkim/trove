@@ -24,10 +24,6 @@ CREATE INDEX IF NOT EXISTS sales_history_date_idx          ON sales_history (tra
 CREATE INDEX IF NOT EXISTS sales_history_product_type_idx  ON sales_history (product_type);
 
 -- ── Master ingredient list with current stock ────────────────────────────────
-ALTER TABLE IF EXISTS ingredients
-  ADD COLUMN IF NOT EXISTS purchase_unit      TEXT           NOT NULL DEFAULT 'unit',
-  ADD COLUMN IF NOT EXISTS purchase_unit_size DECIMAL(10,3)  NOT NULL DEFAULT 1;
-
 CREATE TABLE IF NOT EXISTS ingredients (
   id                UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
   name              TEXT        NOT NULL UNIQUE,
