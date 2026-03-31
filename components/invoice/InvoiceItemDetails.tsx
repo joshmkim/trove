@@ -47,7 +47,7 @@ export default function InvoiceItemDetails({ items, onChange }: InvoiceItemDetai
               type="text"
               value={row.skuId}
               onChange={(e) => updateRow(row.id, "skuId", e.target.value)}
-              className="px-2.5 py-1.5 text-sm text-charcoal font-mono border border-light-gray rounded-sm outline-none focus:border-warm-gray transition-colors"
+              className="px-2.5 py-1.5 text-sm text-charcoal border border-light-gray rounded-sm outline-none focus:border-warm-gray transition-colors"
             />
           </Fragment>
         ))}

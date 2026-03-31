@@ -81,7 +81,12 @@ export default function InventoryPage() {
   }, [items, searchQuery, filter]);
 
   return (
-    <div>
+    <div
+      style={{
+        ["--color-charcoal" as any]: "#2C2B2A",
+        ["--color-warm-gray" as any]: "#958F84",
+      }}
+    >
       <PageHeader
         title="Inventory Management"
         actionButton={<Button variant="primary">+ Add Item</Button>}
