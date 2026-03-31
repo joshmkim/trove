@@ -1,14 +1,13 @@
 "use client";
 
-import type { Vendor } from "@/lib/vendorNetworkMock";
+import { cadenceLabel, type VendorRecord } from "@/lib/vendorPortal";
 
 interface VendorInlineExpandProps {
-  vendor: Vendor;
+  vendor: VendorRecord;
 }
 
 export default function VendorInlineExpand({ vendor }: VendorInlineExpandProps) {
-  const primaryContact =
-    vendor.contact.email ?? vendor.contact.phone ?? "Not provided";
+  const primaryContact = vendor.contactValue || "Not provided";
 
   const lines = vendor.products
     .map((p) => `- ${p.productName} @ $${p.pricePerUnit.toFixed(p.pricePerUnit < 1 ? 4 : 2)}/${p.unit}`)
@@ -38,15 +37,8 @@ Harucake`;
             <div>
               <span className="text-xs text-warm-gray">Primary contact</span>
               <div className="text-sm">
-                {vendor.contact.email && (
-                  <span className="mr-2">{vendor.contact.email}</span>
-                )}
-                {vendor.contact.phone && (
-                  <span className="text-warm-gray">{vendor.contact.phone}</span>
-                )}
-                {!vendor.contact.email && !vendor.contact.phone && (
-                  <span className="text-warm-gray">Not provided</span>
-                )}
+                <span className="mr-2 capitalize">{vendor.contactMethod}:</span>
+                <span className="text-warm-gray">{primaryContact}</span>
               </div>
             </div>
             <div>
@@ -60,6 +52,19 @@ Harucake`;
           </div>
 
           <div className="mt-2">
+            <div className="mb-3">
+              <span className="text-xs text-warm-gray">Cadence by product</span>
+              <div className="mt-1 flex flex-wrap gap-2">
+                {vendor.products.map((p) => (
+                  <span
+                    key={`${vendor.id}-${p.itemId}`}
+                    className="inline-flex rounded border border-light-gray bg-white px-2 py-1 text-xs text-charcoal"
+                  >
+                    {p.productName}: {cadenceLabel(p.orderCadence, p.cadenceDays)}
+                  </span>
+                ))}
+              </div>
+            </div>
             <div className="flex items-center justify-between mb-1">
               <span className="text-xs text-warm-gray">
                 Outreach template (copy and paste into email or SMS)

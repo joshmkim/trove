@@ -14,8 +14,6 @@ interface VendorOutreachBody {
   deliveryBy?: string;
 }
 
-const DEMO_RECIPIENT_EMAIL = "kimjosh@usc.edu";
-
 export async function POST(req: NextRequest) {
   let body: VendorOutreachBody;
 
@@ -76,7 +74,7 @@ export async function POST(req: NextRequest) {
 
   try {
     await sendEmail({
-      to: DEMO_RECIPIENT_EMAIL,
+      to: vendorEmail,
       subject,
       text,
     });
@@ -88,6 +86,6 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  return NextResponse.json({ ok: true, to: DEMO_RECIPIENT_EMAIL, originalTo: vendorEmail });
+  return NextResponse.json({ ok: true, to: vendorEmail });
 }
 

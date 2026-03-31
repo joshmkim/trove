@@ -7,8 +7,8 @@ interface OrderItem {
   quantity: number;
   unit: string;
   vendorId: string;
-  vendorName: string;
-  vendorPhone: string;
+  expectedDeliveryDate?: string | null;
+  cadenceSnapshot?: string | null;
 }
 
 interface CreateOrderBody {
@@ -16,12 +16,26 @@ interface CreateOrderBody {
   deliveryBy: string;
 }
 
-// Use service-role key if available so RLS doesn't block server-side writes;
-// falls back to anon key for development.
+interface VendorRow {
+  id: string;
+  name: string;
+  contact_method: "phone" | "email" | "website";
+  contact_value: string;
+}
+
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
 );
+
+function formatDate(value: string | null | undefined): string {
+  if (!value) return "TBD";
+  return new Date(value).toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+}
 
 export async function POST(req: NextRequest) {
   let body: CreateOrderBody;
@@ -32,15 +46,27 @@ export async function POST(req: NextRequest) {
   }
 
   const { items, deliveryBy } = body;
-
   if (!Array.isArray(items) || items.length === 0) {
     return NextResponse.json({ error: "items must be a non-empty array" }, { status: 400 });
   }
 
-  // Count unique vendors
-  const uniqueVendors = new Set(items.map((i) => i.vendorId).filter(Boolean));
+  const vendorIds = Array.from(new Set(items.map((i) => i.vendorId).filter(Boolean)));
+  if (vendorIds.length === 0) {
+    return NextResponse.json({ error: "Each item must have an assigned vendor" }, { status: 400 });
+  }
 
-  // ── 1. Insert order ────────────────────────────────────────────────────────
+  const { data: vendorRows, error: vendorsError } = await supabase
+    .from("vendors")
+    .select("id, name, contact_method, contact_value")
+    .in("id", vendorIds);
+
+  if (vendorsError || !vendorRows) {
+    return NextResponse.json({ error: vendorsError?.message ?? "Failed to load vendors" }, { status: 500 });
+  }
+
+  const vendorById = new Map((vendorRows as VendorRow[]).map((v) => [v.id, v]));
+
+  const uniqueVendors = new Set(items.map((i) => i.vendorId).filter(Boolean));
   const { data: order, error: orderError } = await supabase
     .from("orders")
     .insert({
@@ -55,79 +81,134 @@ export async function POST(req: NextRequest) {
     console.error("[orders/create] insert order failed:", orderError);
     return NextResponse.json(
       { error: orderError?.message ?? "Failed to create order" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 
   const orderId = order.id as string;
-
-  // ── 2. Insert order_items ──────────────────────────────────────────────────
-  const { error: itemsError } = await supabase.from("order_items").insert(
-    items.map((item) => ({
+  const insertRows = items.map((item) => {
+    const vendor = vendorById.get(item.vendorId);
+    return {
       order_id: orderId,
       item_name: item.itemName,
       quantity: item.quantity,
       unit: item.unit,
       vendor_id: item.vendorId || null,
-      vendor_name: item.vendorName || null,
-      vendor_phone: item.vendorPhone || null,
-    }))
-  );
+      vendor_name: vendor?.name ?? null,
+      vendor_phone: vendor?.contact_method === "phone" ? vendor.contact_value : null,
+      expected_delivery_date: item.expectedDeliveryDate ?? null,
+      cadence_snapshot: item.cadenceSnapshot ?? null,
+      outreach_status: "pending",
+    };
+  });
 
+  const { error: itemsError } = await supabase.from("order_items").insert(insertRows);
   if (itemsError) {
     console.error("[orders/create] insert order_items failed:", itemsError);
     return NextResponse.json({ error: itemsError.message }, { status: 500 });
   }
 
-  // ── 3. Group items by vendor and send one SMS per vendor ───────────────────
-  const byVendor = new Map<string, { name: string; phone: string; items: OrderItem[] }>();
-
+  const byVendor = new Map<string, { vendor: VendorRow; items: OrderItem[] }>();
   for (const item of items) {
-    if (!item.vendorPhone) continue;
-    const key = item.vendorPhone;
-    if (!byVendor.has(key)) {
-      byVendor.set(key, { name: item.vendorName, phone: item.vendorPhone, items: [] });
-    }
-    byVendor.get(key)!.items.push(item);
+    const vendor = vendorById.get(item.vendorId);
+    if (!vendor) continue;
+    const current = byVendor.get(vendor.id) ?? { vendor, items: [] };
+    current.items.push(item);
+    byVendor.set(vendor.id, current);
   }
 
-  const deliveryDisplay = deliveryBy
-    ? new Date(deliveryBy).toLocaleDateString("en-US", {
-        month: "long",
-        day: "numeric",
-        year: "numeric",
-      })
-    : "TBD";
+  const outreachResults = await Promise.allSettled(
+    Array.from(byVendor.values()).map(async ({ vendor, items: vendorItems }) => {
+      const vendorDelivery = vendorItems
+        .map((i) => i.expectedDeliveryDate)
+        .filter(Boolean)
+        .sort()
+        .at(-1);
+      const deliveryDisplay = formatDate(vendorDelivery ?? deliveryBy);
 
-  const smsResults = await Promise.allSettled(
-    Array.from(byVendor.values()).map(async (vendor) => {
-      const lines = vendor.items
-        .map((i) => `- ${i.quantity} ${i.unit} ${i.itemName}`)
-        .join("\n");
+      if (vendor.contact_method === "phone") {
+        const message =
+          `Hi ${vendor.name}, this is Harucake Bakery. We'd like to place an order:\n` +
+          `${vendorItems.map((i) => `- ${i.quantity} ${i.unit} ${i.itemName}`).join("\n")}\n` +
+          `Delivery needed by: ${deliveryDisplay}\n` +
+          `Thank you!`;
+        await sendSMS(vendor.contact_value, message);
+        await supabase
+          .from("order_items")
+          .update({
+            sms_sent: true,
+            sms_sent_at: new Date().toISOString(),
+            outreach_channel: "sms",
+            outreach_status: "sent",
+            outreach_error: null,
+          })
+          .eq("order_id", orderId)
+          .eq("vendor_id", vendor.id);
+        return;
+      }
 
-      const message =
-        `Hi ${vendor.name}, this is Harucake Bakery. We'd like to place an order:\n` +
-        `${lines}\n` +
-        `Delivery needed by: ${deliveryDisplay}\n` +
-        `Thank you!`;
+      if (vendor.contact_method === "email") {
+        const response = await fetch(new URL("/api/email/vendor-outreach", req.url), {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            vendorName: vendor.name,
+            vendorEmail: vendor.contact_value,
+            items: vendorItems.map((i) => ({
+              itemName: i.itemName,
+              quantity: i.quantity,
+              unit: i.unit,
+            })),
+            deliveryBy: vendorDelivery ?? deliveryBy,
+          }),
+        });
+        if (!response.ok) {
+          const payload = await response.json().catch(() => ({}));
+          throw new Error(payload?.error ?? "Email outreach failed");
+        }
+        await supabase
+          .from("order_items")
+          .update({
+            email_sent: true,
+            email_sent_at: new Date().toISOString(),
+            outreach_channel: "email",
+            outreach_status: "sent",
+            outreach_error: null,
+          })
+          .eq("order_id", orderId)
+          .eq("vendor_id", vendor.id);
+        return;
+      }
 
-      await sendSMS(vendor.phone, message);
-
-      // Mark items for this vendor as sms_sent
       await supabase
         .from("order_items")
-        .update({ sms_sent: true, sms_sent_at: new Date().toISOString() })
+        .update({
+          manual_outreach_required: true,
+          outreach_channel: "website",
+          outreach_status: "manual_required",
+          outreach_error: null,
+        })
         .eq("order_id", orderId)
-        .eq("vendor_phone", vendor.phone);
-    })
+        .eq("vendor_id", vendor.id);
+    }),
   );
 
-  // Log any SMS failures but don't fail the request
-  smsResults.forEach((result, i) => {
-    if (result.status === "rejected") {
-      console.error(`[orders/create] SMS failed for vendor ${i}:`, result.reason);
-    }
-  });
+  await Promise.all(
+    outreachResults.map(async (result, idx) => {
+      if (result.status !== "rejected") return;
+      const vendor = Array.from(byVendor.values())[idx]?.vendor;
+      if (!vendor) return;
+      await supabase
+        .from("order_items")
+        .update({
+          outreach_status: "failed",
+          outreach_error:
+            result.reason instanceof Error ? result.reason.message : String(result.reason),
+        })
+        .eq("order_id", orderId)
+        .eq("vendor_id", vendor.id);
+    }),
+  );
 
   return NextResponse.json({ id: orderId });
 }

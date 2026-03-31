@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import type { Vendor } from "@/lib/vendorNetworkMock";
+import type { VendorRecord } from "@/lib/vendorPortal";
 import VendorInlineExpand from "./VendorInlineExpand";
 
 interface VendorNetworkTableProps {
-  vendors: Vendor[];
+  vendors: VendorRecord[];
 }
 
 export default function VendorNetworkTable({ vendors }: VendorNetworkTableProps) {
@@ -71,7 +71,7 @@ export default function VendorNetworkTable({ vendors }: VendorNetworkTableProps)
                     {productsDisplay}
                   </td>
                   <td className="py-3 px-4 text-sm text-charcoal whitespace-nowrap">
-                    {vendor.avgLeadTimeDays} days
+                    {vendor.leadTimeDays} days
                   </td>
                   <td className="py-3 px-4 text-sm text-charcoal whitespace-nowrap">
                     {vendor.reliabilityScore}%
@@ -96,7 +96,7 @@ export default function VendorNetworkTable({ vendors }: VendorNetworkTableProps)
                       }
                       className="px-3 py-1.5 text-xs font-medium border border-light-gray rounded-lg text-charcoal hover:bg-cream transition-colors whitespace-nowrap"
                     >
-                      {isExpanded ? "Hide details" : "Request onboarding"}
+                      {isExpanded ? "Hide details" : "View details"}
                     </button>
                   </td>
                 </tr>,

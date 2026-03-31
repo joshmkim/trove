@@ -2,12 +2,26 @@
 
 import { useState } from "react";
 import Button from "@/components/ui/Button";
-import type { Vendor } from "@/lib/vendorNetworkMock";
+
+export interface NewVendorDraft {
+  name: string;
+  contactMethod: "phone" | "email" | "website";
+  contactValue: string;
+  products: Array<{
+    productName: string;
+    pricePerUnit: number;
+    unit: "kg" | "g" | "L" | "count" | "box";
+  }>;
+  reliabilityScore: number;
+  leadTimeDays: number;
+  responseTimeHours: number;
+  advanceOrderDays: number;
+}
 
 interface OnboardVendorModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCreateVendor: (vendor: Vendor) => void;
+  onCreateVendor: (vendor: NewVendorDraft) => void;
 }
 
 export default function OnboardVendorModal({
@@ -18,6 +32,7 @@ export default function OnboardVendorModal({
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [website, setWebsite] = useState("");
   const [products, setProducts] = useState("");
   const [leadTime, setLeadTime] = useState("3");
   const [reliability, setReliability] = useState("90");
@@ -36,8 +51,8 @@ export default function OnboardVendorModal({
       setError("Vendor name is required.");
       return;
     }
-    if (!email.trim() && !phone.trim()) {
-      setError("Provide at least an email or phone number.");
+    if (!email.trim() && !phone.trim() && !website.trim()) {
+      setError("Provide at least one contact method (phone, email, or website).");
       return;
     }
 
@@ -66,20 +81,24 @@ export default function OnboardVendorModal({
       return;
     }
 
-    const newVendor: Vendor = {
-      id: `demo-${Date.now()}`,
+    const contactMethod = email.trim()
+      ? "email"
+      : phone.trim()
+        ? "phone"
+        : "website";
+    const contactValue = email.trim() || phone.trim() || website.trim();
+
+    const newVendor: NewVendorDraft = {
       name: name.trim(),
-      contact: {
-        email: email.trim() || undefined,
-        phone: phone.trim() || undefined,
-      },
+      contactMethod,
+      contactValue,
       products: productNames.map((productName) => ({
         productName,
         pricePerUnit: parsedPricePerUnit,
         unit,
       })),
       reliabilityScore: parsedReliability,
-      avgLeadTimeDays: parsedLead,
+      leadTimeDays: parsedLead,
       responseTimeHours: parsedResponse,
       advanceOrderDays: parsedAdvance,
     };
@@ -90,6 +109,7 @@ export default function OnboardVendorModal({
     setName("");
     setEmail("");
     setPhone("");
+    setWebsite("");
     setProducts("");
     setLeadTime("3");
     setReliability("90");
@@ -142,6 +162,16 @@ export default function OnboardVendorModal({
                 className="w-full rounded-md border border-light-gray px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-navy"
               />
             </div>
+          </div>
+          <div>
+            <label className="block text-xs text-warm-gray mb-1">Website</label>
+            <input
+              type="url"
+              value={website}
+              onChange={(e) => setWebsite(e.target.value)}
+              placeholder="https://vendor.example.com"
+              className="w-full rounded-md border border-light-gray px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-navy"
+            />
           </div>
           <div>
             <label className="block text-xs text-warm-gray mb-1">

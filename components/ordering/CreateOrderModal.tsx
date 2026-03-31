@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { DemandForecast } from "@/lib/types";
-import { vendors } from "@/lib/vendors";
+import { supabase } from "@/lib/supabase";
+import { cadenceLabel, normalizeProductName } from "@/lib/vendorPortal";
 import SelectItemsStep from "./SelectItemsStep";
-import AssignVendorsStep from "./AssignVendorsStep";
+import AssignVendorsStep, { type VendorOption } from "./AssignVendorsStep";
 import OrderConfirmedStep from "./OrderConfirmedStep";
 
 export interface CustomItem {
@@ -27,16 +28,44 @@ interface CreateOrderModalProps {
   forecasts: DemandForecast[];
 }
 
+interface VendorCatalogEntry extends VendorOption {
+  productName: string;
+  productNorm: string;
+  isPrimary: boolean;
+}
+
+type VendorRow = {
+  id: string;
+  name: string;
+  lead_time_days: number;
+  contact_method: "phone" | "email" | "website";
+  contact_value: string;
+  vendor_status: "my_vendor" | "not_onboarded";
+};
+
+type VendorProductRow = {
+  vendor_id: string;
+  item_id: string;
+  is_primary: boolean;
+  order_cadence: "daily" | "weekly" | "biweekly" | "custom_days";
+  cadence_days: number | null;
+  next_order_date: string | null;
+};
+
+type ItemRow = {
+  id: string;
+  product_name: string;
+};
+
 export default function CreateOrderModal({ open, onClose, forecasts }: CreateOrderModalProps) {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [selectedForecastIds, setSelectedForecastIds] = useState<Set<string>>(new Set());
   const [customItems, setCustomItems] = useState<CustomItem[]>([]);
   const [vendorAssignments, setVendorAssignments] = useState<Record<string, string>>({});
-  const [deliveryDate, setDeliveryDate] = useState("");
+  const [vendorCatalog, setVendorCatalog] = useState<VendorCatalogEntry[]>([]);
   const [placing, setPlacing] = useState(false);
   const [placeError, setPlaceError] = useState<string | null>(null);
 
-  // Close on Escape
   useEffect(() => {
     if (!open) return;
     const handler = (e: KeyboardEvent) => {
@@ -44,7 +73,71 @@ export default function CreateOrderModal({ open, onClose, forecasts }: CreateOrd
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    async function loadVendorCatalog() {
+      const [{ data: vendorsData, error: vendorsError }, { data: vpData, error: vpError }] =
+        await Promise.all([
+          supabase
+            .from("vendors")
+            .select("id, name, lead_time_days, contact_method, contact_value, vendor_status")
+            .eq("vendor_status", "my_vendor"),
+          supabase
+            .from("vendor_products")
+            .select("vendor_id, item_id, is_primary, order_cadence, cadence_days, next_order_date"),
+        ]);
+
+      if (vendorsError || !vendorsData || vpError || !vpData) {
+        setPlaceError(vendorsError?.message ?? vpError?.message ?? "Failed to load vendor catalog");
+        setVendorCatalog([]);
+        return;
+      }
+
+      const vendorRows = vendorsData as VendorRow[];
+      const productRows = vpData as VendorProductRow[];
+      const itemIds = Array.from(new Set(productRows.map((r) => r.item_id)));
+      const { data: itemData, error: itemsError } = await supabase
+        .from("items")
+        .select("id, product_name")
+        .in("id", itemIds);
+
+      if (itemsError || !itemData) {
+        setPlaceError(itemsError?.message ?? "Failed to load items for vendors");
+        setVendorCatalog([]);
+        return;
+      }
+
+      const itemsById = new Map((itemData as ItemRow[]).map((i) => [i.id, i.product_name]));
+      const vendorsById = new Map(vendorRows.map((v) => [v.id, v]));
+
+      const catalog: VendorCatalogEntry[] = productRows
+        .map((row) => {
+          const vendor = vendorsById.get(row.vendor_id);
+          const productName = itemsById.get(row.item_id);
+          if (!vendor || !productName) return null;
+          return {
+            id: vendor.id,
+            name: vendor.name,
+            leadTimeDays: vendor.lead_time_days,
+            contactMethod: vendor.contact_method,
+            contactValue: vendor.contact_value,
+            orderCadence: row.order_cadence,
+            cadenceDays: row.cadence_days,
+            nextOrderDate: row.next_order_date,
+            productName,
+            productNorm: normalizeProductName(productName),
+            isPrimary: row.is_primary,
+          };
+        })
+        .filter((row): row is VendorCatalogEntry => row !== null);
+
+      setVendorCatalog(catalog);
+      setPlaceError(null);
+    }
+    void loadVendorCatalog();
   }, [open]);
 
   function handleClose() {
@@ -52,28 +145,131 @@ export default function CreateOrderModal({ open, onClose, forecasts }: CreateOrd
     setSelectedForecastIds(new Set());
     setCustomItems([]);
     setVendorAssignments({});
-    setDeliveryDate("");
     setPlacing(false);
     setPlaceError(null);
     onClose();
   }
 
+  function toggleForecast(id: string) {
+    setSelectedForecastIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  const orderItems: OrderLineItem[] = useMemo(
+    () => [
+      ...forecasts
+        .filter((f) => selectedForecastIds.has(f.id))
+        .map((f) => ({
+          key: `forecast-${f.id}`,
+          name: f.ingredientName,
+          quantity: String(f.recommendedOrder > 0 ? f.recommendedOrder : 1),
+          unit: f.unit,
+        })),
+      ...customItems
+        .filter((c) => c.name.trim().length > 0)
+        .map((c) => ({
+          key: `custom-${c.id}`,
+          name: c.name,
+          quantity: c.quantity || "1",
+          unit: c.unit,
+        })),
+    ],
+    [forecasts, selectedForecastIds, customItems],
+  );
+
+  const vendorOptionsByItem = useMemo(() => {
+    const map: Record<string, VendorOption[]> = {};
+    orderItems.forEach((item) => {
+      const itemNorm = normalizeProductName(item.name);
+      const matches = vendorCatalog
+        .filter((entry) => {
+          if (entry.productNorm === itemNorm) return true;
+          return entry.productNorm.includes(itemNorm) || itemNorm.includes(entry.productNorm);
+        })
+        .sort((a, b) => {
+          if (a.isPrimary !== b.isPrimary) return a.isPrimary ? -1 : 1;
+          return a.leadTimeDays - b.leadTimeDays;
+        })
+        .map((entry) => ({
+          id: entry.id,
+          name: entry.name,
+          leadTimeDays: entry.leadTimeDays,
+          contactMethod: entry.contactMethod,
+          contactValue: entry.contactValue,
+          orderCadence: entry.orderCadence,
+          cadenceDays: entry.cadenceDays,
+          nextOrderDate: entry.nextOrderDate,
+        }));
+      map[item.key] = matches;
+    });
+    return map;
+  }, [orderItems, vendorCatalog]);
+
+  useEffect(() => {
+    if (step !== 2) return;
+    setVendorAssignments((prev) => {
+      const next: Record<string, string> = {};
+      orderItems.forEach((item) => {
+        const options = vendorOptionsByItem[item.key] ?? [];
+        const current = prev[item.key];
+        if (current && options.some((o) => o.id === current)) {
+          next[item.key] = current;
+        } else if (options.length > 0) {
+          next[item.key] = options[0].id;
+        }
+      });
+      return next;
+    });
+  }, [step, orderItems, vendorOptionsByItem]);
+
+  const expectedDeliveryByItem = useMemo(() => {
+    const byItem: Record<string, string> = {};
+    orderItems.forEach((item) => {
+      const selected = (vendorOptionsByItem[item.key] ?? []).find(
+        (v) => v.id === vendorAssignments[item.key],
+      );
+      if (!selected) return;
+      const d = new Date();
+      d.setDate(d.getDate() + Math.max(0, selected.leadTimeDays));
+      byItem[item.key] = d.toISOString().slice(0, 10);
+    });
+    return byItem;
+  }, [orderItems, vendorOptionsByItem, vendorAssignments]);
+
   async function handlePlaceOrder() {
     setPlacing(true);
     setPlaceError(null);
     try {
+      const missingVendor = orderItems.some((item) => !vendorAssignments[item.key]);
+      if (missingVendor) {
+        throw new Error("Assign a vendor for each item before placing the order.");
+      }
+
+      const deliveryDates = orderItems
+        .map((item) => expectedDeliveryByItem[item.key])
+        .filter(Boolean)
+        .sort();
+
       const payload = {
-        deliveryBy: deliveryDate,
+        deliveryBy: deliveryDates[deliveryDates.length - 1] ?? "",
         items: orderItems.map((item) => {
           const vendorId = vendorAssignments[item.key] ?? "";
-          const vendor = vendors.find((v) => v.id === vendorId);
+          const selected = (vendorOptionsByItem[item.key] ?? []).find(
+            (v) => v.id === vendorId,
+          );
           return {
             itemName: item.name,
             quantity: Number(item.quantity) || 1,
             unit: item.unit,
             vendorId,
-            vendorName: vendor?.name ?? "",
-            vendorPhone: vendor?.phone ?? "",
+            expectedDeliveryDate: expectedDeliveryByItem[item.key] ?? null,
+            cadenceSnapshot: selected
+              ? cadenceLabel(selected.orderCadence, selected.cadenceDays)
+              : null,
           };
         }),
       };
@@ -95,42 +291,10 @@ export default function CreateOrderModal({ open, onClose, forecasts }: CreateOrd
     }
   }
 
-  function toggleForecast(id: string) {
-    setSelectedForecastIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  }
-
-  // Derive combined list for Step 2
-  const orderItems: OrderLineItem[] = [
-    ...forecasts
-      .filter((f) => selectedForecastIds.has(f.id))
-      .map((f) => ({
-        key: `forecast-${f.id}`,
-        name: f.ingredientName,
-        quantity: String(f.recommendedOrder > 0 ? f.recommendedOrder : 1),
-        unit: f.unit,
-      })),
-    ...customItems
-      .filter((c) => c.name.trim().length > 0)
-      .map((c) => ({
-        key: `custom-${c.id}`,
-        name: c.name,
-        quantity: c.quantity || "1",
-        unit: c.unit,
-      })),
-  ];
-
-  const uniqueVendorCount = new Set(
-    Object.values(vendorAssignments).filter(Boolean)
-  ).size;
+  const uniqueVendorCount = new Set(Object.values(vendorAssignments).filter(Boolean)).size;
 
   return (
     <>
-      {/* Backdrop */}
       <div
         className={`fixed inset-0 z-40 bg-black/30 transition-opacity duration-300 ${
           open ? "opacity-100" : "opacity-0 pointer-events-none"
@@ -138,13 +302,11 @@ export default function CreateOrderModal({ open, onClose, forecasts }: CreateOrd
         onClick={handleClose}
       />
 
-      {/* Right-side panel */}
       <div
         className={`fixed right-0 top-0 z-50 h-screen w-[500px] bg-white shadow-2xl flex flex-col transition-transform duration-300 ease-out ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        {/* Close button */}
         <button
           type="button"
           onClick={handleClose}
@@ -177,12 +339,12 @@ export default function CreateOrderModal({ open, onClose, forecasts }: CreateOrd
             )}
             <AssignVendorsStep
               items={orderItems}
+              vendorOptionsByItem={vendorOptionsByItem}
               vendorAssignments={vendorAssignments}
               onVendorChange={(key, vendorId) =>
                 setVendorAssignments((prev) => ({ ...prev, [key]: vendorId }))
               }
-              deliveryDate={deliveryDate}
-              onDeliveryDateChange={setDeliveryDate}
+              expectedDeliveryByItem={expectedDeliveryByItem}
               onBack={() => setStep(1)}
               onPlaceOrder={placing ? () => {} : handlePlaceOrder}
             />
