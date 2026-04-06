@@ -1,0 +1,25 @@
+product,ingredient,amount_per_unit
+Latte,Espresso Shot,1
+Latte,Milk (ml),200
+Cappuccino,Espresso Shot,1
+Cappuccino,Milk (ml),150
+Americano,Espresso Shot,1
+Americano,Water (ml),200
+Mocha,Espresso Shot,1
+Mocha,Milk (ml),180
+Mocha,Chocolate Syrup (ml),20
+Flat White,Espresso Shot,2
+Flat White,Milk (ml),180
+Cold Brew,Cold Brew Concentrate (ml),250
+Espresso,Espresso Shot,1
+Chai Latte,Chai Concentrate (ml),100
+Chai Latte,Milk (ml),150
+Matcha Latte,Matcha Powder (g),5
+Matcha Latte,Milk (ml),200
+Croissant,Dough (g),80
+Croissant,Butter (g),20
+Blueberry Muffin,Flour (g),100
+Blueberry Muffin,Blueberries (g),30
+Bagel,Flour (g),120
+Avocado Toast,Bread Slice,2
+Avocado Toast,Avocado (g),80
