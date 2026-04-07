@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
-import Button from "@/components/ui/Button";
+import { useState, useEffect, useCallback } from "react";
+import SalesVisualizationView from "@/components/ordering/SalesVisualizationView";
 import TrendsView from "@/components/ordering/TrendsView";
 import { supabase } from "@/lib/supabase";
 import {
@@ -12,7 +12,7 @@ import {
   type DemandForecastRow,
 } from "@/lib/types";
 
-type ActiveTab = "Forecasts" | "Trends";
+type ActiveTab = "Forecasts" | "Data Viz" | "Trends";
 
 // ── Status indicator ──────────────────────────────────────────────────────────
 const STATUS_CONFIG = {
@@ -37,14 +37,10 @@ export default function RecommendedOrders({ refreshTrigger = 0 }: { refreshTrigg
   const [activeTab, setActiveTab] = useState<ActiveTab>("Forecasts");
   const [forecasts, setForecasts] = useState<DemandForecast[]>([]);
   const [loading,   setLoading]   = useState(true);
-  const [retraining, setRetraining] = useState(false);
-  const [seeding,   setSeeding]   = useState(false);
   const [error,     setError]     = useState<string | null>(null);
-  const [lastUpdated, setLastUpdated] = useState<string | null>(null);
   const [refreshingTrends, setRefreshingTrends] = useState(false);
   const [trendsLastUpdated, setTrendsLastUpdated] = useState<string | null>(null);
   const [trendsRefreshTrigger, setTrendsRefreshTrigger] = useState(0);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   async function handleRefreshTrends() {
     setRefreshingTrends(true);
@@ -123,14 +119,6 @@ export default function RecommendedOrders({ refreshTrigger = 0 }: { refreshTrigg
           })
         )
       );
-
-      const latest = rows.reduce((a, b) => (a.created_at > b.created_at ? a : b));
-      setLastUpdated(
-        new Date(latest.created_at).toLocaleString("en-US", {
-          month: "short", day: "numeric", year: "numeric",
-          hour: "numeric", minute: "2-digit",
-        })
-      );
     } else {
       setForecasts([]);
     }
@@ -141,97 +129,38 @@ export default function RecommendedOrders({ refreshTrigger = 0 }: { refreshTrigg
     fetchForecasts();
   }, [fetchForecasts, refreshTrigger]);
 
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    // Reset so the same file can be re-uploaded if needed
-    e.target.value = "";
-
-    setSeeding(true);
-    setError(null);
-    try {
-      const form = new FormData();
-      form.append("file", file);
-      const res = await fetch("/api/seed", { method: "POST", body: form });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.message ?? "Upload failed");
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Unknown error");
-    } finally {
-      setSeeding(false);
-    }
-  };
-
-  const handleRetrain = async () => {
-    setRetraining(true);
-    setError(null);
-    try {
-      const res = await fetch("/api/forecasts", { method: "POST" });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.message ?? "Training failed");
-      await fetchForecasts();
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Unknown error");
-    } finally {
-      setRetraining(false);
-    }
-  };
-
   return (
     <section className="mx-6 my-6 border border-light-gray rounded-sm">
       {/* Title row */}
       <div className="flex items-center justify-between px-5 pt-4 pb-3">
         <h2 className="text-base font-semibold text-charcoal">Recommended Orders</h2>
         {/* Actions — swap based on active tab */}
-        {activeTab === "Forecasts" ? (
-          <div className="flex items-center gap-3">
-            {lastUpdated && (
-              <span className="text-xs text-warm-gray">Updated {lastUpdated}</span>
-            )}
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".csv"
-              className="hidden"
-              onChange={handleUpload}
-            />
-            <Button
-              variant="outline"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={seeding || retraining}
-              className="text-xs"
-            >
-              {seeding ? "Uploading…" : "Upload CSV"}
-            </Button>
-            <Button
-              variant="outline"
-              onClick={handleRetrain}
-              disabled={retraining || seeding}
-              className="text-xs"
-            >
-              {retraining ? "Generating…" : "Generate Order Plan"}
-            </Button>
-          </div>
-        ) : (
+        {activeTab === "Trends" ? (
           <div className="flex items-center gap-3">
             {trendsLastUpdated && (
               <span className="text-xs text-warm-gray">Updated {trendsLastUpdated}</span>
             )}
-            <Button
-              variant="outline"
+            <button
+              type="button"
               onClick={handleRefreshTrends}
               disabled={refreshingTrends}
-              className="text-xs"
+              className="rounded-sm border border-light-gray px-3 py-1.5 text-xs text-charcoal transition-colors hover:bg-cream disabled:cursor-not-allowed disabled:opacity-60"
             >
               {refreshingTrends ? "Refreshing…" : "Refresh Trends"}
-            </Button>
+            </button>
+          </div>
+        ) : (
+          <div className="flex items-center gap-3">
+            {activeTab === "Data Viz" && (
+              <span className="text-xs text-warm-gray">Visualized from the current sales CSV</span>
+            )}
           </div>
         )}
       </div>
 
       {/* Tab bar */}
       <div className="flex items-end border-b border-light-gray px-5">
-        {(["Forecasts", "Trends"] as ActiveTab[]).map((tab) => {
+        {(["Forecasts", "Data Viz", "Trends"] as ActiveTab[]).map((tab) => {
           const isActive = tab === activeTab;
           return (
             <button
@@ -250,6 +179,14 @@ export default function RecommendedOrders({ refreshTrigger = 0 }: { refreshTrigg
         })}
       </div>
 
+      {error && activeTab !== "Forecasts" && (
+        <div className="px-5 py-3 bg-red-50 border-b border-red-200 text-sm text-red-700">
+          {error}
+        </div>
+      )}
+
+      {activeTab === "Data Viz" && <SalesVisualizationView />}
+
       {/* Trends tab content */}
       {activeTab === "Trends" && (
         <TrendsView refreshTrigger={trendsRefreshTrigger} />
@@ -258,7 +195,6 @@ export default function RecommendedOrders({ refreshTrigger = 0 }: { refreshTrigg
       {/* Forecasts tab content */}
       {activeTab === "Forecasts" && (
         <>
-          {/* Error */}
           {error && (
             <div className="px-5 py-3 bg-red-50 border-b border-red-200 text-sm text-red-700">
               {error}
