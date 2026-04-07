@@ -237,8 +237,8 @@ export default function SalesVisualizationView() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 items-start gap-5 xl:grid-cols-[1.2fr_1fr]">
-        <div className="rounded-sm border border-light-gray bg-white p-4">
+      <div className="grid grid-cols-1 gap-5 xl:grid-cols-[1.2fr_1fr]">
+        <div className="h-full rounded-sm border border-light-gray bg-white p-4">
           <div className="mb-3">
             <h3 className="text-sm font-medium text-charcoal">Monthly Sales Volume</h3>
             <p className="text-xs text-warm-gray">Full-file monthly totals from the uploaded sales data</p>
@@ -267,7 +267,7 @@ export default function SalesVisualizationView() {
           </ResponsiveContainer>
         </div>
 
-        <div className="rounded-sm border border-light-gray bg-white p-4">
+        <div className="flex h-full flex-col rounded-sm border border-light-gray bg-white p-4">
           <div className="mb-3">
             <h3 className="text-sm font-medium text-charcoal">Top Products</h3>
             <p className="text-xs text-warm-gray">Highest unit volume across the sales CSV</p>
