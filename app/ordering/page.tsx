@@ -62,13 +62,28 @@ export default function OrderingPage() {
   // ── Fetch forecasts for Create Order modal ──────────────────────────────────
   useEffect(() => {
     async function fetchForecasts() {
+      const { data: latestForecast, error: latestErr } = await supabase
+        .from("demand_forecasts")
+        .select("forecast_date")
+        .order("forecast_date", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (latestErr || !latestForecast?.forecast_date) {
+        setForecasts([]);
+        return;
+      }
+
       const { data, error } = await supabase
         .from("demand_forecasts")
         .select("*")
+        .eq("forecast_date", latestForecast.forecast_date)
         .order("recommended_order", { ascending: false });
 
       if (!error && data && data.length > 0) {
         setForecasts((data as DemandForecastRow[]).map(forecastRowToForecast));
+      } else {
+        setForecasts([]);
       }
     }
     fetchForecasts();

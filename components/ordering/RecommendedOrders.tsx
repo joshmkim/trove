@@ -5,6 +5,7 @@ import Button from "@/components/ui/Button";
 import TrendsView from "@/components/ordering/TrendsView";
 import { supabase } from "@/lib/supabase";
 import {
+  formatUnitLabel,
   forecastRowToForecast,
   forecastStatus,
   type DemandForecast,
@@ -69,9 +70,32 @@ export default function RecommendedOrders({ refreshTrigger = 0 }: { refreshTrigg
     setLoading(true);
     setError(null);
 
+    const { data: latestForecast, error: latestErr } = await supabase
+      .from("demand_forecasts")
+      .select("forecast_date")
+      .order("forecast_date", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (latestErr) {
+      setError(latestErr.message);
+      setLoading(false);
+      return;
+    }
+
+    if (!latestForecast?.forecast_date) {
+      setForecasts([]);
+      setLoading(false);
+      return;
+    }
+
     const [{ data, error: fetchErr }, { data: ingData }] = await Promise.all([
-      supabase.from("demand_forecasts").select("*").order("recommended_order", { ascending: false }),
-      supabase.from("items").select("product_name, quantity_remaining, purchase_unit_size"),
+      supabase
+        .from("demand_forecasts")
+        .select("*")
+        .eq("forecast_date", latestForecast.forecast_date)
+        .order("recommended_order", { ascending: false }),
+      supabase.from("items").select("product_name, quantity_remaining"),
     ]);
 
     if (fetchErr) {
@@ -185,7 +209,7 @@ export default function RecommendedOrders({ refreshTrigger = 0 }: { refreshTrigg
               disabled={retraining || seeding}
               className="text-xs"
             >
-              {retraining ? "Retraining…" : "Retrain Model"}
+              {retraining ? "Generating…" : "Generate Order Plan"}
             </Button>
           </div>
         ) : (
@@ -247,7 +271,7 @@ export default function RecommendedOrders({ refreshTrigger = 0 }: { refreshTrigg
             </div>
           ) : forecasts.length === 0 ? (
             <div className="py-12 text-center text-sm text-warm-gray">
-              No forecast data yet — click &ldquo;Retrain Model&rdquo; to run the ML pipeline.
+              No forecast data yet — click &ldquo;Generate Order Plan&rdquo; to build a new recommendation snapshot.
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -255,11 +279,11 @@ export default function RecommendedOrders({ refreshTrigger = 0 }: { refreshTrigg
                 <thead>
                   <tr className="border-b border-light-gray">
                     {[
-                      "Ingredient",
-                      "Predicted 7-Day Demand",
-                      "Current Stock",
-                      "Safety Stock",
-                      "Recommended Order",
+                      "Item",
+                      "7-Day Need",
+                      "In Stock",
+                      "Safety Buffer",
+                      "Order",
                       "Status",
                     ].map((h) => (
                       <th
@@ -282,21 +306,29 @@ export default function RecommendedOrders({ refreshTrigger = 0 }: { refreshTrigg
                       </td>
                       <td className="py-3 px-4 text-sm text-charcoal">
                         {Math.round(f.predictedDemand).toLocaleString()}
-                        <span className="ml-1 text-warm-gray">{f.unit}s</span>
+                        <span className="ml-1 text-warm-gray">
+                          {formatUnitLabel(f.unit, f.predictedDemand)}
+                        </span>
                       </td>
                       <td className="py-3 px-4 text-sm text-charcoal">
                         {Math.round(f.currentStock).toLocaleString()}
-                        <span className="ml-1 text-warm-gray">{f.unit}s</span>
+                        <span className="ml-1 text-warm-gray">
+                          {formatUnitLabel(f.unit, f.currentStock)}
+                        </span>
                       </td>
                       <td className="py-3 px-4 text-sm text-charcoal">
                         {Math.round(f.safetyStock).toLocaleString()}
-                        <span className="ml-1 text-warm-gray">{f.unit}s</span>
+                        <span className="ml-1 text-warm-gray">
+                          {formatUnitLabel(f.unit, f.safetyStock)}
+                        </span>
                       </td>
                       <td className="py-3 px-4 text-sm font-semibold text-charcoal">
                         {f.recommendedOrder > 0 ? (
                           <>
                             {Math.round(f.recommendedOrder).toLocaleString()}
-                            <span className="ml-1 font-normal text-warm-gray">{f.unit}s</span>
+                            <span className="ml-1 font-normal text-warm-gray">
+                              {formatUnitLabel(f.unit, f.recommendedOrder)}
+                            </span>
                           </>
                         ) : "—"}
                       </td>

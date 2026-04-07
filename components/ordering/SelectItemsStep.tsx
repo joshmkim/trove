@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Button from "@/components/ui/Button";
-import { forecastStatus, type DemandForecast } from "@/lib/types";
+import { formatUnitLabel, forecastStatus, type DemandForecast } from "@/lib/types";
 import type { CustomItem } from "./CreateOrderModal";
 
 const UNITS = ["kg", "lbs", "cartons", "pcs", "liters"];
@@ -86,7 +86,7 @@ export default function SelectItemsStep({
                     <span className="flex-1 text-sm text-charcoal">{f.ingredientName}</span>
                     <span className="text-sm text-warm-gray whitespace-nowrap">
                       {f.recommendedOrder > 0
-                        ? `${f.recommendedOrder.toLocaleString()} ${f.unit}s`
+                        ? `${f.recommendedOrder.toLocaleString()} ${formatUnitLabel(f.unit, f.recommendedOrder)}`
                         : "—"}
                     </span>
                     <span

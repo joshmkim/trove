@@ -21,6 +21,7 @@ Requirements:
 import argparse
 import math
 import os
+import re
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -38,6 +39,87 @@ DEFAULT_TRAIN_RATIO = 0.8
 DEFAULT_SALES_CSV = "trove_sales_data.csv"
 DEFAULT_RECIPE_CSV = "trove_recipe_data.csv"
 CSV_SEARCH_DIRS = ("", "data", "scripts")
+INGREDIENT_CATALOG = {
+    "Espresso Shot": {
+        "inventory_name": "Coffee Beans",
+        "measure_unit": "g",
+        "purchase_unit": "bag",
+        "purchase_unit_size": 1000,
+        "quantity_multiplier": 18,
+    },
+    "Milk (ml)": {
+        "inventory_name": "Whole Milk",
+        "measure_unit": "ml",
+        "purchase_unit": "carton",
+        "purchase_unit_size": 1000,
+    },
+    "Water (ml)": {
+        "inventory_name": "Water",
+        "measure_unit": "ml",
+        "purchase_unit": "jug",
+        "purchase_unit_size": 5000,
+    },
+    "Chocolate Syrup (ml)": {
+        "inventory_name": "Chocolate Syrup",
+        "measure_unit": "ml",
+        "purchase_unit": "bottle",
+        "purchase_unit_size": 500,
+    },
+    "Cold Brew Concentrate (ml)": {
+        "inventory_name": "Cold Brew Concentrate",
+        "measure_unit": "ml",
+        "purchase_unit": "jug",
+        "purchase_unit_size": 1000,
+    },
+    "Chai Concentrate (ml)": {
+        "inventory_name": "Chai Concentrate",
+        "measure_unit": "ml",
+        "purchase_unit": "carton",
+        "purchase_unit_size": 1000,
+    },
+    "Matcha Powder (g)": {
+        "inventory_name": "Matcha Powder",
+        "measure_unit": "g",
+        "purchase_unit": "tin",
+        "purchase_unit_size": 500,
+    },
+    "Dough (g)": {
+        "inventory_name": "Dough",
+        "measure_unit": "g",
+        "purchase_unit": "box",
+        "purchase_unit_size": 1000,
+    },
+    "Butter (g)": {
+        "inventory_name": "Unsalted Butter",
+        "measure_unit": "g",
+        "purchase_unit": "block",
+        "purchase_unit_size": 250,
+    },
+    "Flour (g)": {
+        "inventory_name": "All-Purpose Flour",
+        "measure_unit": "g",
+        "purchase_unit": "bag",
+        "purchase_unit_size": 1000,
+    },
+    "Blueberries (g)": {
+        "inventory_name": "Blueberries",
+        "measure_unit": "g",
+        "purchase_unit": "box",
+        "purchase_unit_size": 125,
+    },
+    "Bread Slice": {
+        "inventory_name": "Bread",
+        "measure_unit": "slice",
+        "purchase_unit": "loaf",
+        "purchase_unit_size": 20,
+    },
+    "Avocado (g)": {
+        "inventory_name": "Avocados",
+        "measure_unit": "g",
+        "purchase_unit": "unit",
+        "purchase_unit_size": 150,
+    },
+}
 
 # ── Load env ──────────────────────────────────────────────────────────────────
 ROOT = Path(__file__).resolve().parent.parent
@@ -115,6 +197,41 @@ def find_first_column(df: pd.DataFrame, candidates: list[str], label: str, requi
 
 def coerce_string(series: pd.Series) -> pd.Series:
     return series.astype(str).str.strip().replace({"": None, "nan": None, "None": None})
+
+
+def parse_labeled_unit(label: str) -> tuple[str, str | None]:
+    match = re.match(r"^(.*?)\s*\(([^)]+)\)\s*$", label.strip())
+    if not match:
+        return label.strip(), None
+    return match.group(1).strip(), match.group(2).strip()
+
+
+def normalize_recipe_rows(recipes: pd.DataFrame) -> pd.DataFrame:
+    recipes = recipes.copy()
+
+    def _normalize(row: pd.Series) -> pd.Series:
+        original_name = str(row["ingredient_name"]).strip()
+        parsed_name, parsed_unit = parse_labeled_unit(original_name)
+        catalog = INGREDIENT_CATALOG.get(original_name, {})
+
+        canonical_name = catalog.get("inventory_name", parsed_name)
+        measure_unit = catalog.get("measure_unit") or row.get("unit") or parsed_unit or "unit"
+        quantity_multiplier = float(catalog.get("quantity_multiplier", 1))
+
+        return pd.Series(
+            {
+                "ingredient_name": canonical_name,
+                "source_ingredient_name": original_name,
+                "unit": measure_unit,
+                "quantity_per_unit": safe_float(row["quantity_per_unit"]) * quantity_multiplier,
+                "catalog_purchase_unit": catalog.get("purchase_unit"),
+                "catalog_purchase_unit_size": catalog.get("purchase_unit_size"),
+            }
+        )
+
+    normalized = recipes.apply(_normalize, axis=1)
+    recipes = recipes.drop(columns=["ingredient_name", "unit", "quantity_per_unit"]).join(normalized)
+    return recipes
 
 
 def load_sales_source(csv_path: Path | None) -> tuple[pd.DataFrame, str]:
@@ -276,6 +393,7 @@ def load_recipe_source(csv_path: Path | None) -> tuple[pd.DataFrame, str]:
     if recipes.empty:
         sys.exit("ERROR: no usable recipe rows were found after parsing input data.")
 
+    recipes = normalize_recipe_rows(recipes)
     return recipes, source
 
 
@@ -508,6 +626,8 @@ ingrs = pd.DataFrame(ingrs_raw).rename(
     columns={"product_name": "name", "quantity_remaining": "current_stock_pu"}
 )
 ingrs["name"] = coerce_string(ingrs["name"])
+ingrs["purchase_unit"] = coerce_string(ingrs["purchase_unit"])
+ingrs["unit"] = coerce_string(ingrs["unit"])
 
 product_totals = (
     forecast.groupby("product_type")["qty"]
@@ -534,6 +654,11 @@ ingr_demand = (
     .reset_index()
     .rename(columns={"ingredient_demand": "predicted_demand"})
 )
+ingredient_meta = (
+    recipes[["ingredient_name", "catalog_purchase_unit", "catalog_purchase_unit_size"]]
+    .drop_duplicates(subset=["ingredient_name"])
+)
+ingr_demand = ingr_demand.merge(ingredient_meta, on="ingredient_name", how="left")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -560,21 +685,56 @@ ingr_demand = ingr_demand.merge(std_by_ingr, on="ingredient_name", how="left")
 ingr_demand["safety_stock"] = (ingr_demand["demand_std"] * SAFETY_FACTOR).fillna(0)
 
 ingr_demand = ingr_demand.merge(
-    ingrs[["name", "current_stock_pu", "purchase_unit", "purchase_unit_size"]].rename(
+    ingrs[["name", "current_stock_pu", "unit", "purchase_unit", "purchase_unit_size"]].rename(
         columns={"name": "ingredient_name"}
     ),
     on="ingredient_name",
     how="left",
+    suffixes=("", "_inventory"),
 )
 ingr_demand["current_stock_pu"] = pd.to_numeric(
     ingr_demand["current_stock_pu"], errors="coerce"
 ).fillna(0)
 ingr_demand["purchase_unit_size"] = pd.to_numeric(
     ingr_demand["purchase_unit_size"], errors="coerce"
-).fillna(1)
+)
 ingr_demand["purchase_unit"] = coerce_string(ingr_demand["purchase_unit"]).fillna(
+    coerce_string(ingr_demand["catalog_purchase_unit"])
+)
+catalog_purchase_sizes = pd.to_numeric(
+    ingr_demand["catalog_purchase_unit_size"], errors="coerce"
+)
+unit_mismatch = (
+    ingr_demand["unit_inventory"].notna()
+    & ingr_demand["unit"].notna()
+    & (ingr_demand["unit_inventory"] != ingr_demand["unit"])
+    & catalog_purchase_sizes.notna()
+)
+ingr_demand.loc[unit_mismatch, "purchase_unit_size"] = catalog_purchase_sizes.loc[
+    unit_mismatch
+]
+ingr_demand["purchase_unit_size"] = ingr_demand["purchase_unit_size"].where(
+    ingr_demand["purchase_unit_size"].notna() & (ingr_demand["purchase_unit_size"] > 0),
+    catalog_purchase_sizes,
+)
+ingr_demand["purchase_unit_size"] = ingr_demand["purchase_unit_size"].fillna(1)
+ingr_demand["purchase_unit"] = ingr_demand["purchase_unit"].fillna(
     ingr_demand["unit"]
 )
+
+missing_inventory = sorted(
+    ingr_demand.loc[
+        ingr_demand["current_stock_pu"].eq(0) & ingr_demand["unit_inventory"].isna(),
+        "ingredient_name",
+    ].dropna().unique().tolist()
+)
+if missing_inventory:
+    print(
+        "  No inventory item matched for: "
+        + ", ".join(missing_inventory)
+        + ". Using catalog defaults and zero current stock.",
+        flush=True,
+    )
 
 ingr_demand["predicted_demand_pu"] = ingr_demand.apply(
     lambda r: to_purchase_units(r["predicted_demand"], r["purchase_unit_size"]),
@@ -598,6 +758,10 @@ ingr_demand["recommended_order_pu"] = (
 print("Writing to demand_forecasts …", flush=True)
 forecast_date = (last_date + timedelta(days=1)).date().isoformat()
 retrained_at = datetime.now(timezone.utc).isoformat()
+
+# Replace the existing snapshot for this forecast date so stale ingredient rows
+# from previous runs do not leak into the UI.
+supabase.table("demand_forecasts").delete().eq("forecast_date", forecast_date).execute()
 
 upsert_rows = [
     {

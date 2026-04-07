@@ -218,6 +218,22 @@ export function forecastRowToForecast(row: DemandForecastRow): DemandForecast {
   };
 }
 
+export function formatUnitLabel(unit: string, quantity: number): string {
+  const normalized = (unit || "unit").trim().toLowerCase();
+  const isSingular = Math.abs(quantity) === 1;
+
+  if (isSingular) return normalized;
+
+  const irregular: Record<string, string> = {
+    loaf: "loaves",
+    box: "boxes",
+  };
+
+  if (irregular[normalized]) return irregular[normalized];
+  if (normalized.endsWith("s")) return normalized;
+  return `${normalized}s`;
+}
+
 export function forecastStatus(
   forecast: DemandForecast
 ): "critical" | "tight" | "ok" {

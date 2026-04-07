@@ -1,8 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { execFile } from "child_process";
-import { writeFile, unlink } from "fs/promises";
+import { writeFile } from "fs/promises";
 import path from "path";
-import os from "os";
+
+function resolveTargetCsvName(fileName: string): string | null {
+  const lower = fileName.toLowerCase();
+  if (lower.includes("recipe")) return "trove_recipe_data.csv";
+  if (lower.includes("sales")) return "trove_sales_data.csv";
+  return null;
+}
 
 export async function POST(req: NextRequest) {
   const formData = await req.formData();
@@ -12,34 +17,24 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No file provided" }, { status: 400 });
   }
 
-  // Save uploaded CSV to a temp file
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const tmpPath = path.join(os.tmpdir(), `sales_upload_${Date.now()}.csv`);
-  await writeFile(tmpPath, buffer);
-
-  const scriptPath = path.join(process.cwd(), "scripts", "seed_sales_history.py");
-
-  return new Promise<NextResponse>((resolve) => {
-    execFile(
-      "python3",
-      [scriptPath, tmpPath],
-      { cwd: process.cwd(), timeout: 5 * 60 * 1000 /* 5 min */ },
-      async (error, stdout, stderr) => {
-        await unlink(tmpPath).catch(() => {});
-
-        if (error) {
-          console.error("[seed] script error:", stderr || error.message);
-          resolve(
-            NextResponse.json(
-              { status: "error", message: stderr || error.message },
-              { status: 500 }
-            )
-          );
-          return;
-        }
-        console.log("[seed] script output:", stdout);
-        resolve(NextResponse.json({ status: "complete", output: stdout }));
-      }
+  const targetName = resolveTargetCsvName(file.name);
+  if (!targetName) {
+    return NextResponse.json(
+      {
+        error:
+          "Filename must indicate whether this is a sales or recipe CSV.",
+      },
+      { status: 400 }
     );
+  }
+
+  const buffer = Buffer.from(await file.arrayBuffer());
+  const targetPath = path.join(process.cwd(), targetName);
+  await writeFile(targetPath, buffer);
+
+  return NextResponse.json({
+    status: "complete",
+    file: targetName,
+    message: `Saved ${targetName} to the project root.`,
   });
 }
