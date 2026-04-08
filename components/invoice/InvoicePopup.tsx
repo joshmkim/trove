@@ -31,6 +31,14 @@ export default function InvoicePopup({ open, onClose, file }: InvoicePopupProps)
       productName: item.productName,
       qtyIn: String(item.qtyIn),
       skuId: item.skuId,
+      unitPrice:
+        item.unitPrice != null && Number.isFinite(item.unitPrice)
+          ? String(item.unitPrice)
+          : "",
+      lineTotal:
+        item.lineTotal != null && Number.isFinite(item.lineTotal)
+          ? String(item.lineTotal)
+          : "",
     }));
   }
 
@@ -85,8 +93,17 @@ export default function InvoicePopup({ open, onClose, file }: InvoicePopupProps)
         productName: item.productName.trim(),
         qtyIn: Number(item.qtyIn),
         skuId: item.skuId.trim(),
+        unitPrice: item.unitPrice.trim() ? Number(item.unitPrice) : null,
+        lineTotal: item.lineTotal.trim() ? Number(item.lineTotal) : null,
       }))
-      .filter((item) => item.productName.length > 0 && Number.isFinite(item.qtyIn) && item.qtyIn > 0);
+      .filter(
+        (item) =>
+          item.productName.length > 0 &&
+          Number.isFinite(item.qtyIn) &&
+          item.qtyIn > 0 &&
+          (item.unitPrice == null || Number.isFinite(item.unitPrice)) &&
+          (item.lineTotal == null || Number.isFinite(item.lineTotal))
+      );
 
     if (items.length === 0) {
       setSaveError("Please verify the item rows before adding them to inventory.");
@@ -101,7 +118,13 @@ export default function InvoicePopup({ open, onClose, file }: InvoicePopupProps)
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ items }),
+        body: JSON.stringify({
+          items,
+          invoice: {
+            filename: uploadedFile?.file.name ?? file?.name ?? "invoice.pdf",
+            fileSize: uploadedFile?.file.size ?? file?.size ?? null,
+          },
+        }),
       });
 
       if (!response.ok) {

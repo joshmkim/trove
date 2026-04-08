@@ -58,6 +58,8 @@ export interface ParsedInvoiceItem {
   productName: string;
   qtyIn: number;
   skuId: string;
+  unitPrice?: number;
+  lineTotal?: number;
 }
 
 export interface EditableInvoiceItem {
@@ -65,6 +67,8 @@ export interface EditableInvoiceItem {
   productName: string;
   qtyIn: string;
   skuId: string;
+  unitPrice: string;
+  lineTotal: string;
 }
 
 // ─── Orders ──────────────────────────────────────────────────────────────────

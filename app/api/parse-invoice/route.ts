@@ -52,9 +52,11 @@ Each object must have exactly these fields:
 - productName: string (the ingredient or product name)
 - qtyIn: number (quantity received)
 - skuId: string (SKU or product code, use "" if not found)
+- unitPrice: number (price per received unit, use 0 if not found)
+- lineTotal: number (total line amount, use 0 if not found)
 
 Example output:
-[{"productName":"All Purpose Flour","qtyIn":25,"skuId":"SKU-001"},{"productName":"Unsalted Butter","qtyIn":10,"skuId":""}]`,
+[{"productName":"All Purpose Flour","qtyIn":25,"skuId":"SKU-001","unitPrice":1.25,"lineTotal":31.25},{"productName":"Unsalted Butter","qtyIn":10,"skuId":"","unitPrice":0,"lineTotal":0}]`,
       },
       {
         role: "user",
@@ -66,7 +68,13 @@ Example output:
 
   const content = response.choices[0].message.content ?? "[]";
 
-  let items: { productName: string; qtyIn: number; skuId: string }[];
+  let items: {
+    productName: string;
+    qtyIn: number;
+    skuId: string;
+    unitPrice?: number;
+    lineTotal?: number;
+  }[];
   try {
     const cleaned = content.replace(/```json|```/g, "").trim();
     items = JSON.parse(cleaned);

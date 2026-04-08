@@ -6,6 +6,13 @@ interface InvoiceApplyItem {
   productName: string;
   qtyIn: number;
   skuId: string;
+  unitPrice?: number | null;
+  lineTotal?: number | null;
+}
+
+interface InvoiceMetadata {
+  filename?: string;
+  fileSize?: number | null;
 }
 
 const LOW_STOCK_THRESHOLD = 10;
@@ -29,6 +36,10 @@ function sanitizeItems(input: unknown): InvoiceApplyItem[] {
       const productName = candidate.productName?.trim() ?? "";
       const qtyIn = Number(candidate.qtyIn);
       const skuId = candidate.skuId?.trim() ?? "";
+      const unitPrice =
+        candidate.unitPrice == null ? null : Number(candidate.unitPrice);
+      const lineTotal =
+        candidate.lineTotal == null ? null : Number(candidate.lineTotal);
 
       if (!productName || !Number.isFinite(qtyIn) || qtyIn <= 0) {
         return null;
@@ -38,6 +49,10 @@ function sanitizeItems(input: unknown): InvoiceApplyItem[] {
         productName,
         qtyIn,
         skuId,
+        unitPrice:
+          unitPrice == null || !Number.isFinite(unitPrice) ? null : unitPrice,
+        lineTotal:
+          lineTotal == null || !Number.isFinite(lineTotal) ? null : lineTotal,
       };
     })
     .filter((item): item is InvoiceApplyItem => item !== null);
@@ -54,6 +69,9 @@ function consolidateItems(items: InvoiceApplyItem[]) {
       existing.qtyIn += item.qtyIn;
       if (!existing.skuId && item.skuId) {
         existing.skuId = item.skuId;
+      }
+      if (item.lineTotal != null) {
+        existing.lineTotal = (existing.lineTotal ?? 0) + item.lineTotal;
       }
       continue;
     }
@@ -74,6 +92,7 @@ export async function POST(req: NextRequest) {
   }
 
   const items = consolidateItems(sanitizeItems((payload as { items?: unknown })?.items));
+  const invoice = ((payload as { invoice?: InvoiceMetadata })?.invoice ?? {}) as InvoiceMetadata;
 
   if (items.length === 0) {
     return NextResponse.json({ error: "No valid invoice items were provided." }, { status: 400 });
@@ -172,6 +191,31 @@ export async function POST(req: NextRequest) {
     if (insertError) {
       return NextResponse.json({ error: insertError.message }, { status: 500 });
     }
+  }
+
+  const invoiceRows = items.map((item) => ({
+    productName: item.productName,
+    qtyIn: item.qtyIn,
+    skuId: item.skuId,
+    unitPrice: item.unitPrice ?? 0,
+    lineTotal:
+      item.lineTotal ??
+      (item.unitPrice != null ? Number((item.qtyIn * item.unitPrice).toFixed(2)) : 0),
+  }));
+
+  const { error: invoiceError } = await supabase.from("invoices").insert({
+    filename: invoice.filename?.trim() || "invoice.pdf",
+    file_size:
+      invoice.fileSize != null && Number.isFinite(invoice.fileSize)
+        ? String(invoice.fileSize)
+        : null,
+    upload_status: "completed",
+    upload_progress: 100,
+    parsed_items: invoiceRows,
+  });
+
+  if (invoiceError) {
+    return NextResponse.json({ error: invoiceError.message }, { status: 500 });
   }
 
   return NextResponse.json({

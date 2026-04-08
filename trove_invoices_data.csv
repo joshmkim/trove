@@ -1,0 +1,964 @@
+invoice_id,purchase_time,day_of_week,vendor,purchased_item,quantity,pack_size,unit_price,line_total,store_id
+INV-700000,2025-01-03 14:00:00,Friday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700001,2025-01-05 13:00:00,Sunday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700002,2025-01-06 10:00:00,Monday,PantryPro Supply,Chai Concentrate,2,6,28,56,1
+INV-700003,2025-01-07 13:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700004,2025-01-08 14:00:00,Wednesday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700005,2025-01-08 11:00:00,Wednesday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700006,2025-01-09 13:00:00,Thursday,PantryPro Supply,Chocolate Syrup,2,6,28,56,1
+INV-700007,2025-01-09 13:00:00,Thursday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700008,2025-01-10 13:00:00,Friday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700009,2025-01-10 08:00:00,Friday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700010,2025-01-11 11:00:00,Saturday,BakerySource Foods,Croissant,2,24,30,60,1
+INV-700011,2025-01-11 10:00:00,Saturday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700012,2025-01-11 13:00:00,Saturday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700013,2025-01-12 14:00:00,Sunday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700014,2025-01-13 12:00:00,Monday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700015,2025-01-13 13:00:00,Monday,PantryPro Supply,Chocolate Syrup,2,6,28,56,1
+INV-700016,2025-01-13 12:00:00,Monday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700017,2025-01-14 09:00:00,Tuesday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700018,2025-01-14 12:00:00,Tuesday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700019,2025-01-15 08:00:00,Wednesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700020,2025-01-15 14:00:00,Wednesday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700021,2025-01-16 14:00:00,Thursday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700022,2025-01-16 13:00:00,Thursday,BakerySource Foods,Blueberry Muffin,2,24,28,56,1
+INV-700023,2025-01-17 08:00:00,Friday,BakerySource Foods,Bagel,2,24,26,52,1
+INV-700024,2025-01-17 09:00:00,Friday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700025,2025-01-18 11:00:00,Saturday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700026,2025-01-18 09:00:00,Saturday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700027,2025-01-19 11:00:00,Sunday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700028,2025-01-19 12:00:00,Sunday,BakerySource Foods,Croissant,2,24,30,60,1
+INV-700029,2025-01-20 12:00:00,Monday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700030,2025-01-20 10:00:00,Monday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700031,2025-01-21 09:00:00,Tuesday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700032,2025-01-22 08:00:00,Wednesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700033,2025-01-22 08:00:00,Wednesday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700034,2025-01-22 12:00:00,Wednesday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700035,2025-01-23 13:00:00,Thursday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700036,2025-01-23 09:00:00,Thursday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700037,2025-01-23 09:00:00,Thursday,PantryPro Supply,Chocolate Syrup,2,6,28,56,1
+INV-700038,2025-01-23 11:00:00,Thursday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700039,2025-01-24 13:00:00,Friday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700040,2025-01-25 11:00:00,Saturday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700041,2025-01-25 13:00:00,Saturday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700042,2025-01-25 08:00:00,Saturday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700043,2025-01-26 11:00:00,Sunday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700044,2025-01-26 13:00:00,Sunday,BeanCraft Roasters,Cold Brew Beans,2,5,70,140,1
+INV-700045,2025-01-27 08:00:00,Monday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700046,2025-01-28 12:00:00,Tuesday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700047,2025-01-28 13:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700048,2025-01-28 14:00:00,Tuesday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700049,2025-01-29 11:00:00,Wednesday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700050,2025-01-30 12:00:00,Thursday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700051,2025-01-30 14:00:00,Thursday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700052,2025-01-31 12:00:00,Friday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700053,2025-01-31 11:00:00,Friday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700054,2025-01-31 14:00:00,Friday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700055,2025-01-31 11:00:00,Friday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700056,2025-02-01 13:00:00,Saturday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700057,2025-02-02 14:00:00,Sunday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700058,2025-02-02 08:00:00,Sunday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700059,2025-02-02 11:00:00,Sunday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700060,2025-02-02 12:00:00,Sunday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700061,2025-02-04 09:00:00,Tuesday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700062,2025-02-04 12:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700063,2025-02-04 09:00:00,Tuesday,BakerySource Foods,Blueberry Muffin,2,24,28,56,1
+INV-700064,2025-02-05 14:00:00,Wednesday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700065,2025-02-05 09:00:00,Wednesday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700066,2025-02-06 14:00:00,Thursday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700067,2025-02-06 14:00:00,Thursday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700068,2025-02-06 09:00:00,Thursday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700069,2025-02-07 09:00:00,Friday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700070,2025-02-07 11:00:00,Friday,BakerySource Foods,Bagel,2,24,26,52,1
+INV-700071,2025-02-08 13:00:00,Saturday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700072,2025-02-08 08:00:00,Saturday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700073,2025-02-08 11:00:00,Saturday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700074,2025-02-09 13:00:00,Sunday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700075,2025-02-09 08:00:00,Sunday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700076,2025-02-09 14:00:00,Sunday,PantryPro Supply,Chocolate Syrup,2,6,28,56,1
+INV-700077,2025-02-10 13:00:00,Monday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700078,2025-02-10 10:00:00,Monday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700079,2025-02-11 13:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700080,2025-02-12 13:00:00,Wednesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700081,2025-02-12 12:00:00,Wednesday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700082,2025-02-13 10:00:00,Thursday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700083,2025-02-13 09:00:00,Thursday,BakerySource Foods,Croissant,2,24,30,60,1
+INV-700084,2025-02-14 12:00:00,Friday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700085,2025-02-15 08:00:00,Saturday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700086,2025-02-15 12:00:00,Saturday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700087,2025-02-15 09:00:00,Saturday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700088,2025-02-16 14:00:00,Sunday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700089,2025-02-17 09:00:00,Monday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700090,2025-02-17 11:00:00,Monday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700091,2025-02-18 14:00:00,Tuesday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700092,2025-02-18 11:00:00,Tuesday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700093,2025-02-18 10:00:00,Tuesday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700094,2025-02-18 11:00:00,Tuesday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700095,2025-02-19 09:00:00,Wednesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700096,2025-02-19 13:00:00,Wednesday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700097,2025-02-19 08:00:00,Wednesday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700098,2025-02-20 12:00:00,Thursday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700099,2025-02-20 11:00:00,Thursday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700100,2025-02-21 13:00:00,Friday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700101,2025-02-21 13:00:00,Friday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700102,2025-02-22 13:00:00,Saturday,BakerySource Foods,Bagel,2,24,26,52,1
+INV-700103,2025-02-22 14:00:00,Saturday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700104,2025-02-23 12:00:00,Sunday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700105,2025-02-24 13:00:00,Monday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700106,2025-02-24 13:00:00,Monday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700107,2025-02-25 13:00:00,Tuesday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700108,2025-02-25 10:00:00,Tuesday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700109,2025-02-25 10:00:00,Tuesday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700110,2025-02-26 13:00:00,Wednesday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700111,2025-02-27 14:00:00,Thursday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700112,2025-02-27 09:00:00,Thursday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700113,2025-02-27 10:00:00,Thursday,PantryPro Supply,Chocolate Syrup,2,6,28,56,1
+INV-700114,2025-02-28 08:00:00,Friday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700115,2025-02-28 12:00:00,Friday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700116,2025-03-01 10:00:00,Saturday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700117,2025-03-01 08:00:00,Saturday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700118,2025-03-02 12:00:00,Sunday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700119,2025-03-02 12:00:00,Sunday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700120,2025-03-02 13:00:00,Sunday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700121,2025-03-02 12:00:00,Sunday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700122,2025-03-03 11:00:00,Monday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700123,2025-03-03 08:00:00,Monday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700124,2025-03-03 14:00:00,Monday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700125,2025-03-04 12:00:00,Tuesday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700126,2025-03-04 09:00:00,Tuesday,BakerySource Foods,Blueberry Muffin,2,24,28,56,1
+INV-700127,2025-03-05 11:00:00,Wednesday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700128,2025-03-05 10:00:00,Wednesday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700129,2025-03-05 14:00:00,Wednesday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700130,2025-03-05 09:00:00,Wednesday,PantryPro Supply,Chai Concentrate,2,6,28,56,1
+INV-700131,2025-03-06 13:00:00,Thursday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700132,2025-03-06 13:00:00,Thursday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700133,2025-03-07 12:00:00,Friday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700134,2025-03-07 08:00:00,Friday,PantryPro Supply,Chocolate Syrup,2,6,28,56,1
+INV-700135,2025-03-08 12:00:00,Saturday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700136,2025-03-08 11:00:00,Saturday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700137,2025-03-08 11:00:00,Saturday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700138,2025-03-08 10:00:00,Saturday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700139,2025-03-08 09:00:00,Saturday,PantryPro Supply,Matcha Powder,1,1,40,40,1
+INV-700140,2025-03-09 08:00:00,Sunday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700141,2025-03-09 08:00:00,Sunday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700142,2025-03-10 14:00:00,Monday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700143,2025-03-10 12:00:00,Monday,PantryPro Supply,Matcha Powder,1,1,40,40,1
+INV-700144,2025-03-11 10:00:00,Tuesday,BakerySource Foods,Blueberry Muffin,2,24,28,56,1
+INV-700145,2025-03-12 13:00:00,Wednesday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700146,2025-03-12 11:00:00,Wednesday,BakerySource Foods,Bagel,2,24,26,52,1
+INV-700147,2025-03-13 11:00:00,Thursday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700148,2025-03-13 12:00:00,Thursday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700149,2025-03-13 13:00:00,Thursday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700150,2025-03-14 12:00:00,Friday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700151,2025-03-15 14:00:00,Saturday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700152,2025-03-15 14:00:00,Saturday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700153,2025-03-15 12:00:00,Saturday,PantryPro Supply,Chocolate Syrup,2,6,28,56,1
+INV-700154,2025-03-15 13:00:00,Saturday,PantryPro Supply,Chai Concentrate,2,6,28,56,1
+INV-700155,2025-03-16 12:00:00,Sunday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700156,2025-03-16 14:00:00,Sunday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700157,2025-03-16 13:00:00,Sunday,PantryPro Supply,Chai Concentrate,2,6,28,56,1
+INV-700158,2025-03-17 08:00:00,Monday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700159,2025-03-17 12:00:00,Monday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700160,2025-03-17 12:00:00,Monday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700161,2025-03-18 11:00:00,Tuesday,BakerySource Foods,Croissant,2,24,30,60,1
+INV-700162,2025-03-19 10:00:00,Wednesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700163,2025-03-19 11:00:00,Wednesday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700164,2025-03-19 14:00:00,Wednesday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700165,2025-03-20 09:00:00,Thursday,BeanCraft Roasters,Cold Brew Beans,2,5,70,140,1
+INV-700166,2025-03-21 09:00:00,Friday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700167,2025-03-21 13:00:00,Friday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700168,2025-03-21 14:00:00,Friday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700169,2025-03-22 11:00:00,Saturday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700170,2025-03-22 11:00:00,Saturday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700171,2025-03-23 10:00:00,Sunday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700172,2025-03-23 12:00:00,Sunday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700173,2025-03-23 08:00:00,Sunday,PantryPro Supply,Chocolate Syrup,2,6,28,56,1
+INV-700174,2025-03-24 09:00:00,Monday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700175,2025-03-25 08:00:00,Tuesday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700176,2025-03-25 11:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700177,2025-03-25 08:00:00,Tuesday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700178,2025-03-25 08:00:00,Tuesday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700179,2025-03-25 10:00:00,Tuesday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700180,2025-03-26 11:00:00,Wednesday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700181,2025-03-26 12:00:00,Wednesday,PantryPro Supply,Matcha Powder,1,1,40,40,1
+INV-700182,2025-03-27 09:00:00,Thursday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700183,2025-03-27 12:00:00,Thursday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700184,2025-03-28 12:00:00,Friday,BeanCraft Roasters,Cold Brew Beans,2,5,70,140,1
+INV-700185,2025-03-29 08:00:00,Saturday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700186,2025-03-29 12:00:00,Saturday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700187,2025-03-29 08:00:00,Saturday,BakerySource Foods,Bagel,2,24,26,52,1
+INV-700188,2025-03-30 13:00:00,Sunday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700189,2025-03-30 08:00:00,Sunday,BakerySource Foods,Croissant,2,24,30,60,1
+INV-700190,2025-03-30 10:00:00,Sunday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700191,2025-03-31 13:00:00,Monday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700192,2025-03-31 12:00:00,Monday,PantryPro Supply,Chai Concentrate,2,6,28,56,1
+INV-700193,2025-04-01 09:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700194,2025-04-01 09:00:00,Tuesday,BakerySource Foods,Blueberry Muffin,2,24,28,56,1
+INV-700195,2025-04-02 11:00:00,Wednesday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700196,2025-04-02 09:00:00,Wednesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700197,2025-04-02 11:00:00,Wednesday,PantryPro Supply,Chocolate Syrup,2,6,28,56,1
+INV-700198,2025-04-03 11:00:00,Thursday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700199,2025-04-03 11:00:00,Thursday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700200,2025-04-04 13:00:00,Friday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700201,2025-04-05 11:00:00,Saturday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700202,2025-04-06 11:00:00,Sunday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700203,2025-04-06 11:00:00,Sunday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700204,2025-04-07 09:00:00,Monday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700205,2025-04-07 10:00:00,Monday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700206,2025-04-08 11:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700207,2025-04-09 09:00:00,Wednesday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700208,2025-04-09 14:00:00,Wednesday,BakerySource Foods,Croissant,2,24,30,60,1
+INV-700209,2025-04-10 08:00:00,Thursday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700210,2025-04-10 08:00:00,Thursday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700211,2025-04-10 11:00:00,Thursday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700212,2025-04-11 13:00:00,Friday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700213,2025-04-11 14:00:00,Friday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700214,2025-04-11 12:00:00,Friday,BakerySource Foods,Bagel,2,24,26,52,1
+INV-700215,2025-04-12 08:00:00,Saturday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700216,2025-04-12 11:00:00,Saturday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700217,2025-04-12 10:00:00,Saturday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700218,2025-04-13 13:00:00,Sunday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700219,2025-04-13 10:00:00,Sunday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700220,2025-04-14 13:00:00,Monday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700221,2025-04-14 11:00:00,Monday,PantryPro Supply,Chocolate Syrup,2,6,28,56,1
+INV-700222,2025-04-15 13:00:00,Tuesday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700223,2025-04-15 08:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700224,2025-04-16 12:00:00,Wednesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700225,2025-04-16 09:00:00,Wednesday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700226,2025-04-17 14:00:00,Thursday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700227,2025-04-17 13:00:00,Thursday,BakerySource Foods,Bagel,2,24,26,52,1
+INV-700228,2025-04-18 11:00:00,Friday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700229,2025-04-18 09:00:00,Friday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700230,2025-04-18 13:00:00,Friday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700231,2025-04-19 14:00:00,Saturday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700232,2025-04-19 09:00:00,Saturday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700233,2025-04-19 09:00:00,Saturday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700234,2025-04-19 08:00:00,Saturday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700235,2025-04-20 09:00:00,Sunday,BakerySource Foods,Croissant,2,24,30,60,1
+INV-700236,2025-04-20 14:00:00,Sunday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700237,2025-04-20 12:00:00,Sunday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700238,2025-04-21 12:00:00,Monday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700239,2025-04-21 10:00:00,Monday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700240,2025-04-22 11:00:00,Tuesday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700241,2025-04-22 13:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700242,2025-04-22 12:00:00,Tuesday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700243,2025-04-23 13:00:00,Wednesday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700244,2025-04-23 09:00:00,Wednesday,BakerySource Foods,Blueberry Muffin,2,24,28,56,1
+INV-700245,2025-04-24 11:00:00,Thursday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700246,2025-04-24 12:00:00,Thursday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700247,2025-04-24 11:00:00,Thursday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700248,2025-04-25 13:00:00,Friday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700249,2025-04-25 10:00:00,Friday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700250,2025-04-25 11:00:00,Friday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700251,2025-04-26 08:00:00,Saturday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700252,2025-04-27 09:00:00,Sunday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700253,2025-04-27 09:00:00,Sunday,BeanCraft Roasters,Cold Brew Beans,2,5,70,140,1
+INV-700254,2025-04-28 10:00:00,Monday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700255,2025-04-28 09:00:00,Monday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700256,2025-04-29 12:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700257,2025-04-29 14:00:00,Tuesday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700258,2025-04-30 08:00:00,Wednesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700259,2025-05-01 08:00:00,Thursday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700260,2025-05-01 09:00:00,Thursday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700261,2025-05-02 14:00:00,Friday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700262,2025-05-02 14:00:00,Friday,BakerySource Foods,Blueberry Muffin,2,24,28,56,1
+INV-700263,2025-05-03 10:00:00,Saturday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700264,2025-05-03 09:00:00,Saturday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700265,2025-05-03 11:00:00,Saturday,BakerySource Foods,Bagel,2,24,26,52,1
+INV-700266,2025-05-04 11:00:00,Sunday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700267,2025-05-05 09:00:00,Monday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700268,2025-05-05 08:00:00,Monday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700269,2025-05-06 13:00:00,Tuesday,BakerySource Foods,Croissant,2,24,30,60,1
+INV-700270,2025-05-06 11:00:00,Tuesday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700271,2025-05-07 11:00:00,Wednesday,BakerySource Foods,Blueberry Muffin,2,24,28,56,1
+INV-700272,2025-05-08 10:00:00,Thursday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700273,2025-05-08 14:00:00,Thursday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700274,2025-05-09 12:00:00,Friday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700275,2025-05-10 09:00:00,Saturday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700276,2025-05-11 13:00:00,Sunday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700277,2025-05-11 11:00:00,Sunday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700278,2025-05-11 09:00:00,Sunday,BeanCraft Roasters,Cold Brew Beans,2,5,70,140,1
+INV-700279,2025-05-11 13:00:00,Sunday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700280,2025-05-12 13:00:00,Monday,BakerySource Foods,Bagel,2,24,26,52,1
+INV-700281,2025-05-12 10:00:00,Monday,PantryPro Supply,Chocolate Syrup,2,6,28,56,1
+INV-700282,2025-05-13 08:00:00,Tuesday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700283,2025-05-14 13:00:00,Wednesday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700284,2025-05-14 08:00:00,Wednesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700285,2025-05-15 10:00:00,Thursday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700286,2025-05-15 08:00:00,Thursday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700287,2025-05-16 09:00:00,Friday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700288,2025-05-16 14:00:00,Friday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700289,2025-05-17 13:00:00,Saturday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700290,2025-05-17 12:00:00,Saturday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700291,2025-05-18 14:00:00,Sunday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700292,2025-05-18 13:00:00,Sunday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700293,2025-05-19 12:00:00,Monday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700294,2025-05-19 11:00:00,Monday,BakerySource Foods,Blueberry Muffin,2,24,28,56,1
+INV-700295,2025-05-19 11:00:00,Monday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700296,2025-05-20 12:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700297,2025-05-21 10:00:00,Wednesday,BeanCraft Roasters,Cold Brew Beans,2,5,70,140,1
+INV-700298,2025-05-22 14:00:00,Thursday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700299,2025-05-22 08:00:00,Thursday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700300,2025-05-22 10:00:00,Thursday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700301,2025-05-23 14:00:00,Friday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700302,2025-05-23 11:00:00,Friday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700303,2025-05-24 09:00:00,Saturday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700304,2025-05-24 12:00:00,Saturday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700305,2025-05-24 08:00:00,Saturday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700306,2025-05-25 14:00:00,Sunday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700307,2025-05-25 09:00:00,Sunday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700308,2025-05-26 14:00:00,Monday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700309,2025-05-26 14:00:00,Monday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700310,2025-05-26 12:00:00,Monday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700311,2025-05-27 11:00:00,Tuesday,BeanCraft Roasters,Cold Brew Beans,2,5,70,140,1
+INV-700312,2025-05-28 11:00:00,Wednesday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700313,2025-05-28 11:00:00,Wednesday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700314,2025-05-29 10:00:00,Thursday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700315,2025-05-29 11:00:00,Thursday,BakerySource Foods,Blueberry Muffin,2,24,28,56,1
+INV-700316,2025-05-29 08:00:00,Thursday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700317,2025-05-30 12:00:00,Friday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700318,2025-05-30 14:00:00,Friday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700319,2025-05-30 11:00:00,Friday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700320,2025-05-31 14:00:00,Saturday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700321,2025-05-31 09:00:00,Saturday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700322,2025-05-31 08:00:00,Saturday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700323,2025-06-01 09:00:00,Sunday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700324,2025-06-01 12:00:00,Sunday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700325,2025-06-01 09:00:00,Sunday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700326,2025-06-02 09:00:00,Monday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700327,2025-06-02 12:00:00,Monday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700328,2025-06-03 08:00:00,Tuesday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700329,2025-06-03 09:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700330,2025-06-04 12:00:00,Wednesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700331,2025-06-04 14:00:00,Wednesday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700332,2025-06-05 14:00:00,Thursday,BakerySource Foods,Croissant,2,24,30,60,1
+INV-700333,2025-06-05 13:00:00,Thursday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700334,2025-06-05 08:00:00,Thursday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700335,2025-06-06 10:00:00,Friday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700336,2025-06-06 10:00:00,Friday,PantryPro Supply,Chai Concentrate,2,6,28,56,1
+INV-700337,2025-06-07 13:00:00,Saturday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700338,2025-06-07 13:00:00,Saturday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700339,2025-06-08 11:00:00,Sunday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700340,2025-06-08 10:00:00,Sunday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700341,2025-06-08 09:00:00,Sunday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700342,2025-06-08 08:00:00,Sunday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700343,2025-06-09 11:00:00,Monday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700344,2025-06-10 14:00:00,Tuesday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700345,2025-06-11 10:00:00,Wednesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700346,2025-06-11 14:00:00,Wednesday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700347,2025-06-12 10:00:00,Thursday,BakerySource Foods,Croissant,2,24,30,60,1
+INV-700348,2025-06-13 13:00:00,Friday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700349,2025-06-13 13:00:00,Friday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700350,2025-06-14 11:00:00,Saturday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700351,2025-06-14 08:00:00,Saturday,BakerySource Foods,Blueberry Muffin,2,24,28,56,1
+INV-700352,2025-06-15 09:00:00,Sunday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700353,2025-06-15 14:00:00,Sunday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700354,2025-06-15 12:00:00,Sunday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700355,2025-06-15 11:00:00,Sunday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700356,2025-06-16 11:00:00,Monday,BakerySource Foods,Bagel,2,24,26,52,1
+INV-700357,2025-06-16 10:00:00,Monday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700358,2025-06-17 13:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700359,2025-06-18 12:00:00,Wednesday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700360,2025-06-18 11:00:00,Wednesday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700361,2025-06-19 10:00:00,Thursday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700362,2025-06-19 12:00:00,Thursday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700363,2025-06-20 14:00:00,Friday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700364,2025-06-21 14:00:00,Saturday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700365,2025-06-21 08:00:00,Saturday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700366,2025-06-22 10:00:00,Sunday,BakerySource Foods,Bagel,2,24,26,52,1
+INV-700367,2025-06-23 08:00:00,Monday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700368,2025-06-23 13:00:00,Monday,BakerySource Foods,Blueberry Muffin,2,24,28,56,1
+INV-700369,2025-06-24 09:00:00,Tuesday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700370,2025-06-24 08:00:00,Tuesday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700371,2025-06-25 13:00:00,Wednesday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700372,2025-06-25 11:00:00,Wednesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700373,2025-06-26 13:00:00,Thursday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700374,2025-06-27 12:00:00,Friday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700375,2025-06-28 10:00:00,Saturday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700376,2025-06-28 08:00:00,Saturday,BeanCraft Roasters,Cold Brew Beans,2,5,70,140,1
+INV-700377,2025-06-28 14:00:00,Saturday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700378,2025-06-29 14:00:00,Sunday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700379,2025-06-29 11:00:00,Sunday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700380,2025-06-29 10:00:00,Sunday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700381,2025-06-30 10:00:00,Monday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700382,2025-06-30 09:00:00,Monday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700383,2025-07-01 08:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700384,2025-07-02 13:00:00,Wednesday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700385,2025-07-02 11:00:00,Wednesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700386,2025-07-03 08:00:00,Thursday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700387,2025-07-03 10:00:00,Thursday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700388,2025-07-03 09:00:00,Thursday,BakerySource Foods,Croissant,2,24,30,60,1
+INV-700389,2025-07-04 10:00:00,Friday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700390,2025-07-05 14:00:00,Saturday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700391,2025-07-06 09:00:00,Sunday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700392,2025-07-07 12:00:00,Monday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700393,2025-07-07 09:00:00,Monday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700394,2025-07-07 10:00:00,Monday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700395,2025-07-08 14:00:00,Tuesday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700396,2025-07-08 11:00:00,Tuesday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700397,2025-07-08 09:00:00,Tuesday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700398,2025-07-09 12:00:00,Wednesday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700399,2025-07-10 14:00:00,Thursday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700400,2025-07-10 14:00:00,Thursday,BakerySource Foods,Croissant,2,24,30,60,1
+INV-700401,2025-07-11 13:00:00,Friday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700402,2025-07-11 11:00:00,Friday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700403,2025-07-12 13:00:00,Saturday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700404,2025-07-12 14:00:00,Saturday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700405,2025-07-13 12:00:00,Sunday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700406,2025-07-14 11:00:00,Monday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700407,2025-07-14 11:00:00,Monday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700408,2025-07-14 12:00:00,Monday,BakerySource Foods,Blueberry Muffin,2,24,28,56,1
+INV-700409,2025-07-14 08:00:00,Monday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700410,2025-07-15 09:00:00,Tuesday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700411,2025-07-15 08:00:00,Tuesday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700412,2025-07-16 08:00:00,Wednesday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700413,2025-07-16 12:00:00,Wednesday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700414,2025-07-17 11:00:00,Thursday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700415,2025-07-17 14:00:00,Thursday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700416,2025-07-17 14:00:00,Thursday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700417,2025-07-18 10:00:00,Friday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700418,2025-07-18 13:00:00,Friday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700419,2025-07-18 10:00:00,Friday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700420,2025-07-19 14:00:00,Saturday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700421,2025-07-19 08:00:00,Saturday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700422,2025-07-20 13:00:00,Sunday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700423,2025-07-20 10:00:00,Sunday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700424,2025-07-20 10:00:00,Sunday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700425,2025-07-21 13:00:00,Monday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700426,2025-07-21 11:00:00,Monday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700427,2025-07-22 10:00:00,Tuesday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700428,2025-07-22 08:00:00,Tuesday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700429,2025-07-23 09:00:00,Wednesday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700430,2025-07-23 11:00:00,Wednesday,BakerySource Foods,Bagel,2,24,26,52,1
+INV-700431,2025-07-24 08:00:00,Thursday,PantryPro Supply,Chocolate Syrup,2,6,28,56,1
+INV-700432,2025-07-25 11:00:00,Friday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700433,2025-07-26 12:00:00,Saturday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700434,2025-07-26 11:00:00,Saturday,BeanCraft Roasters,Cold Brew Beans,2,5,70,140,1
+INV-700435,2025-07-27 09:00:00,Sunday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700436,2025-07-28 10:00:00,Monday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700437,2025-07-29 10:00:00,Tuesday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700438,2025-07-29 09:00:00,Tuesday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700439,2025-07-29 10:00:00,Tuesday,BakerySource Foods,Bagel,2,24,26,52,1
+INV-700440,2025-07-30 09:00:00,Wednesday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700441,2025-07-31 11:00:00,Thursday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700442,2025-07-31 08:00:00,Thursday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700443,2025-07-31 10:00:00,Thursday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700444,2025-08-01 13:00:00,Friday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700445,2025-08-02 11:00:00,Saturday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700446,2025-08-02 09:00:00,Saturday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700447,2025-08-02 09:00:00,Saturday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700448,2025-08-02 11:00:00,Saturday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700449,2025-08-03 13:00:00,Sunday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700450,2025-08-03 09:00:00,Sunday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700451,2025-08-03 13:00:00,Sunday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700452,2025-08-03 09:00:00,Sunday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700453,2025-08-03 09:00:00,Sunday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700454,2025-08-03 14:00:00,Sunday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700455,2025-08-04 08:00:00,Monday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700456,2025-08-04 12:00:00,Monday,BakerySource Foods,Blueberry Muffin,2,24,28,56,1
+INV-700457,2025-08-05 12:00:00,Tuesday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700458,2025-08-05 13:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700459,2025-08-06 08:00:00,Wednesday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700460,2025-08-07 11:00:00,Thursday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700461,2025-08-07 14:00:00,Thursday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700462,2025-08-07 10:00:00,Thursday,BakerySource Foods,Croissant,2,24,30,60,1
+INV-700463,2025-08-07 08:00:00,Thursday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700464,2025-08-08 12:00:00,Friday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700465,2025-08-09 13:00:00,Saturday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700466,2025-08-09 09:00:00,Saturday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700467,2025-08-10 09:00:00,Sunday,BakerySource Foods,Blueberry Muffin,2,24,28,56,1
+INV-700468,2025-08-10 13:00:00,Sunday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700469,2025-08-11 13:00:00,Monday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700470,2025-08-11 14:00:00,Monday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700471,2025-08-12 13:00:00,Tuesday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700472,2025-08-12 11:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700473,2025-08-12 10:00:00,Tuesday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700474,2025-08-13 14:00:00,Wednesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700475,2025-08-13 09:00:00,Wednesday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700476,2025-08-13 08:00:00,Wednesday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700477,2025-08-14 08:00:00,Thursday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700478,2025-08-14 10:00:00,Thursday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700479,2025-08-15 14:00:00,Friday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700480,2025-08-16 12:00:00,Saturday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700481,2025-08-16 08:00:00,Saturday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700482,2025-08-17 08:00:00,Sunday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700483,2025-08-17 10:00:00,Sunday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700484,2025-08-18 14:00:00,Monday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700485,2025-08-18 12:00:00,Monday,BeanCraft Roasters,Cold Brew Beans,2,5,70,140,1
+INV-700486,2025-08-19 10:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700487,2025-08-19 09:00:00,Tuesday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700488,2025-08-20 10:00:00,Wednesday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700489,2025-08-20 12:00:00,Wednesday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700490,2025-08-21 08:00:00,Thursday,BakerySource Foods,Blueberry Muffin,2,24,28,56,1
+INV-700491,2025-08-21 09:00:00,Thursday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700492,2025-08-22 13:00:00,Friday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700493,2025-08-22 09:00:00,Friday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700494,2025-08-23 10:00:00,Saturday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700495,2025-08-23 10:00:00,Saturday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700496,2025-08-23 12:00:00,Saturday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700497,2025-08-24 12:00:00,Sunday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700498,2025-08-24 09:00:00,Sunday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700499,2025-08-24 08:00:00,Sunday,PantryPro Supply,Chocolate Syrup,2,6,28,56,1
+INV-700500,2025-08-24 11:00:00,Sunday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700501,2025-08-25 11:00:00,Monday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700502,2025-08-26 08:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700503,2025-08-26 11:00:00,Tuesday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700504,2025-08-27 12:00:00,Wednesday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700505,2025-08-27 12:00:00,Wednesday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700506,2025-08-28 12:00:00,Thursday,BakerySource Foods,Blueberry Muffin,2,24,28,56,1
+INV-700507,2025-08-29 14:00:00,Friday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700508,2025-08-29 09:00:00,Friday,BakerySource Foods,Bagel,2,24,26,52,1
+INV-700509,2025-08-30 12:00:00,Saturday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700510,2025-08-30 08:00:00,Saturday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700511,2025-08-31 14:00:00,Sunday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700512,2025-08-31 14:00:00,Sunday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700513,2025-09-01 10:00:00,Monday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700514,2025-09-01 14:00:00,Monday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700515,2025-09-02 12:00:00,Tuesday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700516,2025-09-02 13:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700517,2025-09-03 11:00:00,Wednesday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700518,2025-09-04 08:00:00,Thursday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700519,2025-09-04 11:00:00,Thursday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700520,2025-09-04 10:00:00,Thursday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700521,2025-09-05 12:00:00,Friday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700522,2025-09-05 10:00:00,Friday,BakerySource Foods,Blueberry Muffin,2,24,28,56,1
+INV-700523,2025-09-06 13:00:00,Saturday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700524,2025-09-06 10:00:00,Saturday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700525,2025-09-06 08:00:00,Saturday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700526,2025-09-07 13:00:00,Sunday,BeanCraft Roasters,Cold Brew Beans,2,5,70,140,1
+INV-700527,2025-09-08 14:00:00,Monday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700528,2025-09-08 13:00:00,Monday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700529,2025-09-09 09:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700530,2025-09-09 09:00:00,Tuesday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700531,2025-09-09 08:00:00,Tuesday,BakerySource Foods,Bagel,2,24,26,52,1
+INV-700532,2025-09-10 11:00:00,Wednesday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700533,2025-09-10 14:00:00,Wednesday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700534,2025-09-11 13:00:00,Thursday,BeanCraft Roasters,Cold Brew Beans,2,5,70,140,1
+INV-700535,2025-09-12 13:00:00,Friday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700536,2025-09-12 09:00:00,Friday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700537,2025-09-13 12:00:00,Saturday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700538,2025-09-13 08:00:00,Saturday,BakerySource Foods,Croissant,2,24,30,60,1
+INV-700539,2025-09-13 13:00:00,Saturday,BakerySource Foods,Blueberry Muffin,2,24,28,56,1
+INV-700540,2025-09-14 10:00:00,Sunday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700541,2025-09-14 13:00:00,Sunday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700542,2025-09-15 13:00:00,Monday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700543,2025-09-15 11:00:00,Monday,PantryPro Supply,Chocolate Syrup,2,6,28,56,1
+INV-700544,2025-09-16 13:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700545,2025-09-16 10:00:00,Tuesday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700546,2025-09-17 08:00:00,Wednesday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700547,2025-09-17 08:00:00,Wednesday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700548,2025-09-18 09:00:00,Thursday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700549,2025-09-18 12:00:00,Thursday,BakerySource Foods,Bagel,2,24,26,52,1
+INV-700550,2025-09-19 13:00:00,Friday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700551,2025-09-19 14:00:00,Friday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700552,2025-09-20 13:00:00,Saturday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700553,2025-09-21 13:00:00,Sunday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700554,2025-09-21 14:00:00,Sunday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700555,2025-09-22 08:00:00,Monday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700556,2025-09-22 14:00:00,Monday,BeanCraft Roasters,Cold Brew Beans,2,5,70,140,1
+INV-700557,2025-09-23 12:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700558,2025-09-24 10:00:00,Wednesday,BakerySource Foods,Croissant,2,24,30,60,1
+INV-700559,2025-09-25 13:00:00,Thursday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700560,2025-09-25 12:00:00,Thursday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700561,2025-09-26 11:00:00,Friday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700562,2025-09-26 13:00:00,Friday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700563,2025-09-27 14:00:00,Saturday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700564,2025-09-27 14:00:00,Saturday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700565,2025-09-28 09:00:00,Sunday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700566,2025-09-28 12:00:00,Sunday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700567,2025-09-28 10:00:00,Sunday,PantryPro Supply,Matcha Powder,1,1,40,40,1
+INV-700568,2025-09-29 08:00:00,Monday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700569,2025-09-29 11:00:00,Monday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700570,2025-09-29 09:00:00,Monday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700571,2025-09-30 10:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700572,2025-09-30 09:00:00,Tuesday,BakerySource Foods,Blueberry Muffin,2,24,28,56,1
+INV-700573,2025-09-30 08:00:00,Tuesday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700574,2025-10-01 13:00:00,Wednesday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700575,2025-10-01 08:00:00,Wednesday,PantryPro Supply,Chocolate Syrup,2,6,28,56,1
+INV-700576,2025-10-02 09:00:00,Thursday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700577,2025-10-03 13:00:00,Friday,BeanCraft Roasters,Cold Brew Beans,2,5,70,140,1
+INV-700578,2025-10-04 08:00:00,Saturday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700579,2025-10-04 09:00:00,Saturday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700580,2025-10-04 08:00:00,Saturday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700581,2025-10-04 13:00:00,Saturday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700582,2025-10-05 11:00:00,Sunday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700583,2025-10-06 11:00:00,Monday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700584,2025-10-06 12:00:00,Monday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700585,2025-10-07 09:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700586,2025-10-07 14:00:00,Tuesday,BakerySource Foods,Blueberry Muffin,2,24,28,56,1
+INV-700587,2025-10-08 13:00:00,Wednesday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700588,2025-10-08 09:00:00,Wednesday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700589,2025-10-08 11:00:00,Wednesday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700590,2025-10-09 08:00:00,Thursday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700591,2025-10-09 12:00:00,Thursday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700592,2025-10-10 09:00:00,Friday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700593,2025-10-10 10:00:00,Friday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700594,2025-10-11 12:00:00,Saturday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700595,2025-10-11 09:00:00,Saturday,BeanCraft Roasters,Cold Brew Beans,2,5,70,140,1
+INV-700596,2025-10-11 08:00:00,Saturday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700597,2025-10-12 12:00:00,Sunday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700598,2025-10-12 11:00:00,Sunday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700599,2025-10-13 13:00:00,Monday,PantryPro Supply,Matcha Powder,1,1,40,40,1
+INV-700600,2025-10-14 10:00:00,Tuesday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700601,2025-10-14 14:00:00,Tuesday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700602,2025-10-15 09:00:00,Wednesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700603,2025-10-15 13:00:00,Wednesday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700604,2025-10-16 08:00:00,Thursday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700605,2025-10-16 12:00:00,Thursday,BakerySource Foods,Bagel,2,24,26,52,1
+INV-700606,2025-10-17 08:00:00,Friday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700607,2025-10-17 12:00:00,Friday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700608,2025-10-17 11:00:00,Friday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700609,2025-10-18 14:00:00,Saturday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700610,2025-10-18 10:00:00,Saturday,PantryPro Supply,Matcha Powder,1,1,40,40,1
+INV-700611,2025-10-19 11:00:00,Sunday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700612,2025-10-19 10:00:00,Sunday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700613,2025-10-20 10:00:00,Monday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700614,2025-10-20 12:00:00,Monday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700615,2025-10-21 09:00:00,Tuesday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700616,2025-10-21 14:00:00,Tuesday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700617,2025-10-22 09:00:00,Wednesday,BakerySource Foods,Croissant,2,24,30,60,1
+INV-700618,2025-10-23 08:00:00,Thursday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700619,2025-10-24 09:00:00,Friday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700620,2025-10-25 14:00:00,Saturday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700621,2025-10-25 13:00:00,Saturday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700622,2025-10-25 09:00:00,Saturday,BakerySource Foods,Blueberry Muffin,2,24,28,56,1
+INV-700623,2025-10-26 11:00:00,Sunday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700624,2025-10-26 13:00:00,Sunday,BakerySource Foods,Bagel,2,24,26,52,1
+INV-700625,2025-10-27 08:00:00,Monday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700626,2025-10-27 14:00:00,Monday,PantryPro Supply,Chocolate Syrup,2,6,28,56,1
+INV-700627,2025-10-28 09:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700628,2025-10-28 09:00:00,Tuesday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700629,2025-10-29 11:00:00,Wednesday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700630,2025-10-30 08:00:00,Thursday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700631,2025-10-31 10:00:00,Friday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700632,2025-10-31 10:00:00,Friday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700633,2025-11-01 14:00:00,Saturday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700634,2025-11-01 12:00:00,Saturday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700635,2025-11-02 09:00:00,Sunday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700636,2025-11-02 09:00:00,Sunday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700637,2025-11-03 10:00:00,Monday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700638,2025-11-03 14:00:00,Monday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700639,2025-11-04 09:00:00,Tuesday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700640,2025-11-04 13:00:00,Tuesday,BakerySource Foods,Croissant,2,24,30,60,1
+INV-700641,2025-11-04 14:00:00,Tuesday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700642,2025-11-05 09:00:00,Wednesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700643,2025-11-05 11:00:00,Wednesday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700644,2025-11-05 10:00:00,Wednesday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700645,2025-11-05 08:00:00,Wednesday,PantryPro Supply,Matcha Powder,1,1,40,40,1
+INV-700646,2025-11-06 08:00:00,Thursday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700647,2025-11-07 13:00:00,Friday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700648,2025-11-07 10:00:00,Friday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700649,2025-11-08 14:00:00,Saturday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700650,2025-11-08 11:00:00,Saturday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700651,2025-11-09 12:00:00,Sunday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700652,2025-11-10 08:00:00,Monday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700653,2025-11-10 11:00:00,Monday,BakerySource Foods,Croissant,2,24,30,60,1
+INV-700654,2025-11-10 13:00:00,Monday,BakerySource Foods,Bagel,2,24,26,52,1
+INV-700655,2025-11-11 09:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700656,2025-11-11 09:00:00,Tuesday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700657,2025-11-12 09:00:00,Wednesday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700658,2025-11-12 12:00:00,Wednesday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700659,2025-11-13 14:00:00,Thursday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700660,2025-11-13 10:00:00,Thursday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700661,2025-11-14 13:00:00,Friday,BakerySource Foods,Blueberry Muffin,2,24,28,56,1
+INV-700662,2025-11-14 08:00:00,Friday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700663,2025-11-14 10:00:00,Friday,PantryPro Supply,Matcha Powder,1,1,40,40,1
+INV-700664,2025-11-15 11:00:00,Saturday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700665,2025-11-15 08:00:00,Saturday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700666,2025-11-16 12:00:00,Sunday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700667,2025-11-16 08:00:00,Sunday,PantryPro Supply,Chocolate Syrup,2,6,28,56,1
+INV-700668,2025-11-17 09:00:00,Monday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700669,2025-11-18 08:00:00,Tuesday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700670,2025-11-18 09:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700671,2025-11-18 14:00:00,Tuesday,BakerySource Foods,Bagel,2,24,26,52,1
+INV-700672,2025-11-19 12:00:00,Wednesday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700673,2025-11-19 09:00:00,Wednesday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700674,2025-11-20 13:00:00,Thursday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700675,2025-11-20 10:00:00,Thursday,BeanCraft Roasters,Cold Brew Beans,2,5,70,140,1
+INV-700676,2025-11-21 13:00:00,Friday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700677,2025-11-22 09:00:00,Saturday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700678,2025-11-22 10:00:00,Saturday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700679,2025-11-23 08:00:00,Sunday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700680,2025-11-24 10:00:00,Monday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700681,2025-11-24 09:00:00,Monday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700682,2025-11-24 09:00:00,Monday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700683,2025-11-25 14:00:00,Tuesday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700684,2025-11-25 13:00:00,Tuesday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700685,2025-11-25 09:00:00,Tuesday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700686,2025-11-26 10:00:00,Wednesday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700687,2025-11-27 08:00:00,Thursday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700688,2025-11-28 08:00:00,Friday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700689,2025-11-28 11:00:00,Friday,BakerySource Foods,Croissant,2,24,30,60,1
+INV-700690,2025-11-29 14:00:00,Saturday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700691,2025-11-30 12:00:00,Sunday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700692,2025-11-30 12:00:00,Sunday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700693,2025-12-01 10:00:00,Monday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700694,2025-12-02 09:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700695,2025-12-02 10:00:00,Tuesday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700696,2025-12-03 11:00:00,Wednesday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700697,2025-12-03 10:00:00,Wednesday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700698,2025-12-04 14:00:00,Thursday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700699,2025-12-04 13:00:00,Thursday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700700,2025-12-05 13:00:00,Friday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700701,2025-12-06 13:00:00,Saturday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700702,2025-12-06 11:00:00,Saturday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700703,2025-12-06 08:00:00,Saturday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700704,2025-12-06 14:00:00,Saturday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700705,2025-12-07 12:00:00,Sunday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700706,2025-12-07 11:00:00,Sunday,BakerySource Foods,Bagel,2,24,26,52,1
+INV-700707,2025-12-07 14:00:00,Sunday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700708,2025-12-08 11:00:00,Monday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700709,2025-12-08 14:00:00,Monday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700710,2025-12-08 12:00:00,Monday,PantryPro Supply,Chai Concentrate,2,6,28,56,1
+INV-700711,2025-12-09 10:00:00,Tuesday,BeanCraft Roasters,Cold Brew Beans,2,5,70,140,1
+INV-700712,2025-12-10 14:00:00,Wednesday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700713,2025-12-10 11:00:00,Wednesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700714,2025-12-11 09:00:00,Thursday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700715,2025-12-11 08:00:00,Thursday,BakerySource Foods,Croissant,2,24,30,60,1
+INV-700716,2025-12-11 08:00:00,Thursday,BakerySource Foods,Blueberry Muffin,2,24,28,56,1
+INV-700717,2025-12-12 12:00:00,Friday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700718,2025-12-12 08:00:00,Friday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700719,2025-12-12 14:00:00,Friday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700720,2025-12-13 09:00:00,Saturday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700721,2025-12-13 08:00:00,Saturday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700722,2025-12-13 11:00:00,Saturday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700723,2025-12-14 14:00:00,Sunday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700724,2025-12-15 10:00:00,Monday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700725,2025-12-15 12:00:00,Monday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700726,2025-12-15 14:00:00,Monday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700727,2025-12-16 13:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700728,2025-12-17 14:00:00,Wednesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700729,2025-12-17 13:00:00,Wednesday,BakerySource Foods,Blueberry Muffin,2,24,28,56,1
+INV-700730,2025-12-17 12:00:00,Wednesday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700731,2025-12-17 13:00:00,Wednesday,PantryPro Supply,Matcha Powder,1,1,40,40,1
+INV-700732,2025-12-18 08:00:00,Thursday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700733,2025-12-18 09:00:00,Thursday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700734,2025-12-18 13:00:00,Thursday,BakerySource Foods,Bagel,2,24,26,52,1
+INV-700735,2025-12-19 11:00:00,Friday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700736,2025-12-19 11:00:00,Friday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700737,2025-12-20 08:00:00,Saturday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700738,2025-12-20 14:00:00,Saturday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700739,2025-12-20 10:00:00,Saturday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700740,2025-12-20 11:00:00,Saturday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700741,2025-12-20 10:00:00,Saturday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700742,2025-12-21 14:00:00,Sunday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700743,2025-12-21 08:00:00,Sunday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700744,2025-12-21 08:00:00,Sunday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700745,2025-12-22 08:00:00,Monday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700746,2025-12-22 10:00:00,Monday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700747,2025-12-23 14:00:00,Tuesday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700748,2025-12-24 14:00:00,Wednesday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700749,2025-12-25 09:00:00,Thursday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700750,2025-12-26 08:00:00,Friday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700751,2025-12-26 09:00:00,Friday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700752,2025-12-27 12:00:00,Saturday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700753,2025-12-27 08:00:00,Saturday,BakerySource Foods,Croissant,2,24,30,60,1
+INV-700754,2025-12-27 12:00:00,Saturday,BakerySource Foods,Blueberry Muffin,2,24,28,56,1
+INV-700755,2025-12-28 08:00:00,Sunday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700756,2025-12-29 13:00:00,Monday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700757,2025-12-29 12:00:00,Monday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700758,2025-12-30 13:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700759,2025-12-30 12:00:00,Tuesday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700760,2025-12-30 11:00:00,Tuesday,BakerySource Foods,Bagel,2,24,26,52,1
+INV-700761,2025-12-31 14:00:00,Wednesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700762,2025-12-31 08:00:00,Wednesday,BakerySource Foods,Blueberry Muffin,2,24,28,56,1
+INV-700763,2026-01-01 11:00:00,Thursday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700764,2026-01-01 12:00:00,Thursday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700765,2026-01-02 11:00:00,Friday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700766,2026-01-02 10:00:00,Friday,BakerySource Foods,Bagel,2,24,26,52,1
+INV-700767,2026-01-03 08:00:00,Saturday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700768,2026-01-03 10:00:00,Saturday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700769,2026-01-03 13:00:00,Saturday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700770,2026-01-04 12:00:00,Sunday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700771,2026-01-04 10:00:00,Sunday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700772,2026-01-04 14:00:00,Sunday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700773,2026-01-05 11:00:00,Monday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700774,2026-01-06 13:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700775,2026-01-07 14:00:00,Wednesday,BakerySource Foods,Croissant,2,24,30,60,1
+INV-700776,2026-01-07 13:00:00,Wednesday,BakerySource Foods,Blueberry Muffin,2,24,28,56,1
+INV-700777,2026-01-08 10:00:00,Thursday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700778,2026-01-08 13:00:00,Thursday,BakerySource Foods,Bagel,2,24,26,52,1
+INV-700779,2026-01-08 12:00:00,Thursday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700780,2026-01-09 08:00:00,Friday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700781,2026-01-10 13:00:00,Saturday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700782,2026-01-11 13:00:00,Sunday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700783,2026-01-11 08:00:00,Sunday,PantryPro Supply,Chocolate Syrup,2,6,28,56,1
+INV-700784,2026-01-11 10:00:00,Sunday,PantryPro Supply,Chai Concentrate,2,6,28,56,1
+INV-700785,2026-01-12 14:00:00,Monday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700786,2026-01-12 10:00:00,Monday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700787,2026-01-13 12:00:00,Tuesday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700788,2026-01-13 11:00:00,Tuesday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700789,2026-01-13 10:00:00,Tuesday,PantryPro Supply,Chai Concentrate,2,6,28,56,1
+INV-700790,2026-01-15 08:00:00,Thursday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700791,2026-01-15 11:00:00,Thursday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700792,2026-01-16 13:00:00,Friday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700793,2026-01-16 14:00:00,Friday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700794,2026-01-17 10:00:00,Saturday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700795,2026-01-17 11:00:00,Saturday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700796,2026-01-17 09:00:00,Saturday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700797,2026-01-17 12:00:00,Saturday,BakerySource Foods,Blueberry Muffin,2,24,28,56,1
+INV-700798,2026-01-18 14:00:00,Sunday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700799,2026-01-19 13:00:00,Monday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700800,2026-01-19 14:00:00,Monday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700801,2026-01-20 11:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700802,2026-01-21 08:00:00,Wednesday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700803,2026-01-21 12:00:00,Wednesday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700804,2026-01-21 14:00:00,Wednesday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700805,2026-01-21 12:00:00,Wednesday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700806,2026-01-22 08:00:00,Thursday,BakerySource Foods,Bagel,2,24,26,52,1
+INV-700807,2026-01-22 12:00:00,Thursday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700808,2026-01-23 10:00:00,Friday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700809,2026-01-23 13:00:00,Friday,PantryPro Supply,Chai Concentrate,2,6,28,56,1
+INV-700810,2026-01-24 14:00:00,Saturday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700811,2026-01-24 13:00:00,Saturday,PantryPro Supply,Matcha Powder,1,1,40,40,1
+INV-700812,2026-01-25 13:00:00,Sunday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700813,2026-01-25 08:00:00,Sunday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700814,2026-01-26 08:00:00,Monday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700815,2026-01-26 14:00:00,Monday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700816,2026-01-26 10:00:00,Monday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700817,2026-01-26 10:00:00,Monday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700818,2026-01-27 13:00:00,Tuesday,BeanCraft Roasters,Cold Brew Beans,2,5,70,140,1
+INV-700819,2026-01-28 08:00:00,Wednesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700820,2026-01-29 08:00:00,Thursday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700821,2026-01-29 09:00:00,Thursday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700822,2026-01-29 14:00:00,Thursday,BakerySource Foods,Croissant,2,24,30,60,1
+INV-700823,2026-01-30 13:00:00,Friday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700824,2026-01-31 11:00:00,Saturday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700825,2026-01-31 08:00:00,Saturday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700826,2026-02-01 11:00:00,Sunday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700827,2026-02-02 14:00:00,Monday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700828,2026-02-03 10:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700829,2026-02-03 08:00:00,Tuesday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700830,2026-02-04 11:00:00,Wednesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700831,2026-02-05 11:00:00,Thursday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700832,2026-02-05 10:00:00,Thursday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700833,2026-02-05 10:00:00,Thursday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700834,2026-02-05 09:00:00,Thursday,BakerySource Foods,Blueberry Muffin,2,24,28,56,1
+INV-700835,2026-02-06 13:00:00,Friday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700836,2026-02-06 10:00:00,Friday,BakerySource Foods,Bagel,2,24,26,52,1
+INV-700837,2026-02-07 12:00:00,Saturday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700838,2026-02-07 11:00:00,Saturday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700839,2026-02-08 09:00:00,Sunday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700840,2026-02-08 13:00:00,Sunday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700841,2026-02-08 08:00:00,Sunday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700842,2026-02-09 09:00:00,Monday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700843,2026-02-09 08:00:00,Monday,BakerySource Foods,Bagel,2,24,26,52,1
+INV-700844,2026-02-10 14:00:00,Tuesday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700845,2026-02-10 09:00:00,Tuesday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700846,2026-02-11 10:00:00,Wednesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700847,2026-02-11 12:00:00,Wednesday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700848,2026-02-12 14:00:00,Thursday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700849,2026-02-12 10:00:00,Thursday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700850,2026-02-12 08:00:00,Thursday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700851,2026-02-13 14:00:00,Friday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700852,2026-02-13 13:00:00,Friday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700853,2026-02-13 13:00:00,Friday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700854,2026-02-14 12:00:00,Saturday,PantryPro Supply,Chocolate Syrup,2,6,28,56,1
+INV-700855,2026-02-15 10:00:00,Sunday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700856,2026-02-16 08:00:00,Monday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700857,2026-02-16 10:00:00,Monday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700858,2026-02-17 10:00:00,Tuesday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700859,2026-02-17 08:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700860,2026-02-18 13:00:00,Wednesday,BakerySource Foods,Croissant,2,24,30,60,1
+INV-700861,2026-02-19 14:00:00,Thursday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700862,2026-02-19 12:00:00,Thursday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700863,2026-02-20 14:00:00,Friday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700864,2026-02-21 14:00:00,Saturday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700865,2026-02-21 09:00:00,Saturday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700866,2026-02-21 13:00:00,Saturday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700867,2026-02-22 09:00:00,Sunday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700868,2026-02-22 14:00:00,Sunday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700869,2026-02-22 14:00:00,Sunday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700870,2026-02-23 14:00:00,Monday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700871,2026-02-23 13:00:00,Monday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700872,2026-02-24 11:00:00,Tuesday,BakerySource Foods,Croissant,2,24,30,60,1
+INV-700873,2026-02-24 12:00:00,Tuesday,BakerySource Foods,Bagel,2,24,26,52,1
+INV-700874,2026-02-25 14:00:00,Wednesday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700875,2026-02-25 08:00:00,Wednesday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700876,2026-02-25 10:00:00,Wednesday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700877,2026-02-26 12:00:00,Thursday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700878,2026-02-26 08:00:00,Thursday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700879,2026-02-27 10:00:00,Friday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700880,2026-02-27 12:00:00,Friday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700881,2026-02-28 13:00:00,Saturday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700882,2026-02-28 08:00:00,Saturday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700883,2026-03-01 09:00:00,Sunday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700884,2026-03-01 09:00:00,Sunday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700885,2026-03-02 11:00:00,Monday,BakerySource Foods,Blueberry Muffin,2,24,28,56,1
+INV-700886,2026-03-02 12:00:00,Monday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700887,2026-03-03 08:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700888,2026-03-03 09:00:00,Tuesday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700889,2026-03-04 14:00:00,Wednesday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700890,2026-03-04 10:00:00,Wednesday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700891,2026-03-05 13:00:00,Thursday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700892,2026-03-05 13:00:00,Thursday,PantryPro Supply,Matcha Powder,1,1,40,40,1
+INV-700893,2026-03-06 11:00:00,Friday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700894,2026-03-06 13:00:00,Friday,PantryPro Supply,Chocolate Syrup,2,6,28,56,1
+INV-700895,2026-03-06 13:00:00,Friday,PantryPro Supply,Matcha Powder,1,1,40,40,1
+INV-700896,2026-03-07 14:00:00,Saturday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700897,2026-03-07 09:00:00,Saturday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700898,2026-03-08 12:00:00,Sunday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700899,2026-03-08 14:00:00,Sunday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700900,2026-03-08 10:00:00,Sunday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700901,2026-03-09 09:00:00,Monday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700902,2026-03-09 10:00:00,Monday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700903,2026-03-10 14:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700904,2026-03-10 12:00:00,Tuesday,BakerySource Foods,Blueberry Muffin,2,24,28,56,1
+INV-700905,2026-03-11 14:00:00,Wednesday,BakerySource Foods,Croissant,2,24,30,60,1
+INV-700906,2026-03-11 14:00:00,Wednesday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700907,2026-03-12 13:00:00,Thursday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700908,2026-03-12 09:00:00,Thursday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700909,2026-03-13 13:00:00,Friday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700910,2026-03-14 10:00:00,Saturday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700911,2026-03-14 08:00:00,Saturday,BakerySource Foods,Bagel,2,24,26,52,1
+INV-700912,2026-03-15 11:00:00,Sunday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700913,2026-03-16 11:00:00,Monday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700914,2026-03-16 12:00:00,Monday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700915,2026-03-16 14:00:00,Monday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700916,2026-03-17 11:00:00,Tuesday,DairyPure Wholesale,Whole Milk,1,12,18,18,1
+INV-700917,2026-03-17 13:00:00,Tuesday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700918,2026-03-17 13:00:00,Tuesday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700919,2026-03-18 12:00:00,Wednesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700920,2026-03-19 11:00:00,Thursday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700921,2026-03-19 14:00:00,Thursday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700922,2026-03-19 12:00:00,Thursday,BakerySource Foods,Blueberry Muffin,1,24,28,28,1
+INV-700923,2026-03-20 09:00:00,Friday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700924,2026-03-20 10:00:00,Friday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700925,2026-03-20 08:00:00,Friday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700926,2026-03-20 10:00:00,Friday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700927,2026-03-21 14:00:00,Saturday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700928,2026-03-21 12:00:00,Saturday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700929,2026-03-21 11:00:00,Saturday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700930,2026-03-22 08:00:00,Sunday,BakerySource Foods,Blueberry Muffin,2,24,28,56,1
+INV-700931,2026-03-23 08:00:00,Monday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700932,2026-03-23 10:00:00,Monday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700933,2026-03-24 13:00:00,Tuesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700934,2026-03-24 10:00:00,Tuesday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700935,2026-03-25 09:00:00,Wednesday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700936,2026-03-25 09:00:00,Wednesday,BakerySource Foods,Croissant,1,24,30,30,1
+INV-700937,2026-03-26 08:00:00,Thursday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700938,2026-03-26 12:00:00,Thursday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700939,2026-03-27 09:00:00,Friday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700940,2026-03-27 10:00:00,Friday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700941,2026-03-28 09:00:00,Saturday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700942,2026-03-28 08:00:00,Saturday,BakerySource Foods,Croissant,2,24,30,60,1
+INV-700943,2026-03-29 10:00:00,Sunday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700944,2026-03-29 10:00:00,Sunday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700945,2026-03-29 09:00:00,Sunday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700946,2026-03-30 08:00:00,Monday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700947,2026-03-30 08:00:00,Monday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700948,2026-03-31 08:00:00,Tuesday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700949,2026-03-31 11:00:00,Tuesday,BakerySource Foods,Bagel,2,24,26,52,1
+INV-700950,2026-03-31 09:00:00,Tuesday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
+INV-700951,2026-04-01 13:00:00,Wednesday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700952,2026-04-02 10:00:00,Thursday,BeanCraft Roasters,Espresso Beans,2,5,80,160,1
+INV-700953,2026-04-03 14:00:00,Friday,BakerySource Foods,Blueberry Muffin,2,24,28,56,1
+INV-700954,2026-04-03 10:00:00,Friday,PantryPro Supply,Chocolate Syrup,2,6,28,56,1
+INV-700955,2026-04-04 13:00:00,Saturday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700956,2026-04-04 08:00:00,Saturday,PantryPro Supply,Chai Concentrate,1,6,28,28,1
+INV-700957,2026-04-05 13:00:00,Sunday,DairyPure Wholesale,Whole Milk,2,12,18,36,1
+INV-700958,2026-04-05 11:00:00,Sunday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700959,2026-04-05 09:00:00,Sunday,BakerySource Foods,Bagel,1,24,26,26,1
+INV-700960,2026-04-06 11:00:00,Monday,BeanCraft Roasters,Espresso Beans,1,5,80,80,1
+INV-700961,2026-04-06 14:00:00,Monday,BeanCraft Roasters,Cold Brew Beans,1,5,70,70,1
+INV-700962,2026-04-06 10:00:00,Monday,PantryPro Supply,Chocolate Syrup,1,6,28,28,1
