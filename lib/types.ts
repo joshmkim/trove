@@ -247,6 +247,44 @@ export function forecastStatus(
   return "ok";
 }
 
+// ─── Clover POS ──────────────────────────────────────────────────────────────
+
+export interface CloverLineItem {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+}
+
+export interface CloverOrder {
+  id: string;
+  state?: string;
+  createdTime?: number;
+  modifiedTime?: number;
+  lineItems?: { elements: CloverLineItem[] };
+}
+
+export interface CloverProcessedOrderRow {
+  clover_order_id: string;
+  merchant_id: string;
+  processed_at: string;
+  line_item_count: number;
+}
+
+export interface CloverSyncStateRow {
+  id: number;
+  last_synced_at: string | null;
+}
+
+// ─── Ingredient Deduction ────────────────────────────────────────────────────
+
+export interface DeductionResult {
+  orderId: string;
+  skipped: string[];
+  deducted: Array<{ ingredient: string; amount: number; unit: string }>;
+  lowStockAlerts: string[];
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 
 export function orderRowToOrder(row: OrderRow): Order {

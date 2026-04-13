@@ -4,10 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navLinks = [
-  { href: "/inventory", label: "Inventory" },
-  { href: "/ordering", label: "Ordering" },
   { href: "/daily-report", label: "Daily Report" },
-  { href: "/network-intelligence", label: "Vendor Portal" },
+  { href: "/harucake-inventory", label: "Inventory" },
+  { href: "/ordering", label: "Ordering" },
+  { href: "/network-intelligence", label: "Vendors" },
 ];
 
 interface SidebarProps {
