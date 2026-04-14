@@ -90,6 +90,7 @@ type DailyReportPayload = {
       qtyOut: number;
       net: number;
       estimatedSpend: number;
+      unit?: string;
     }[];
   };
   invoiceActivity: {
@@ -453,9 +454,9 @@ export default function DailyReportView() {
                 {data.itemMovement.rows.slice(0, 12).map((row) => (
                   <tr key={row.itemName} className="border-b border-light-gray last:border-0">
                     <td className="px-4 py-3 text-sm font-medium text-charcoal">{row.itemName}</td>
-                    <td className="px-4 py-3 text-sm text-charcoal">{row.qtyIn.toLocaleString()}</td>
-                    <td className="px-4 py-3 text-sm text-charcoal">{row.qtyOut.toLocaleString()}</td>
-                    <td className="px-4 py-3 text-sm font-semibold text-charcoal">{row.net.toLocaleString()}</td>
+                    <td className="px-4 py-3 text-sm text-charcoal">{row.qtyIn.toLocaleString()}{row.unit ? ` ${row.unit}` : ""}</td>
+                    <td className="px-4 py-3 text-sm text-charcoal">{row.qtyOut.toLocaleString()}{row.unit ? ` ${row.unit}` : ""}</td>
+                    <td className="px-4 py-3 text-sm font-semibold text-charcoal">{row.net.toLocaleString()}{row.unit ? ` ${row.unit}` : ""}</td>
                     <td className="px-4 py-3 text-sm text-charcoal">{formatMoney(row.estimatedSpend)}</td>
                   </tr>
                 ))}
@@ -506,7 +507,7 @@ export default function DailyReportView() {
         <div className="rounded-sm border border-light-gray bg-white p-4">
           <div className="mb-3">
             <h2 className="text-base font-semibold text-charcoal">Sales By Hour</h2>
-            <p className="text-xs text-warm-gray">Operating hours only: 8 AM to 6 PM</p>
+            <p className="text-xs text-warm-gray">Operating hours only: 7 AM to 6 PM</p>
           </div>
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={hourlyChartData} margin={{ top: 8, right: 12, left: -12, bottom: 0 }}>
@@ -514,8 +515,8 @@ export default function DailyReportView() {
               <XAxis
                 type="number"
                 dataKey="hourCenter"
-                ticks={[8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]}
-                domain={[8, 18]}
+                ticks={[7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]}
+                domain={[7, 18]}
                 allowDataOverflow
                 tickFormatter={(value) => String(value)}
                 tick={{ fontSize: 11, fill: "#9E9589" }}
