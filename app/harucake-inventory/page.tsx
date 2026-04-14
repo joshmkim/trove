@@ -152,12 +152,22 @@ export default function HarucakeInventoryPage() {
     }
   }
 
+  const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null);
+
   async function runSync() {
     if (syncingRef.current) return;
     syncingRef.current = true;
     try {
       await fetch("/api/clover/sync", { method: "POST" });
-      await fetchOrderHistory();
+      // Refresh both orders and ingredient stock after every sync
+      await Promise.all([fetchOrderHistory(), fetchIngredients()]);
+      setLastSyncedAt(
+        new Date().toLocaleString("en-US", {
+          hour: "numeric",
+          minute: "2-digit",
+          second: "2-digit",
+        })
+      );
     } finally {
       syncingRef.current = false;
     }
@@ -171,16 +181,26 @@ export default function HarucakeInventoryPage() {
 
     const pollInterval = setInterval(() => { void runSync(); }, POLL_INTERVAL_MS);
 
-    const channel = supabase
+    // Realtime: ingredient stock changes (e.g. from deductions)
+    const itemsChannel = supabase
       .channel("clover-ingredients")
       .on("postgres_changes", { event: "*", schema: "public", table: "items" }, () =>
         void fetchIngredients()
       )
       .subscribe();
 
+    // Realtime: new orders inserted by the sync (shows up instantly rather than on next poll)
+    const ordersChannel = supabase
+      .channel("clover-orders")
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "clover_processed_orders" }, () =>
+        void fetchOrderHistory()
+      )
+      .subscribe();
+
     return () => {
       clearInterval(pollInterval);
-      void supabase.removeChannel(channel);
+      void supabase.removeChannel(itemsChannel);
+      void supabase.removeChannel(ordersChannel);
     };
   }, [fetchIngredients]);
 
@@ -190,13 +210,18 @@ export default function HarucakeInventoryPage() {
 
       <div className="px-6 py-6 space-y-4">
         {/* API connection status */}
-        <div className="flex items-center gap-2 text-sm">
-          {verifying ? (
-            <><span className="w-2 h-2 rounded-full bg-gray-300 shrink-0" /><span className="text-warm-gray">Checking Clover connection…</span></>
-          ) : apiStatus?.ok ? (
-            <><span className="w-2 h-2 rounded-full bg-green-500 shrink-0" /><span className="text-warm-gray">Connected to Clover{apiStatus.merchantName && <span className="text-charcoal font-medium"> · {apiStatus.merchantName}</span>}</span></>
-          ) : (
-            <><span className="w-2 h-2 rounded-full bg-red-500 shrink-0" /><span className="text-red-600">Clover not connected{apiStatus?.missing?.length ? ` — missing: ${apiStatus.missing.join(", ")}` : apiStatus?.error ? ` — ${apiStatus.error}` : ""}</span><button onClick={() => void verifyApi()} className="ml-2 text-xs underline text-warm-gray hover:text-charcoal">Retry</button></>
+        <div className="flex items-center justify-between gap-2 text-sm">
+          <div className="flex items-center gap-2">
+            {verifying ? (
+              <><span className="w-2 h-2 rounded-full bg-gray-300 shrink-0" /><span className="text-warm-gray">Checking Clover connection…</span></>
+            ) : apiStatus?.ok ? (
+              <><span className="w-2 h-2 rounded-full bg-green-500 shrink-0" /><span className="text-warm-gray">Connected to Clover{apiStatus.merchantName && <span className="text-charcoal font-medium"> · {apiStatus.merchantName}</span>}</span></>
+            ) : (
+              <><span className="w-2 h-2 rounded-full bg-red-500 shrink-0" /><span className="text-red-600">Clover not connected{apiStatus?.missing?.length ? ` — missing: ${apiStatus.missing.join(", ")}` : apiStatus?.error ? ` — ${apiStatus.error}` : ""}</span><button onClick={() => void verifyApi()} className="ml-2 text-xs underline text-warm-gray hover:text-charcoal">Retry</button></>
+            )}
+          </div>
+          {lastSyncedAt && (
+            <span className="text-xs text-warm-gray">Synced {lastSyncedAt}</span>
           )}
         </div>
 
