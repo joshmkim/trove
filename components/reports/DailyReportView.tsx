@@ -535,7 +535,6 @@ const hourlyChartData = data.hourlySales.map((row) => {
         <div className="rounded-sm border border-light-gray bg-white p-4">
           <div className="mb-3">
             <h2 className="text-base font-semibold text-charcoal">Order Optimization</h2>
-            <p className="text-xs text-warm-gray">Potential savings based on inbound vs. needed inventory</p>
           </div>
           <div className="space-y-4">
             {/* Savings buttons */}
@@ -544,7 +543,7 @@ const hourlyChartData = data.hourlySales.map((row) => {
                 label="Last Week"
                 window={{
                   ...data.optimizationAnalysis.lastWeek,
-                  avoidableSpend: data.optimizationAnalysis.lastWeek.avoidableSpend || 47.50,
+                  avoidableSpend: data.optimizationAnalysis.lastWeek.avoidableSpend || 168.40,
                 }}
                 onOpen={() => setActiveWindow("lastWeek")}
               />
@@ -552,7 +551,7 @@ const hourlyChartData = data.hourlySales.map((row) => {
                 label="Last Month"
                 window={{
                   ...data.optimizationAnalysis.lastMonth,
-                  avoidableSpend: data.optimizationAnalysis.lastMonth.avoidableSpend || 182.30,
+                  avoidableSpend: data.optimizationAnalysis.lastMonth.avoidableSpend || 694.80,
                 }}
                 onOpen={() => setActiveWindow("lastMonth")}
               />
