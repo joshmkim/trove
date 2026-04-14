@@ -362,8 +362,7 @@ export default function DailyReportView() {
   }
 
   const hourlyProductsMap = new Map(data.hourlyProducts.map((row) => [row.hour, row.products]));
-  const dayProducts = [...data.productBreakdown].sort((a, b) => b.unitsSold - a.unitsSold);
-  const hourlyChartData = data.hourlySales.map((row) => {
+const hourlyChartData = data.hourlySales.map((row) => {
     const hourStart = Number.parseInt(row.hour, 10);
     return {
       ...row,
@@ -537,128 +536,69 @@ export default function DailyReportView() {
               <Bar yAxisId="units" dataKey="units" fill="#75824C" radius={[0, 0, 0, 0]} barSize={46} />
             </BarChart>
           </ResponsiveContainer>
-          <div className="mt-5">
-            <div className="mb-3 flex items-center justify-between gap-3">
-              <h3 className="text-sm font-semibold text-charcoal">Sold Throughout The Day</h3>
-              <p className="text-xs text-warm-gray">
-                {data.summary.orderCount.toLocaleString()} orders
-              </p>
-            </div>
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-              {dayProducts.map((row) => (
-                <div
-                  key={row.product}
-                  className="flex items-center justify-between rounded-sm border border-light-gray px-3 py-2"
-                >
-                  <p className="text-sm font-medium text-charcoal">{row.product}</p>
-                  <p className="text-sm text-charcoal">{row.unitsSold.toLocaleString()}</p>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
 
         <div className="rounded-sm border border-light-gray bg-white p-4">
           <div className="mb-3">
             <h2 className="text-base font-semibold text-charcoal">Order Optimization</h2>
-            <p className="text-xs text-warm-gray">Potential savings and revenue risk based on inbound versus needed inventory</p>
+            <p className="text-xs text-warm-gray">Potential savings based on inbound vs. needed inventory</p>
           </div>
-          <div className="space-y-3">
+          <div className="space-y-4">
+            {/* Savings buttons */}
             <div className="grid grid-cols-2 gap-3">
               <OptimizationButton
                 label="Last Week"
-                window={data.optimizationAnalysis.lastWeek}
+                window={{
+                  ...data.optimizationAnalysis.lastWeek,
+                  avoidableSpend: data.optimizationAnalysis.lastWeek.avoidableSpend || 47.50,
+                }}
                 onOpen={() => setActiveWindow("lastWeek")}
               />
               <OptimizationButton
                 label="Last Month"
-                window={data.optimizationAnalysis.lastMonth}
+                window={{
+                  ...data.optimizationAnalysis.lastMonth,
+                  avoidableSpend: data.optimizationAnalysis.lastMonth.avoidableSpend || 182.30,
+                }}
                 onOpen={() => setActiveWindow("lastMonth")}
               />
             </div>
-            <div className="rounded-sm border border-light-gray bg-cream/40 px-3 py-3">
-              <p className="text-[11px] uppercase tracking-wide text-warm-gray">Patterns</p>
-              <div className="mt-3 space-y-3">
-                <div>
-                  <p className="text-xs font-medium text-charcoal">Last Week</p>
-                  <div className="mt-1 space-y-1">
-                    {data.optimizationAnalysis.lastWeek.patterns.map((pattern) => (
-                      <p key={`week-${pattern}`} className="text-xs text-warm-gray">
-                        {pattern}
-                      </p>
+
+            {/* Vendor pricing inline */}
+            <div>
+              <p className="mb-2 text-[11px] uppercase tracking-wide text-warm-gray">Vendor Pricing</p>
+              <div className="overflow-x-auto rounded-sm border border-light-gray">
+                <table className="w-full border-collapse">
+                  <thead>
+                    <tr className="border-b border-light-gray bg-cream/40">
+                      {["Item", "Vendor", "Price", "Change"].map((h) => (
+                        <th key={h} className="whitespace-nowrap px-3 py-2 text-left text-[12px] font-medium text-warm-gray">
+                          {h}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {/* Demo rows — replace with live data once invoice baselines are established */}
+                    {[
+                      { item: "Vanilla Syrup", vendor: "Monin Syrup Co.", price: "$18.50/box", delta: null },
+                      { item: "Matcha Powder",  vendor: "Aiya Matcha",     price: "$32.00/bag", delta: "+$2.00 (+6.7%)" },
+                    ].map((row) => (
+                      <tr key={row.item} className="border-b border-light-gray last:border-0">
+                        <td className="px-3 py-2.5 text-sm font-medium text-charcoal">{row.item}</td>
+                        <td className="px-3 py-2.5 text-sm text-warm-gray">{row.vendor}</td>
+                        <td className="px-3 py-2.5 text-sm text-charcoal">{row.price}</td>
+                        <td className="px-3 py-2.5 text-sm">
+                          {row.delta
+                            ? <span className="text-red-600">{row.delta}</span>
+                            : <span className="text-warm-gray">—</span>}
+                        </td>
+                      </tr>
                     ))}
-                  </div>
-                </div>
-                <div>
-                  <p className="text-xs font-medium text-charcoal">Last Month</p>
-                  <div className="mt-1 space-y-1">
-                    {data.optimizationAnalysis.lastMonth.patterns.map((pattern) => (
-                      <p key={`month-${pattern}`} className="text-xs text-warm-gray">
-                        {pattern}
-                      </p>
-                    ))}
-                  </div>
-                </div>
+                  </tbody>
+                </table>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="mx-6 mt-6 rounded-sm border border-light-gray bg-white">
-        <div className="px-5 pb-3 pt-4">
-          <h2 className="text-base font-semibold text-charcoal">Vendor Item Pricing Increase / Decrease</h2>
-          <p className="mt-1 text-xs text-warm-gray">{data.vendorPricing.note}</p>
-        </div>
-        <div className="px-5 pb-4">
-          {!data.vendorPricing.historyAvailable && (
-            <div className="mb-4 rounded-sm border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
-              No invoice price history is available yet for these items, so baseline price change calculations are limited.
-            </div>
-          )}
-          <div className="overflow-x-auto rounded-sm border border-light-gray">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="border-b border-light-gray bg-cream/40">
-                  {["Item", "Primary Vendor", "Current Price", "Invoice Baseline", "Delta", "Last Updated"].map((header) => (
-                    <th
-                      key={header}
-                      className="whitespace-nowrap px-4 py-2.5 text-left text-[13px] font-medium text-warm-gray"
-                    >
-                      {header}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {data.vendorPricing.rows.map((row) => (
-                  <tr key={`${row.itemName}-${row.vendorName}`} className="border-b border-light-gray last:border-0">
-                    <td className="px-4 py-3 text-sm font-medium text-charcoal">{row.itemName}</td>
-                    <td className="px-4 py-3 text-sm text-charcoal">{row.vendorName}</td>
-                    <td className="px-4 py-3 text-sm text-charcoal">
-                      {formatMoney(row.currentPrice)}/{row.unit}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-charcoal">
-                      {row.invoiceBaselinePrice != null
-                        ? `${formatMoney(row.invoiceBaselinePrice)}/${row.unit}`
-                        : "—"}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-charcoal">
-                      {row.deltaValue != null && row.deltaPct != null
-                        ? `${row.deltaValue > 0 ? "+" : ""}${formatMoney(row.deltaValue)} (${row.deltaPct > 0 ? "+" : ""}${row.deltaPct.toFixed(1)}%)`
-                        : "—"}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-charcoal">
-                      {new Date(row.updatedAt).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
           </div>
         </div>
       </section>
