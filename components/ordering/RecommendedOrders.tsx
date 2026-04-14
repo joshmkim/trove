@@ -14,6 +14,17 @@ import {
 
 type ActiveTab = "Forecasts" | "Data Viz" | "Trends";
 
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+/** Format a quantity with sensible decimal precision. */
+function fmtQty(n: number): string {
+  if (n >= 100) return Math.round(n).toLocaleString();
+  if (n >= 10)  return Math.round(n).toString();
+  if (n >= 1)   return parseFloat(n.toFixed(1)).toString();
+  // < 1: show up to 2 significant decimal digits, strip trailing zeros
+  return parseFloat(n.toFixed(2)).toString() || "0";
+}
+
 // ── Status indicator ──────────────────────────────────────────────────────────
 const STATUS_CONFIG = {
   critical: { label: "Will run out", className: "bg-red-100 text-red-700" },
@@ -85,13 +96,16 @@ export default function RecommendedOrders({ refreshTrigger = 0 }: { refreshTrigg
       return;
     }
 
+    const TRACKED_FORECASTS = ["Matcha Powder", "Vanilla Syrup"];
+
     const [{ data, error: fetchErr }, { data: ingData }] = await Promise.all([
       supabase
         .from("demand_forecasts")
         .select("*")
         .eq("forecast_date", latestForecast.forecast_date)
-        .order("recommended_order", { ascending: false }),
-      supabase.from("items").select("product_name, quantity_remaining"),
+        .in("ingredient_name", TRACKED_FORECASTS)
+        .order("ingredient_name", { ascending: true }),
+      supabase.from("items").select("product_name, quantity_remaining, purchase_unit_size").in("product_name", TRACKED_FORECASTS),
     ]);
 
     if (fetchErr) {
@@ -101,10 +115,14 @@ export default function RecommendedOrders({ refreshTrigger = 0 }: { refreshTrigg
     }
 
     if (data && data.length > 0) {
-      // Build a live stock map: ingredient name → current stock in purchase units
-      // items.quantity_remaining is already in purchase units — no conversion needed
+      // Build a live stock map: ingredient name → current stock in purchase units.
+      // quantity_remaining is stored in grams; divide by purchase_unit_size to get
+      // the same purchase-unit scale used in demand_forecasts.
       const stockMap = new Map(
-        (ingData ?? []).map((i) => [i.product_name, Math.round(Number(i.quantity_remaining))])
+        (ingData ?? []).map((i) => {
+          const size = Number(i.purchase_unit_size) || 1;
+          return [i.product_name, Number(i.quantity_remaining) / size];
+        })
       );
 
       const rows = data as DemandForecastRow[];
@@ -241,19 +259,19 @@ export default function RecommendedOrders({ refreshTrigger = 0 }: { refreshTrigg
                         {f.ingredientName}
                       </td>
                       <td className="py-3 px-4 text-sm text-charcoal">
-                        {Math.round(f.predictedDemand).toLocaleString()}
+                        {fmtQty(f.predictedDemand)}
                         <span className="ml-1 text-warm-gray">
                           {formatUnitLabel(f.unit, f.predictedDemand)}
                         </span>
                       </td>
                       <td className="py-3 px-4 text-sm text-charcoal">
-                        {Math.round(f.currentStock).toLocaleString()}
+                        {fmtQty(f.currentStock)}
                         <span className="ml-1 text-warm-gray">
                           {formatUnitLabel(f.unit, f.currentStock)}
                         </span>
                       </td>
                       <td className="py-3 px-4 text-sm text-charcoal">
-                        {Math.round(f.safetyStock).toLocaleString()}
+                        {fmtQty(f.safetyStock)}
                         <span className="ml-1 text-warm-gray">
                           {formatUnitLabel(f.unit, f.safetyStock)}
                         </span>
