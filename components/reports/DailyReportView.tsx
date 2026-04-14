@@ -500,7 +500,6 @@ const hourlyChartData = data.hourlySales.map((row) => {
         <div className="rounded-sm border border-light-gray bg-white p-4">
           <div className="mb-3">
             <h2 className="text-base font-semibold text-charcoal">Sales By Hour</h2>
-            <p className="text-xs text-warm-gray">Operating hours only: 7 AM to 6 PM</p>
           </div>
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={hourlyChartData} margin={{ top: 8, right: 12, left: -12, bottom: 0 }}>
