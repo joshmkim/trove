@@ -49,30 +49,6 @@ export default function RecommendedOrders({ refreshTrigger = 0 }: { refreshTrigg
   const [forecasts, setForecasts] = useState<DemandForecast[]>([]);
   const [loading,   setLoading]   = useState(true);
   const [error,     setError]     = useState<string | null>(null);
-  const [refreshingTrends, setRefreshingTrends] = useState(false);
-  const [trendsLastUpdated, setTrendsLastUpdated] = useState<string | null>(null);
-  const [trendsRefreshTrigger, setTrendsRefreshTrigger] = useState(0);
-
-  async function handleRefreshTrends() {
-    setRefreshingTrends(true);
-    try {
-      const res = await fetch("/api/trends/refresh", { method: "POST" });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.message ?? "Refresh failed");
-      setTrendsLastUpdated(
-        new Date().toLocaleString("en-US", {
-          month: "short", day: "numeric", year: "numeric",
-          hour: "numeric", minute: "2-digit",
-        })
-      );
-      setTrendsRefreshTrigger((n) => n + 1);
-    } catch {
-      // error will surface inside TrendsView
-    } finally {
-      setRefreshingTrends(false);
-    }
-  }
-
   const fetchForecasts = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -150,26 +126,8 @@ export default function RecommendedOrders({ refreshTrigger = 0 }: { refreshTrigg
   return (
     <section className="mx-6 my-6 border border-light-gray rounded-sm">
       {/* Title row */}
-      <div className="flex items-center justify-between px-5 pt-4 pb-3">
+      <div className="px-5 pt-4 pb-3">
         <h2 className="text-base font-semibold text-charcoal">Recommended Orders</h2>
-        {/* Actions — swap based on active tab */}
-        {activeTab === "Trends" ? (
-          <div className="flex items-center gap-3">
-            {trendsLastUpdated && (
-              <span className="text-xs text-warm-gray">Updated {trendsLastUpdated}</span>
-            )}
-            <button
-              type="button"
-              onClick={handleRefreshTrends}
-              disabled={refreshingTrends}
-              className="rounded-sm border border-light-gray px-3 py-1.5 text-xs text-charcoal transition-colors hover:bg-cream disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {refreshingTrends ? "Refreshing…" : "Refresh Trends"}
-            </button>
-          </div>
-        ) : (
-          <div />
-        )}
       </div>
 
       {/* Tab bar */}
@@ -203,7 +161,7 @@ export default function RecommendedOrders({ refreshTrigger = 0 }: { refreshTrigg
 
       {/* Trends tab content */}
       {activeTab === "Trends" && (
-        <TrendsView refreshTrigger={trendsRefreshTrigger} />
+        <TrendsView />
       )}
 
       {/* Forecasts tab content */}

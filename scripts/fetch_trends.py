@@ -26,7 +26,7 @@ MIN_PEAK       = 10            # drop keywords where max interest < this
 TARGET_KEYWORDS = 20           # ask the LLM for this many
 
 SUPABASE_URL            = os.environ["NEXT_PUBLIC_SUPABASE_URL"]
-SUPABASE_KEY            = os.environ["NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY"]
+SUPABASE_KEY            = os.environ.get("SUPABASE_SERVICE_ROLE_KEY") or os.environ["NEXT_PUBLIC_SUPABASE_ANON_KEY"]
 AZURE_OPENAI_KEY        = os.environ["AZURE_OPENAI_KEY"]
 AZURE_OPENAI_ENDPOINT   = os.environ["AZURE_OPENAI_ENDPOINT"]
 AZURE_OPENAI_DEPLOYMENT = os.environ["AZURE_OPENAI_DEPLOYMENT"]

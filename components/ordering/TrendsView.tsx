@@ -17,9 +17,6 @@ interface TrendSeries {
   data: { date: string; interest: number }[];
 }
 
-interface TrendsViewProps {
-  refreshTrigger: number;
-}
 
 // One color per keyword (cycles if more than 6)
 const LINE_COLORS = [
@@ -69,7 +66,7 @@ function mergeSeriesForChart(series: TrendSeries[]): Record<string, unknown>[] {
   );
 }
 
-export default function TrendsView({ refreshTrigger }: TrendsViewProps) {
+export default function TrendsView() {
   const [series, setSeries] = useState<TrendSeries[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError]   = useState<string | null>(null);
@@ -89,7 +86,7 @@ export default function TrendsView({ refreshTrigger }: TrendsViewProps) {
     }
   }, []);
 
-  useEffect(() => { fetchTrends(); }, [fetchTrends, refreshTrigger]);
+  useEffect(() => { fetchTrends(); }, [fetchTrends]);
 
   if (loading) {
     return (
