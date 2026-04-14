@@ -333,7 +333,6 @@ export default function DailyReportView() {
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
               <p className="text-sm font-medium text-charcoal">Daily report for {data.reportDate}</p>
-              <p className="mt-1 text-xs text-warm-gray">Sales source: {data.sourceFiles.sales}</p>
             </div>
             <label className="flex flex-col gap-1 text-xs text-warm-gray">
               Report Date
@@ -385,11 +384,6 @@ export default function DailyReportView() {
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <p className="text-sm font-medium text-charcoal">Daily report for {data.reportDate}</p>
-            <p className="mt-1 text-xs text-warm-gray">
-              Sales source: {data.sourceFiles.sales}
-              {data.sourceFiles.recipes ? ` • Recipe source: ${data.sourceFiles.recipes}` : ""}
-              {data.sourceFiles.invoices ? ` • Invoice source: ${data.sourceFiles.invoices}` : ""}
-            </p>
           </div>
           <label className="flex flex-col gap-1 text-xs text-warm-gray">
             Report Date
@@ -421,7 +415,7 @@ export default function DailyReportView() {
           value={formatMoney(data.summary.revenue)}
         />
         <SummaryCard
-          label="Estimated Spend On Ingredients"
+          label="Spend On Ingredients"
           value={formatMoney(data.summary.estimatedSpend)}
         />
         <SummaryCard

@@ -31,11 +31,6 @@ export default function OrderingPage() {
   const [vendorQuery, setVendorQuery]                 = useState("");
   const [fromDate, setFromDate]                       = useState("");
   const [forecastRefreshTrigger, setForecastRefreshTrigger] = useState(0);
-  const [cadenceCounts, setCadenceCounts]             = useState({
-    dueToday: 0,
-    dueThisWeek: 0,
-    upcoming: 0,
-  });
 
   const selectedOrder = orders.find((o) => o.id === selectedOrderId) ?? null;
 
@@ -78,7 +73,8 @@ export default function OrderingPage() {
         .from("demand_forecasts")
         .select("*")
         .eq("forecast_date", latestForecast.forecast_date)
-        .order("recommended_order", { ascending: false });
+        .in("ingredient_name", ["Matcha Powder", "Vanilla Syrup"])
+        .order("ingredient_name", { ascending: true });
 
       if (!error && data && data.length > 0) {
         setForecasts((data as DemandForecastRow[]).map(forecastRowToForecast));
@@ -89,42 +85,6 @@ export default function OrderingPage() {
     fetchForecasts();
   }, [forecastRefreshTrigger]);
 
-  useEffect(() => {
-    async function fetchCadenceQueue() {
-      const { data, error } = await supabase
-        .from("vendor_products")
-        .select("next_order_date")
-        .not("next_order_date", "is", null);
-
-      if (error || !data) return;
-
-      const today = new Date();
-      const start = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-      const weekEnd = new Date(start);
-      weekEnd.setDate(weekEnd.getDate() + 7);
-
-      let dueToday = 0;
-      let dueThisWeek = 0;
-      let upcoming = 0;
-
-      data.forEach((row) => {
-        const raw = (row as { next_order_date: string | null }).next_order_date;
-        if (!raw) return;
-        const d = new Date(raw);
-        if (Number.isNaN(d.getTime())) return;
-        if (d <= start) {
-          dueToday += 1;
-        } else if (d <= weekEnd) {
-          dueThisWeek += 1;
-        } else {
-          upcoming += 1;
-        }
-      });
-
-      setCadenceCounts({ dueToday, dueThisWeek, upcoming });
-    }
-    void fetchCadenceQueue();
-  }, [createOpen]);
 
   // ── Status change + stock update ─────────────────────────────────────────────
   async function handleStatusChange(orderId: string, newStatus: string) {
@@ -181,21 +141,6 @@ export default function OrderingPage() {
           </Button>
         }
       />
-
-      <div className="mx-6 mt-6 grid grid-cols-3 gap-3">
-        <div className="rounded-sm border border-light-gray bg-white px-4 py-3">
-          <p className="text-xs uppercase tracking-wide text-warm-gray">Due Today</p>
-          <p className="mt-1 text-2xl font-semibold text-charcoal">{cadenceCounts.dueToday}</p>
-        </div>
-        <div className="rounded-sm border border-light-gray bg-white px-4 py-3">
-          <p className="text-xs uppercase tracking-wide text-warm-gray">Due This Week</p>
-          <p className="mt-1 text-2xl font-semibold text-charcoal">{cadenceCounts.dueThisWeek}</p>
-        </div>
-        <div className="rounded-sm border border-light-gray bg-white px-4 py-3">
-          <p className="text-xs uppercase tracking-wide text-warm-gray">Upcoming</p>
-          <p className="mt-1 text-2xl font-semibold text-charcoal">{cadenceCounts.upcoming}</p>
-        </div>
-      </div>
 
       <RecommendedOrders refreshTrigger={forecastRefreshTrigger} />
 
