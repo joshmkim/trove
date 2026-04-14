@@ -168,11 +168,7 @@ export default function RecommendedOrders({ refreshTrigger = 0 }: { refreshTrigg
             </button>
           </div>
         ) : (
-          <div className="flex items-center gap-3">
-            {activeTab === "Data Viz" && (
-              <span className="text-xs text-warm-gray">Visualized from the current sales CSV</span>
-            )}
-          </div>
+          <div />
         )}
       </div>
 

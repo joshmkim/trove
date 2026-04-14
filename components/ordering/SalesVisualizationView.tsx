@@ -133,7 +133,7 @@ export default function SalesVisualizationView() {
         <div>
           <p className="text-sm font-medium text-charcoal">Sales Visualization</p>
           <p className="text-xs text-warm-gray">
-            Source: {data.sourceFile} • {data.summary.firstDate} to {data.summary.lastDate}
+            {data.summary.firstDate} to {data.summary.lastDate}
           </p>
         </div>
       </div>
@@ -142,22 +142,22 @@ export default function SalesVisualizationView() {
         <SummaryCard
           label="Units Sold"
           value={formatCompact(data.summary.totalUnits)}
-          detail="Total quantity across the loaded sales CSV"
+          detail="Total line items from Clover POS"
         />
         <SummaryCard
           label="Orders"
           value={formatCompact(data.summary.totalOrders)}
-          detail="Distinct order ids in the file"
+          detail="Distinct Clover orders synced"
         />
         <SummaryCard
           label="Avg Units / Order"
           value={data.summary.averageUnitsPerOrder.toFixed(2)}
-          detail="Average basket size from the sales CSV"
+          detail="Average items per order"
         />
         <SummaryCard
           label="Products"
           value={String(data.summary.productCount)}
-          detail="Distinct products represented in the file"
+          detail="Distinct products sold"
         />
       </div>
 
@@ -165,7 +165,7 @@ export default function SalesVisualizationView() {
         <div className="rounded-sm border border-light-gray bg-white p-4">
           <div className="mb-3">
             <h3 className="text-sm font-medium text-charcoal">Recent Daily Sales</h3>
-            <p className="text-xs text-warm-gray">Last 30 days of unit volume from the sales file</p>
+            <p className="text-xs text-warm-gray">Last 30 days of unit volume from Clover</p>
           </div>
           <ResponsiveContainer width="100%" height={260}>
             <LineChart data={data.recentDailySeries} margin={{ top: 8, right: 12, left: -12, bottom: 0 }}>
@@ -241,7 +241,7 @@ export default function SalesVisualizationView() {
         <div className="h-full rounded-sm border border-light-gray bg-white p-4">
           <div className="mb-3">
             <h3 className="text-sm font-medium text-charcoal">Monthly Sales Volume</h3>
-            <p className="text-xs text-warm-gray">Full-file monthly totals from the uploaded sales data</p>
+            <p className="text-xs text-warm-gray">Monthly totals from Clover POS</p>
           </div>
           <ResponsiveContainer width="100%" height={260}>
             <BarChart data={data.monthlySeries} margin={{ top: 8, right: 4, left: -12, bottom: 0 }}>
@@ -270,7 +270,7 @@ export default function SalesVisualizationView() {
         <div className="flex h-full flex-col rounded-sm border border-light-gray bg-white p-4">
           <div className="mb-3">
             <h3 className="text-sm font-medium text-charcoal">Top Products</h3>
-            <p className="text-xs text-warm-gray">Highest unit volume across the sales CSV</p>
+            <p className="text-xs text-warm-gray">Highest unit volume from Clover</p>
           </div>
           <div className="space-y-2">
             {data.topProducts.slice(0, 5).map((row, index) => (
