@@ -17,14 +17,6 @@ interface VerifyResult {
   missing?: string[];
 }
 
-interface OrderRecord {
-  clover_order_id: string;
-  order_created_at: string | null;
-  line_item_count: number;
-  line_items: Array<{ name: string; quantity: number; price: number }> | null;
-  deducted: Array<{ ingredient: string; amount: number; unit: string }> | null;
-}
-
 const PRODUCT_IMAGES: Record<string, string> = {
   "Matcha Powder": "/matcha.webp",
   "Vanilla Syrup":  "/syrup.png",
@@ -66,67 +58,6 @@ function StockCard({ item }: { item: InventoryItem }) {
   );
 }
 
-function OrderRow({ order }: { order: OrderRecord }) {
-  const [expanded, setExpanded] = useState(false);
-  const time = order.order_created_at
-    ? new Date(order.order_created_at).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })
-    : "—";
-
-  const itemSummary = order.line_items?.map((li) => li.name).join(", ") ?? "—";
-
-  return (
-    <div className="border-b border-light-gray last:border-0">
-      <button
-        className="w-full flex items-center justify-between py-3 px-1 text-left hover:bg-cream/40 transition-colors"
-        onClick={() => setExpanded((v) => !v)}
-      >
-        <div className="flex items-center gap-4">
-          <span className="text-xs text-warm-gray w-28 shrink-0">{time}</span>
-          <span className="text-sm text-charcoal truncate max-w-[320px]">{itemSummary}</span>
-        </div>
-        <div className="flex items-center gap-3 shrink-0">
-          <span className="text-xs text-warm-gray">{order.line_item_count} item{order.line_item_count !== 1 ? "s" : ""}</span>
-          <svg className={`w-4 h-4 text-warm-gray transition-transform ${expanded ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-          </svg>
-        </div>
-      </button>
-
-      {expanded && (
-        <div className="pb-3 px-1 space-y-3">
-          {order.line_items && order.line_items.length > 0 && (
-            <div>
-              <p className="text-xs font-medium text-warm-gray mb-1">Items sold</p>
-              <div className="space-y-0.5">
-                {order.line_items.map((li, i) => (
-                  <div key={i} className="flex justify-between text-sm">
-                    <span className="text-charcoal">{li.name}</span>
-                    <span className="text-warm-gray">${((li.price ?? 0) / 100).toFixed(2)}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-          {order.deducted && order.deducted.length > 0 && (
-            <div>
-              <p className="text-xs font-medium text-warm-gray mb-1">Ingredients deducted</p>
-              <div className="space-y-0.5">
-                {order.deducted.map((d, i) => (
-                  <div key={i} className="text-sm text-charcoal">
-                    {d.ingredient} <span className="text-warm-gray">−{d.amount.toFixed(0)}{d.unit}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-          {(!order.deducted || order.deducted.length === 0) && (
-            <p className="text-xs text-warm-gray">No tracked ingredients in this order.</p>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
 
 interface AddStockModalProps {
   open: boolean;
@@ -261,7 +192,6 @@ export default function HarucakeInventoryPage() {
   const [addStockOpen, setAddStockOpen] = useState(false);
   const [apiStatus, setApiStatus] = useState<VerifyResult | null>(null);
   const [verifying, setVerifying] = useState(false);
-  const [orders, setOrders] = useState<OrderRecord[]>([]);
   const syncingRef = useRef(false);
 
   const fetchIngredients = useCallback(async () => {
@@ -273,22 +203,7 @@ export default function HarucakeInventoryPage() {
     setLoading(false);
   }, []);
 
-  async function fetchOrderHistory() {
-    const since = new Date();
-    since.setUTCDate(since.getUTCDate() - 2);
-    since.setUTCHours(0, 0, 0, 0);
-
-    const { data } = await supabase
-      .from("clover_processed_orders")
-      .select("clover_order_id, order_created_at, line_item_count, line_items, deducted")
-      .gte("order_created_at", since.toISOString())
-      .order("order_created_at", { ascending: false })
-      .limit(50);
-
-    if (data) setOrders(data as OrderRecord[]);
-  }
-
-  async function verifyApi() {
+async function verifyApi() {
     setVerifying(true);
     try {
       const res = await fetch("/api/clover/verify");
@@ -307,8 +222,7 @@ export default function HarucakeInventoryPage() {
     syncingRef.current = true;
     try {
       await fetch("/api/clover/sync", { method: "POST" });
-      // Refresh both orders and ingredient stock after every sync
-      await Promise.all([fetchOrderHistory(), fetchIngredients()]);
+      await fetchIngredients();
       setLastSyncedAt(
         new Date().toLocaleString("en-US", {
           hour: "numeric",
@@ -323,7 +237,6 @@ export default function HarucakeInventoryPage() {
 
   useEffect(() => {
     void fetchIngredients();
-    void fetchOrderHistory();
     void verifyApi();
     void runSync();
 
@@ -341,19 +254,10 @@ export default function HarucakeInventoryPage() {
       )
       .subscribe();
 
-    // Realtime: new orders inserted by the sync (shows up instantly rather than on next poll)
-    const ordersChannel = supabase
-      .channel("clover-orders")
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "clover_processed_orders" }, () =>
-        void fetchOrderHistory()
-      )
-      .subscribe();
-
     return () => {
       clearInterval(pollInterval);
       window.removeEventListener(INVENTORY_REFRESH_EVENT, handleInvoiceApplied);
       void supabase.removeChannel(itemsChannel);
-      void supabase.removeChannel(ordersChannel);
     };
   }, [fetchIngredients]);
 
@@ -407,20 +311,6 @@ export default function HarucakeInventoryPage() {
           )}
         </div>
 
-        {/* Order history */}
-        <div>
-          <h2 className="text-sm font-semibold text-warm-gray uppercase tracking-wide mb-3">
-            Recent Orders
-            {orders.length > 0 && <span className="ml-2 font-normal normal-case text-warm-gray">({orders.length})</span>}
-          </h2>
-          <div className="bg-white border border-light-gray rounded-xl px-4">
-            {orders.length === 0 ? (
-              <p className="py-6 text-center text-sm text-warm-gray">No orders in the last 2 days.</p>
-            ) : (
-              orders.map((o) => <OrderRow key={o.clover_order_id} order={o} />)
-            )}
-          </div>
-        </div>
       </div>
     </div>
   );

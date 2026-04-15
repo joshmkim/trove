@@ -444,8 +444,8 @@ const hourlyChartData = data.hourlySales.map((row) => {
                 </tr>
               </thead>
               <tbody>
-                {data.itemMovement.rows.slice(0, 12).map((row) => (
-                  <tr key={row.itemName} className="border-b border-light-gray last:border-0">
+                {data.itemMovement.rows.slice(0, 12).map((row, i) => (
+                  <tr key={`${row.itemName}-${i}`} className="border-b border-light-gray last:border-0">
                     <td className="px-4 py-3 text-sm font-medium text-charcoal">{row.itemName}</td>
                     <td className="px-4 py-3 text-sm text-charcoal">{row.qtyIn.toLocaleString()}{row.unit ? ` ${row.unit}` : ""}</td>
                     <td className="px-4 py-3 text-sm text-charcoal">{row.qtyOut.toLocaleString()}{row.unit ? ` ${row.unit}` : ""}</td>
@@ -475,9 +475,9 @@ const hourlyChartData = data.hourlySales.map((row) => {
           </div>
           <div className="space-y-2">
             {data.invoiceActivity.rows.length > 0 ? (
-              data.invoiceActivity.rows.map((row) => (
+              data.invoiceActivity.rows.map((row, i) => (
                 <div
-                  key={row.itemName}
+                  key={`${row.itemName}-${i}`}
                   className="flex items-center justify-between rounded-sm border border-light-gray px-3 py-2"
                 >
                   <div>
