@@ -109,7 +109,7 @@ export async function POST(req: NextRequest) {
 
   const { data: existingItems, error: fetchError } = await supabase
     .from("items")
-    .select("*");
+    .select("*, purchase_unit_size");
 
   if (fetchError) {
     return NextResponse.json({ error: fetchError.message }, { status: 500 });
@@ -143,10 +143,13 @@ export async function POST(req: NextRequest) {
 
     if (existingMatch) {
       const current = updates.get(existingMatch.id);
-      const qtyIn = (current?.qty_in ?? existingMatch.qty_in) + item.qtyIn;
-      const qtyBalance = (current?.qty_balance ?? existingMatch.qty_balance) + item.qtyIn;
+      // Convert purchase units → grams using purchase_unit_size (e.g. 1 box = 3000g)
+      const unitSize = Number(existingMatch.purchase_unit_size) || 1;
+      const qtyInGrams = item.qtyIn * unitSize;
+      const qtyIn = (current?.qty_in ?? existingMatch.qty_in) + qtyInGrams;
+      const qtyBalance = (current?.qty_balance ?? existingMatch.qty_balance) + qtyInGrams;
       const quantityRemaining =
-        (current?.quantity_remaining ?? existingMatch.quantity_remaining) + item.qtyIn;
+        (current?.quantity_remaining ?? existingMatch.quantity_remaining) + qtyInGrams;
       const skuId = existingMatch.sku_id ?? item.skuId ?? null;
 
       updates.set(existingMatch.id, {

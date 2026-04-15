@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import Image from "next/image";
 import PageHeader from "@/components/layout/PageHeader";
 import { supabase } from "@/lib/supabase";
 import { itemRowToInventoryItem, type InventoryItem, type ItemRow } from "@/lib/types";
@@ -23,24 +24,42 @@ interface OrderRecord {
   deducted: Array<{ ingredient: string; amount: number; unit: string }> | null;
 }
 
+const PRODUCT_IMAGES: Record<string, string> = {
+  "Matcha Powder": "/matcha.webp",
+  "Vanilla Syrup":  "/syrup.png",
+};
+
 function StockCard({ item }: { item: InventoryItem }) {
   const isLow = item.stockLevel === "Low";
+  const imgSrc = PRODUCT_IMAGES[item.productName];
   return (
     <div className="bg-white rounded-xl border border-light-gray p-5 flex flex-col gap-3">
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-[15px] font-semibold text-charcoal">{item.productName}</p>
+      <div className="flex items-start justify-between gap-4">
+        {imgSrc && (
+          <div className="relative w-14 h-14 shrink-0">
+            <Image
+              src={imgSrc}
+              alt={item.productName}
+              fill
+              className="rounded-lg object-cover"
+            />
+          </div>
+        )}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-start justify-between gap-2">
+            <p className="text-[15px] font-semibold text-charcoal">{item.productName}</p>
+            <span className={`text-xs font-medium px-2 py-0.5 rounded-full shrink-0 ${isLow ? "bg-red-50 text-red-600" : "bg-green-50 text-green-700"}`}>
+              {isLow ? "Low" : "In Stock"}
+            </span>
+          </div>
           <p className="text-xs text-warm-gray mt-0.5">{item.quantityRemaining.toFixed(0)}g remaining</p>
+          <div className="h-2 rounded-full bg-light-gray overflow-hidden mt-2">
+            <div
+              className={`h-full rounded-full transition-all ${isLow ? "bg-red-400" : "bg-green-500"}`}
+              style={{ width: `${item.stockPercent}%` }}
+            />
+          </div>
         </div>
-        <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${isLow ? "bg-red-50 text-red-600" : "bg-green-50 text-green-700"}`}>
-          {isLow ? "Low" : "In Stock"}
-        </span>
-      </div>
-      <div className="h-2 rounded-full bg-light-gray overflow-hidden">
-        <div
-          className={`h-full rounded-full transition-all ${isLow ? "bg-red-400" : "bg-green-500"}`}
-          style={{ width: `${item.stockPercent}%` }}
-        />
       </div>
     </div>
   );
