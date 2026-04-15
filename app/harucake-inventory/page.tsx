@@ -5,7 +5,7 @@ import Image from "next/image";
 import PageHeader from "@/components/layout/PageHeader";
 import { supabase } from "@/lib/supabase";
 import { itemRowToInventoryItem, type InventoryItem, type ItemRow } from "@/lib/types";
-import { INVENTORY_REFRESH_EVENT } from "@/lib/inventoryEvents";
+import { INVENTORY_REFRESH_EVENT, dispatchInventoryRefresh } from "@/lib/inventoryEvents";
 
 const TRACKED_INGREDIENTS = ["Vanilla Syrup", "Matcha Powder"];
 const POLL_INTERVAL_MS = 3 * 60 * 1000; // 3 minutes
@@ -128,9 +128,137 @@ function OrderRow({ order }: { order: OrderRecord }) {
   );
 }
 
+interface AddStockModalProps {
+  open: boolean;
+  onClose: () => void;
+  onAdded: () => void;
+}
+
+function AddStockModal({ open, onClose, onAdded }: AddStockModalProps) {
+  const [ingredient, setIngredient] = useState(TRACKED_INGREDIENTS[0]);
+  const [qty, setQty] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!open) { setQty(""); setError(null); }
+  }, [open]);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const qtyNum = Number(qty);
+    if (!Number.isFinite(qtyNum) || qtyNum <= 0) {
+      setError("Enter a valid quantity greater than 0.");
+      return;
+    }
+    setSaving(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/inventory/apply-invoice", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: [{ productName: ingredient, qtyIn: qtyNum, skuId: "" }],
+          invoice: { filename: "manual-add.pdf", fileSize: null },
+        }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error ?? "Failed to update inventory.");
+      }
+      dispatchInventoryRefresh();
+      onAdded();
+      onClose();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  if (!open) return null;
+
+  return (
+    <>
+      <div className="fixed inset-0 z-40 bg-black/30" onClick={onClose} />
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
+        <div className="bg-white rounded-xl shadow-xl w-full max-w-[360px]">
+          {/* Header */}
+          <div className="px-6 pt-5 pb-4 border-b border-light-gray">
+            <h2 className="text-lg font-semibold text-charcoal">Add Stock</h2>
+            <p className="text-xs text-warm-gray mt-0.5">Manually record received inventory</p>
+          </div>
+
+          {/* Body */}
+          <form onSubmit={handleSubmit}>
+            <div className="px-6 py-4 space-y-3">
+              <div>
+                <label className="block text-xs font-medium text-warm-gray mb-1.5">Ingredient</label>
+                <div className="relative">
+                  <select
+                    value={ingredient}
+                    onChange={(e) => setIngredient(e.target.value)}
+                    className="w-full appearance-none px-3 py-2 pr-8 text-sm text-charcoal border border-light-gray rounded-md outline-none focus:border-warm-gray transition-colors bg-white cursor-pointer"
+                  >
+                    {TRACKED_INGREDIENTS.map((name) => (
+                      <option key={name} value={name}>{name}</option>
+                    ))}
+                  </select>
+                  <svg className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-warm-gray" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-warm-gray mb-1.5">
+                  Quantity received
+                  <span className="ml-1 font-normal text-warm-gray/70">· boxes or bags</span>
+                </label>
+                <input
+                  type="number"
+                  min="0.01"
+                  step="any"
+                  value={qty}
+                  onChange={(e) => setQty(e.target.value)}
+                  placeholder="e.g. 2"
+                  autoFocus
+                  className="w-full px-3 py-2 text-sm text-charcoal border border-light-gray rounded-md outline-none focus:border-warm-gray transition-colors placeholder:text-warm-gray/40"
+                />
+              </div>
+
+              {error && <p className="text-xs text-red-500">{error}</p>}
+            </div>
+
+            {/* Footer */}
+            <div className="px-6 pb-5 flex gap-2">
+              <button
+                type="button"
+                onClick={onClose}
+                disabled={saving}
+                className="flex-1 py-2 text-sm text-charcoal border border-light-gray rounded-md hover:bg-cream/60 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={saving || !qty}
+                className="flex-1 py-2 text-sm font-medium text-white bg-charcoal rounded-md hover:bg-charcoal/90 disabled:opacity-40 transition-colors"
+              >
+                {saving ? "Adding…" : "Add to Stock"}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </>
+  );
+}
+
 export default function HarucakeInventoryPage() {
   const [items, setItems] = useState<InventoryItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [addStockOpen, setAddStockOpen] = useState(false);
   const [apiStatus, setApiStatus] = useState<VerifyResult | null>(null);
   const [verifying, setVerifying] = useState(false);
   const [orders, setOrders] = useState<OrderRecord[]>([]);
@@ -231,7 +359,22 @@ export default function HarucakeInventoryPage() {
 
   return (
     <div>
-      <PageHeader title="Ingredient Tracking" />
+      <AddStockModal
+        open={addStockOpen}
+        onClose={() => setAddStockOpen(false)}
+        onAdded={fetchIngredients}
+      />
+      <PageHeader
+        title="Ingredient Tracking"
+        actionButton={
+          <button
+            onClick={() => setAddStockOpen(true)}
+            className="px-4 py-2 rounded-lg bg-charcoal text-white text-sm font-medium hover:bg-charcoal/90 transition-colors"
+          >
+            + Add Stock
+          </button>
+        }
+      />
 
       <div className="px-6 py-6 space-y-4">
         {/* API connection status */}
