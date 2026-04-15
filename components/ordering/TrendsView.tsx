@@ -109,7 +109,7 @@ export default function TrendsView() {
 
       {series.length === 0 ? (
         <div className="px-5 py-12 text-center text-sm text-warm-gray">
-          No trends data yet — click &ldquo;Refresh Trends&rdquo; to fetch from Google.
+          No trends data yet — trends refresh automatically every Monday.
         </div>
       ) : (
         <div className="px-5 py-4 space-y-5">

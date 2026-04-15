@@ -21,6 +21,43 @@ function normalizeProductName(value: string) {
   return value.trim().replace(/\s+/g, " ").toLowerCase();
 }
 
+/**
+ * Find the best matching item from the DB for an invoice line item name.
+ * Priority:
+ *   1. Exact normalized match
+ *   2. Every word of the DB item name appears in the invoice name
+ *      (e.g. "Matcha Powder" found inside "Premium Matcha Powder (1kg box)")
+ *   3. The invoice name contains the DB item name as a substring
+ */
+function findBestMatch(
+  invoiceName: string,
+  nameMatches: Map<string, ItemRow>
+): ItemRow | undefined {
+  const normInvoice = normalizeProductName(invoiceName);
+
+  // 1. Exact
+  const exact = nameMatches.get(normInvoice);
+  if (exact) return exact;
+
+  // 2 & 3. Fuzzy — check every DB item
+  let best: ItemRow | undefined;
+  let bestScore = 0;
+
+  for (const [dbNorm, row] of nameMatches) {
+    const dbWords = dbNorm.split(" ").filter(Boolean);
+    const allWordsPresent = dbWords.every((w) => normInvoice.includes(w));
+    const isSubstring = normInvoice.includes(dbNorm);
+
+    const score = isSubstring ? 2 : allWordsPresent ? 1 : 0;
+    if (score > bestScore) {
+      bestScore = score;
+      best = row;
+    }
+  }
+
+  return bestScore > 0 ? best : undefined;
+}
+
 function toStockLevel(quantityRemaining: number): "low" | "high" {
   return quantityRemaining < LOW_STOCK_THRESHOLD ? "low" : "high";
 }
@@ -139,7 +176,7 @@ export async function POST(req: NextRequest) {
   for (const item of items) {
     const existingMatch =
       (item.skuId ? skuMatches.get(item.skuId) : undefined) ??
-      nameMatches.get(normalizeProductName(item.productName));
+      findBestMatch(item.productName, nameMatches);
 
     if (existingMatch) {
       const current = updates.get(existingMatch.id);

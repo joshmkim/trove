@@ -5,6 +5,7 @@ import Image from "next/image";
 import PageHeader from "@/components/layout/PageHeader";
 import { supabase } from "@/lib/supabase";
 import { itemRowToInventoryItem, type InventoryItem, type ItemRow } from "@/lib/types";
+import { INVENTORY_REFRESH_EVENT } from "@/lib/inventoryEvents";
 
 const TRACKED_INGREDIENTS = ["Vanilla Syrup", "Matcha Powder"];
 const POLL_INTERVAL_MS = 3 * 60 * 1000; // 3 minutes
@@ -200,6 +201,10 @@ export default function HarucakeInventoryPage() {
 
     const pollInterval = setInterval(() => { void runSync(); }, POLL_INTERVAL_MS);
 
+    // Invoice applied from any page → refresh ingredient stock immediately
+    const handleInvoiceApplied = () => { void fetchIngredients(); };
+    window.addEventListener(INVENTORY_REFRESH_EVENT, handleInvoiceApplied);
+
     // Realtime: ingredient stock changes (e.g. from deductions)
     const itemsChannel = supabase
       .channel("clover-ingredients")
@@ -218,6 +223,7 @@ export default function HarucakeInventoryPage() {
 
     return () => {
       clearInterval(pollInterval);
+      window.removeEventListener(INVENTORY_REFRESH_EVENT, handleInvoiceApplied);
       void supabase.removeChannel(itemsChannel);
       void supabase.removeChannel(ordersChannel);
     };
