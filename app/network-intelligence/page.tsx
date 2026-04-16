@@ -2,18 +2,22 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import PageHeader from "@/components/layout/PageHeader";
-import VendorNetworkHeader from "@/components/network-intelligence/VendorNetworkHeader";
+import Button from "@/components/ui/Button";
+import VendorPortalToolbar from "@/components/network-intelligence/VendorPortalToolbar";
+import VendorPortalCard from "@/components/network-intelligence/VendorPortalCard";
 import VendorNetworkTable from "@/components/network-intelligence/VendorNetworkTable";
 import OnboardVendorModal, {
   type NewVendorDraft,
 } from "@/components/network-intelligence/OnboardVendorModal";
-import Button from "@/components/ui/Button";
 import { supabase } from "@/lib/supabase";
 import {
+  compareVendorsByUrgency,
   fetchVendorsWithProducts,
   normalizeProductName,
   type VendorRecord,
 } from "@/lib/vendorPortal";
+
+const PAGE_SIZE = 4;
 
 export default function NetworkIntelligencePage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -22,6 +26,7 @@ export default function NetworkIntelligencePage() {
   const [vendors, setVendors] = useState<VendorRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(0);
 
   const loadVendors = useCallback(async () => {
     try {
@@ -53,13 +58,13 @@ export default function NetworkIntelligencePage() {
 
   const allProducts = useMemo(() => {
     const set = new Set<string>();
-    vendors.forEach((v) => v.products.forEach((p) => set.add(p.productName)));
+    myVendors.forEach((v) => v.products.forEach((p) => set.add(p.productName)));
     return Array.from(set).sort();
-  }, [vendors]);
+  }, [myVendors]);
 
   const filteredMyVendors = useMemo(() => {
     const query = normalizeProductName(searchQuery);
-    return myVendors.filter((v) => {
+    const filtered = myVendors.filter((v) => {
       const matchesSearch =
         !query ||
         normalizeProductName(v.name).includes(query) ||
@@ -68,6 +73,7 @@ export default function NetworkIntelligencePage() {
         !productFilter || v.products.some((p) => p.productName === productFilter);
       return matchesSearch && matchesProduct;
     });
+    return [...filtered].sort(compareVendorsByUrgency);
   }, [myVendors, searchQuery, productFilter]);
 
   const filteredOnboardingVendors = useMemo(() => {
@@ -82,6 +88,25 @@ export default function NetworkIntelligencePage() {
       return matchesSearch && matchesProduct;
     });
   }, [onboardingVendors, searchQuery, productFilter]);
+
+  const totalMy = filteredMyVendors.length;
+  const pageCount = Math.max(1, Math.ceil(totalMy / PAGE_SIZE));
+  const safePage = Math.min(page, pageCount - 1);
+  const pageSlice = useMemo(() => {
+    const start = safePage * PAGE_SIZE;
+    return filteredMyVendors.slice(start, start + PAGE_SIZE);
+  }, [filteredMyVendors, safePage]);
+
+  const showingFrom = totalMy === 0 ? 0 : safePage * PAGE_SIZE + 1;
+  const showingTo = totalMy === 0 ? 0 : Math.min((safePage + 1) * PAGE_SIZE, totalMy);
+
+  useEffect(() => {
+    setPage(0);
+  }, [searchQuery, productFilter]);
+
+  useEffect(() => {
+    if (page > pageCount - 1) setPage(Math.max(0, pageCount - 1));
+  }, [page, pageCount]);
 
   async function handleCreateVendor(vendor: NewVendorDraft) {
     const { data: createdVendor, error: vendorError } = await supabase
@@ -143,57 +168,61 @@ export default function NetworkIntelligencePage() {
   }
 
   return (
-    <div>
-      <PageHeader title="Vendor Portal" />
+    <div className="min-h-full bg-white">
+      <PageHeader
+        title="Vendor Portal"
+        actionButton={
+          <Button variant="primary" onClick={() => setOnboardOpen(true)}>
+            Onboard Vendor
+          </Button>
+        }
+      />
 
-      <section className="mx-6 mt-6 border border-light-gray rounded-sm bg-white">
-        <VendorNetworkHeader
+      <section className="mx-6 mt-2 max-w-[1102px] border-b border-[rgba(154,149,139,0.25)] pb-5">
+        <VendorPortalToolbar
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
           productFilter={productFilter}
           onProductFilterChange={setProductFilter}
           products={allProducts}
+          showingFrom={showingFrom}
+          showingTo={showingTo}
+          totalCount={totalMy}
+          onPrevPage={() => setPage((p) => Math.max(0, p - 1))}
+          onNextPage={() => setPage((p) => Math.min(pageCount - 1, p + 1))}
+          canPrev={safePage > 0}
+          canNext={safePage < pageCount - 1}
         />
       </section>
 
-      <section className="mx-6 mt-6 border border-light-gray rounded-sm bg-white">
-        <div className="px-6 py-5 flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h2 className="text-[20px] font-semibold text-charcoal">
-              My Vendors ({filteredMyVendors.length})
-            </h2>
-            <p className="mt-1 text-sm text-warm-gray">
-              Vendors that have completed onboarding and are ready to use.
-            </p>
+      <section className="mx-6 mt-8 w-full max-w-[1102px] overflow-x-auto pb-1">
+        {loading ? (
+          <p className="text-base text-[#958f84]">Loading vendors...</p>
+        ) : pageSlice.length === 0 ? (
+          <p className="text-base text-[#958f84]">No vendors match your filters.</p>
+        ) : (
+          <div className="grid w-full grid-cols-[repeat(4,minmax(250px,1fr))] gap-[25px]">
+            {pageSlice.map((v) => (
+              <VendorPortalCard key={v.id} vendor={v} />
+            ))}
           </div>
-          <Button variant="primary" onClick={() => setOnboardOpen(true)}>
-            Onboard Vendor
-          </Button>
-        </div>
-        <div className="px-6 pb-5">
-          <VendorNetworkTable vendors={filteredMyVendors} />
-        </div>
+        )}
       </section>
 
-      <section className="mx-6 my-6 border border-light-gray rounded-sm bg-white">
-        <div className="px-6 pt-6 pb-3">
-          <div>
-            <h2 className="text-[20px] font-semibold text-charcoal">
-              Vendor Onboarding ({filteredOnboardingVendors.length})
-            </h2>
-            <p className="mt-1 text-sm text-warm-gray">
-              Vendors in this list are candidates and have not been onboarded yet.
-            </p>
-          </div>
-        </div>
-        <div className="px-6 py-4">
+      <section className="mx-6 mt-16 max-w-[1102px] border-b border-[rgba(154,149,139,0.25)] pb-5">
+        <h2 className="text-[32px] font-medium leading-[1.5] text-[#2c2b2a]">
+          Vendor Onboarding ({filteredOnboardingVendors.length})
+        </h2>
+      </section>
+
+      <section className="mx-6 mt-6 max-w-[1100px]">
+        <div className="overflow-x-auto">
           <VendorNetworkTable vendors={filteredOnboardingVendors} />
         </div>
       </section>
-      {loading && (
-        <div className="px-6 pb-6 text-sm text-warm-gray">Loading vendors...</div>
-      )}
-      {error && <div className="px-6 pb-6 text-sm text-red-600">{error}</div>}
+
+      {error && <div className="px-6 py-6 text-sm text-red-600">{error}</div>}
+
       <OnboardVendorModal
         isOpen={onboardOpen}
         onClose={() => setOnboardOpen(false)}
