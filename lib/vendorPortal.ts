@@ -69,6 +69,28 @@ export function cadenceLabel(cadence: OrderCadence, cadenceDays: number | null):
   return "Biweekly";
 }
 
+/** Earliest `next_order_date` across a vendor's products (ISO `YYYY-MM-DD`); null if none set. */
+export function earliestNextOrderDate(v: VendorRecord): string | null {
+  let min: string | null = null;
+  for (const p of v.products) {
+    if (!p.nextOrderDate) continue;
+    if (min === null || p.nextOrderDate < min) min = p.nextOrderDate;
+  }
+  return min;
+}
+
+/** Sort soonest order deadline first; vendors with no dates last; tie-break by name. */
+export function compareVendorsByUrgency(a: VendorRecord, b: VendorRecord): number {
+  const ka = earliestNextOrderDate(a);
+  const kb = earliestNextOrderDate(b);
+  if (ka === null && kb === null) return a.name.localeCompare(b.name);
+  if (ka === null) return 1;
+  if (kb === null) return -1;
+  const c = ka.localeCompare(kb);
+  if (c !== 0) return c;
+  return a.name.localeCompare(b.name);
+}
+
 export async function fetchVendorsWithProducts(supabase: SupabaseClient): Promise<VendorRecord[]> {
   const { data: vendorRows, error: vendorsError } = await supabase
     .from("vendors")
